@@ -1,0 +1,62 @@
+:root {
+  --headersColor: rgba(26, 26, 26, 0.7);
+  --tinyLineColor: rgba(85, 85, 85, 0.3);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+}
+
+.preferences {
+  dislay: flex;
+  flex-direction: column;
+}
+
+.header {
+  color: #aaa;
+  background: var(--headersColor);
+  padding-top: 5px;
+  height: 18px;
+  font-size: 12px;
+  text-align: center;
+  -webkit-app-region: drag;
+  -webkit-user-select: none
+}
+
+.option {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 18px;
+  color: #aaa;
+  border-bottom: 1px solid var(--tinyLineColor);
+}
+
+.label {
+  padding: 12px 0;
+  font-size: 12px;
+}
+
+.checkbox {
+  margin: 9px 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid #1a1a1a;
+  background: #888;
+}
+
+.on {
+  background: #2182BD;
+}
+
+.checkIcon {
+  fill: #fff;
+  margin: 4px 3px;
+}

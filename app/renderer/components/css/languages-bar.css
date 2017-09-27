@@ -1,0 +1,161 @@
+.languages {
+  display: flex;
+  height: 25px;
+  justify-content: space-between;
+  font-size: 12px;
+  background: var(--headersColor);
+  user-select: none;
+  -ms-overflow-style: scrollbar;
+  -webkit-app-region: drag;
+  -webkit-user-select: none
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+button,
+textarea {
+	-webkit-app-region: no-drag
+}
+
+.from,
+.to {
+  width: 330px;
+  display: flex
+}
+
+.to {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn,
+.active {
+  box-sizing: border-box;
+  padding: 6px 9px;
+  background: none;
+  border: 0;
+  text-align: center;
+  cursor: default;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.btn {
+  color: #999;
+}
+
+.active {
+  color: white
+}
+
+.btn:hover {
+  color: #ccc
+}
+
+.btn:focus,
+.active:focus {
+  outline: none
+}
+
+.caretLeft,
+.caretRight {
+  box-sizing: border-box;
+  position: relative;
+  padding: 3px 18px;
+  width: 30px;
+  color: #999
+}
+
+.caretLeft:hover,
+.caretRight:hover {
+  color: #ccc
+}
+
+.caretLeft svg,
+.caretRight svg {
+  bottom: 7px;
+  position: absolute;
+  fill: #999;
+  width: 10px;
+  height: 10px;
+  transition: all 0.3s ease-out
+}
+
+.caretLeft svg {
+  right: 6px
+}
+
+.caretRight svg {
+  left: 6px
+}
+
+.caretLeft svg:hover,
+.caretRight svg:hover {
+  fill: #ccc
+}
+
+.rotateLeft {
+  transform: rotate(-180deg)
+}
+
+.rotateRight {
+  transform: rotate(180deg)
+}
+
+.dropdown {
+  width: 100%;
+  transition: all 0.9s ease-out
+}
+
+.listbox {
+  padding: 9px;
+  -webkit-columns: 5;
+  -webkit-column-gap: 0
+}
+
+.item {
+  box-sizing: border-box;
+  padding: 3px 0 3px 12px;
+  font-size: 12px;
+  height: 20px;
+  color: #999;
+  cursor: default
+}
+
+.item:hover {
+  background: var(--headersColor);
+  color: white
+}
+
+.invert {
+  margin-top: 3px;
+  box-sizing: border-box;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  text-align: center;
+  background: #555;
+}
+
+.invert:hover {
+  background: white;
+}
+
+.invert:active {
+  background: #999;
+}
+
+#invertIcon {
+  width: 75%;
+  height: 100%;
+  transition: all 0.3s ease-out;
+}
+
+.invertPath {
+  stroke: #000;
+  fill: #000;
+  stroke-width: 3px;
+}

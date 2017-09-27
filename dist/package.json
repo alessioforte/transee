@@ -1,0 +1,19 @@
+{
+  "name": "transee",
+  "productName": "Transee",
+  "version": "1.0.0",
+  "description": "Quick reference to Google Translate desktop app",
+  "main": "main.js",
+  "license": "MIT",
+  "author": "Alessio Forte",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron-packager": "^7.3.0",
+    "electron-prebuilt": "^1.4.13"
+  },
+  "dependencies": {
+    "electron-settings": "^3.1.2"
+  }
+}
