@@ -25,14 +25,10 @@ module.exports = {
       {
         enforce: 'pre',
         test: /\.js?$/,
-        include: path.resolve(__dirname, 'app'),
-        exclude: '/node_modules/',
         loader: 'eslint-loader'
       },
       {
         test: /\.js?$/,
-        include: path.resolve(__dirname, 'app'),
-        exclude: '/node_modules/',
         loader: 'babel-loader',
         options: {
           presets: ['react', 'es2015']
@@ -40,17 +36,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: path.resolve(__dirname, 'app/renderer/components/css'),
         loader: 'style-loader!css-loader'
       },
       {
         test: /\.sass$/,
-        include: path.resolve(__dirname, 'app/renderer'),
-        loaders: [
-          'style',
-          'css',
-          'sass'
-        ]
+        loaders: ['style', 'css', 'sass']
       }
     ]
   },
