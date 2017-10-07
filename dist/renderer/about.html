@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>About</title>
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="index.css">
     <style>
       * {
         font-family: 'Nunito', sans-serif;
@@ -14,58 +14,62 @@
   			-webkit-app-region: drag;
   			-webkit-font-smoothing: antialiased;
   		}
-  		.icon_c {
+  		#icon_c {
   			width: 180px;
   			margin-top: 30px;
   			margin-left:20px;
   			border-right: 1px solid rgba(255, 255, 255, 0.2);
   			padding-right: 20px;
   		}
-  		.title {
+  		#title {
   		  font-size: 28px;
         color: white;
   		}
-  		.b_d {
+  		#b_d {
   			display: inline-block;
   			vertical-align: top;
   			padding-top: 60px;
         margin-left: 60px;
         text-align: center;
   		}
-  		.version {
+  		#version {
   			opacity: 0.8;
   			margin:0px;
   			font-size: 12px;
   			letter-spacing: 1.5px;
   		}
-  		.site {
+  		#site {
   			margin: 0px;
   			opacity: 0.5;
   			font-size: 12px;
   			margin-top: 25px;
   			letter-spacing: 1px;
   		}
-  		.author {
+  		#author {
   			font-size: 12px;
   			letter-spacing: 1px;
   			margin-top: 30px;
   			opacity: 0.4;
   			transition: .3s;
   		}
-  		.author:hover {
+  		#author:hover {
   			opacity: 1;
   		}
   	</style>
   </head>
   <body>
-    <img class="icon_c" src="assets/icon_256x256.png">
-    <div class="b_d">
-      <div class="title"><b>Transee</b></div>
-      <div class="version">version: 1.0</div>
-      <div class="site"></div>
-      <div class="author">
-        <p>Created by Alessio Forte</br>Copyright © 2017</p>
+    <img id="icon_c" src="../assets/icon_256x256.png">
+    <div id="b_d">
+      <div id="title"><b>Transee</b></div>
+      <div id="version"></div>
+      <div id="site"></div>
+      <div id="author">
+        <p>Copyright © 2017 Alessio Forte</p>
       </div>
     </div>
+    <script>
+      let version = window.location.hash.substring(2)
+      document.getElementById('version').innerHTML = 'Version: ' + version
+    </script>
   </body>
 </html>

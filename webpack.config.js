@@ -6,12 +6,11 @@ module.exports = {
 
   entry: {
     entry: './app/renderer/entry.js',
-    preferences: './app/renderer/preferences.js',
-    main: './app/main/main.js'
+    preferences: './app/renderer/preferences.js'
   },
 
   output: {
-    path: path.join(__dirname, 'dist/build'),
+    path: path.join(__dirname, 'dist/renderer'),
     filename: '[name].bundle.js'
   },
 

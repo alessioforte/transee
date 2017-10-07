@@ -1,4 +1,5 @@
-import { app, BrowserWindow, screen, ipcMain, Menu, Tray, nativeImage } from 'electron'
+const { app, BrowserWindow, ipcMain } = require('electron')
+const electron = require('electron')
 const path = require('path')
 const settings = require('electron-settings')
 
@@ -10,7 +11,7 @@ let tray = null
 let preferencesWin = null
 
 const createWindow = () => {
-  var screenWidth = screen.getPrimaryDisplay().size.width
+  var screenWidth = electron.screen.getPrimaryDisplay().size.width
 
   win = new BrowserWindow({
     frame: false,

@@ -1,18 +1,14 @@
 {
   "name": "transee",
   "version": "1.0.0",
-  "description": "Quick reference to Google Translate desktop app",
+  "description": "Simple and usefull tool for quick translation",
   "scripts": {
     "dev": "npm run build && npm run start",
     "build": "echo 'Building...' && webpack",
-    "start": "electron ./dist/build/main.bundle.js",
-    "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
-    "build:darwin": "electron-packager ./dist --platform=darwin --arch=x64 --out=darwin --icon=./dist/transee.icns --overwrite",
-    "asar": "asar pack ./darwin/Transee-darwin-x64/Transee.app/Contents/Resources/app ./darwin/Transee-darwin-x64/Transee.app/Contents/Resources/app.asar",
-    "remove": "rm -r ./darwin/Transee-darwin-x64/Transee.app/Contents/Resources/app",
-    "darwin": "rm ./dist/build/main.bundle.js && npm run build:darwin && npm run asar && npm run remove",
-    "dmg": "electron-installer-dmg ./darwin/Transee-darwin-x64/Transee.app transee-1.0"
+    "start": "electron ./app/main/main.js",
+    "watch": "./node_modules/.bin/webpack-dev-server --port 8182"
   },
+  "repository": "https://github.com/alessioforte/transee.git",
   "author": "Alessio Forte",
   "license": "MIT",
   "dependencies": {
@@ -30,8 +26,6 @@
     "css-loader": "^0.28.4",
     "devtron": "^1.4.0",
     "electron": "^1.7.8",
-    "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^9.1.0",
     "electron-settings": "^3.1.1",
     "eslint": "^4.4.1",
     "eslint-loader": "^1.9.0",

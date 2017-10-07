@@ -1,7 +1,6 @@
+.gitignore
 node_modules
-npm-debug.log
+publish.sh
 yarn.lock
-build
-gulpfile.js
 package-lock.json
 .DS_Store

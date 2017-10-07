@@ -3,25 +3,27 @@ const electron = require('electron')
 const path = require('path')
 const events = require('events')
 const settings = require('electron-settings')
+const updater = require('./updater')
 
-const indexPath = `file://${__dirname}/index.html`
-const preferencesPath = `file://${__dirname}/preferences.html`
-const aboutPath = `file://${__dirname}/about.html`
+const indexPath = `file://${__dirname}/../renderer/index.html`
+const preferencesPath = `file://${__dirname}/../renderer/preferences.html`
+const aboutPath = `file://${__dirname}/../renderer/about.html#v${app.getVersion()}`
+const iconPath = path.join(__dirname, '../assets', 'iconTemplate.png')
 
 var win, aboutWin, tray, preferencesWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
-var iconPath = path.join(__dirname, 'assets', 'iconTemplate.png')
 var globalY
 
-if (app.isReady()) appReady()
-else app.on('ready', appReady)
+app.on('ready', appReady)
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll()
 })
 
 app.on('before-quit', () => {
-  win.webContents.send('settings', 'save')
+  if (win) {
+    win.webContents.send('settings', 'save')
+  }
 })
 
 function appReady() {
@@ -37,14 +39,15 @@ function appReady() {
   tray = new Tray(iconPath)
 
   const contextMenu = Menu.buildFromTemplate([
-    {label: 'About Transee', click: () => { showAboutWindow() }},
-    {type: 'separator'},
-    {label: 'Preferences...           ', click: () => showPreferencesWindow() },
-    {type: 'separator'},
-    {label: 'Show', accelerator: 'Ctrl+T', click: () => { showWindow() }},
-    {label: 'Hide', accelerator: 'esc', click: () => { hideWindow() }},
-    {type: 'separator'},
-    {label: 'Quit', role: 'quit', accelerator: 'Cmd+Q'},
+    { label: 'About Transee', click: () => showAboutWindow() },
+    { label: 'Check for update', click: () => updater.checkForUpdates(true) },
+    { type: 'separator' },
+    { label: 'Preferences...', click: () => showPreferencesWindow() },
+    { type: 'separator' },
+    { label: 'Show', accelerator: 'Control+T', click: () => showWindow() },
+    { label: 'Hide', accelerator: 'esc', click: () => hideWindow() },
+    { type: 'separator' },
+    { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() }
   ])
 
   tray.setContextMenu(contextMenu)
@@ -54,6 +57,8 @@ function appReady() {
   const ret = globalShortcut.register('Control+T', () => {
     showWindow()
   })
+
+  updater.checkForUpdates()
 }
 
 const createWindow = () => {
