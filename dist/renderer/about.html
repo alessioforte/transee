@@ -3,34 +3,54 @@
   <head>
     <meta charset="utf-8">
     <title>About</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="font.css">
     <style>
+      :root {
+        --headersColor: rgba(26, 26, 26, 1);
+        --groundColor: rgba(42, 42, 42, 1);
+      }
       * {
+        padding: 0;
+        margin: 0;
         font-family: 'Nunito', sans-serif;
         color: #fff;
       }
   		body {
   			-webkit-user-select: none;
-  			-webkit-app-region: drag;
-  			-webkit-font-smoothing: antialiased;
+  			/*-webkit-app-region: drag;
+  			-webkit-font-smoothing: antialiased;*/
+        cursor: default;
+        overflow: hidden;
+        background: var(--groundColor)
   		}
-  		#icon_c {
+      .header {
+        color: #aaa;
+        background: var(--headersColor);
+        padding-top: 5px;
+        height: 18px;
+        font-size: 12px;
+        text-align: center;
+        -webkit-app-region: drag;
+        -webkit-user-select: none
+      }
+      .container {
+        margin: 23px;
+      }
+  		#icon {
   			width: 180px;
-  			margin-top: 30px;
-  			margin-left:20px;
   			border-right: 1px solid rgba(255, 255, 255, 0.2);
   			padding-right: 20px;
-  		}
-  		#title {
-  		  font-size: 28px;
-        color: white;
   		}
   		#b_d {
   			display: inline-block;
   			vertical-align: top;
-  			padding-top: 60px;
+  			padding-top: 30px;
         margin-left: 60px;
         text-align: center;
+  		}
+      #title {
+  		  font-size: 28px;
+        color: white;
   		}
   		#version {
   			opacity: 0.8;
@@ -58,13 +78,17 @@
   	</style>
   </head>
   <body>
-    <img id="icon_c" src="../assets/icon_256x256.png">
-    <div id="b_d">
-      <div id="title"><b>Transee</b></div>
-      <div id="version"></div>
-      <div id="site"></div>
-      <div id="author">
-        <p>Copyright © 2017 Alessio Forte</p>
+    <div class="header">About</div>
+    <div class="container">
+      <img id="icon" src="../assets/icon_256x256.png" />
+
+      <div id="b_d">
+        <div id="title"><b>Transee</b></div>
+        <div id="version"></div>
+        <div id="site"></div>
+        <div id="author">
+          <p>Created by Alessio Forte<br />Copyright © 2017</p>
+        </div>
       </div>
     </div>
     <script>

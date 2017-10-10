@@ -69,7 +69,7 @@ const createWindow = () => {
     frame: false,
     fullscreenable: false,
     resizable: false,
-    vibrancy: 'ultra-dark',
+    // vibrancy: 'ultra-dark',
     webPreferences: {
       backgroundThrottling: false,
       devTools: false
@@ -109,8 +109,8 @@ const createAboutWindow = () => {
   aboutWin = new BrowserWindow({
     width: 520,
     height: 250,
-    titleBarStyle: 'hiddenInset',
-    vibrancy: 'dark',
+    titleBarStyle: 'hidden',
+    // vibrancy: 'dark',
     minimizable: false,
     maximizable: false,
     resizable: false,
@@ -132,7 +132,7 @@ const createPreferencesWindow = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
-    vibrancy: 'ultra-dark'
+    // vibrancy: 'ultra-dark'
   })
 
   preferencesWin.loadURL(preferencesPath)
