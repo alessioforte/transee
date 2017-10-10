@@ -4,3 +4,5 @@ publish.sh
 yarn.lock
 package-lock.json
 .DS_Store
+entry.bundle.js
+preferences.bundle.js

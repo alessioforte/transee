@@ -69,6 +69,7 @@ const createWindow = () => {
     frame: false,
     fullscreenable: false,
     resizable: false,
+    transparent: true,
     // vibrancy: 'ultra-dark',
     webPreferences: {
       backgroundThrottling: false,

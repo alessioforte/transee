@@ -1,6 +1,7 @@
 :root {
-  --headersColor: rgba(26, 26, 26, 0.7);
+  --headersColor: rgba(26, 26, 26, 0.9);
   --tinyLineColor: rgba(85, 85, 85, 0.3);
+  --groundColor: rgba(42, 42, 42, 0.9);
 }
 
 * {
@@ -10,6 +11,7 @@
 body {
   margin: 0;
   padding: 0;
+  background: var(--groundColor);
 }
 
 #input,
