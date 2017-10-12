@@ -58,7 +58,9 @@ function appReady() {
     showWindow()
   })
 
-  updater.checkForUpdates()
+  let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
+    settings.get('check-automatically-updates') : true
+  if (checkAutomaticallyUpdates) updater.checkForUpdates()
 }
 
 const createWindow = () => {

@@ -21,7 +21,8 @@ const createWindow = () => {
     x: 60,
     fullscreenable: false,
     resizable: false,
-    vibrancy: 'ultra-dark',
+    transparent: true,
+    // vibrancy: 'ultra-dark',
   });
 
   win.loadURL(indexPath);
@@ -43,7 +44,7 @@ const createPreferencesWindow = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
-    vibrancy: 'ultra-dark'
+    // vibrancy: 'ultra-dark'
   })
 
   preferencesWin.loadURL(preferencesPath)
@@ -58,6 +59,13 @@ app.on('ready', () => {
   settings.set('start-login', check)
   createWindow()
   createPreferencesWindow()
+
+  let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
+  if (checkAutomaticallyUpdates) {
+    console.log('automatically check updates')
+  } else {
+    console.log('no check for updates')
+  }
 });
 
 app.on('window-all-closed', function () {
