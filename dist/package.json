@@ -11,6 +11,7 @@
     "dist": "electron-builder --mac"
   },
   "repository": "https://github.com/alessioforte/transee.git",
+  "homepage": "https://alessioforte.github.io/transee/",
   "build": {
     "productName": "Transee",
     "appId": "com.github.alessioforte.transee",

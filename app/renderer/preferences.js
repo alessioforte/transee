@@ -57,8 +57,6 @@ class Preferences extends Component {
 }
 
 const headerColor = 'rgba(26, 26, 26, 1)'
-const grondColor = 'rgba(85, 85, 85, 0.3)'
-const tinyLineColor = 'rgba(42, 42, 42, 1)'
 
 const Container = styled.div`
   dislay: flex;
@@ -81,7 +79,7 @@ const Option = styled.div`
   justify-content: space-between;
   padding: 9px 18px;
   color: #aaa;
-  border-bottom: 1px solid ${tinyLineColor};
+  border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 `
 
 const Label = styled.div`
