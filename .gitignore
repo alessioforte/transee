@@ -6,3 +6,5 @@ package-lock.json
 .DS_Store
 entry.bundle.js
 preferences.bundle.js
+dist/build/
+dev-tools-extension.js

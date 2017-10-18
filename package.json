@@ -1,6 +1,6 @@
 {
   "name": "transee",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple and usefull tool for quick translation",
   "scripts": {
     "dev": "npm run build && npm run start",
@@ -15,7 +15,8 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "styled-components": "^2.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
