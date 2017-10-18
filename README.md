@@ -1,3 +1,10 @@
-# Transee
+<div align="center">
 
-Quick reference to Google Translate desktop app
+![Transee](https://alessioforte.github.io/transee/static/icon_128x128.png)
+
+# Transee
+Simple and usefull tool for quick translation - reference to Google Translate
+
+![Usage](https://alessioforte.github.io/transee/static/sunsetNY.gif)
+
+</div>
