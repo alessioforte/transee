@@ -61,7 +61,7 @@ app.on('ready', () => {
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  createPreferencesWindow()
+  // createPreferencesWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
   if (checkAutomaticallyUpdates) {
