@@ -5,6 +5,6 @@
 # Transee
 Simple and usefull tool for quick translation - reference to Google Translate
 
-![Usage](https://alessioforte.github.io/transee/static/NYsunset.gif)
+![Usage](https://alessioforte.github.io/transee/static/rainbow500.gif)
 
 </div>
