@@ -2,6 +2,8 @@ const { app, dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const log = require('electron-log')
 
+const internetAvailable = require('internet-available')
+
 autoUpdater.autoDownload = false
 var manualCheck = false
 var version = app.getVersion()
@@ -50,6 +52,18 @@ autoUpdater.on('update-downloaded', () => {
 module.exports = {
   checkForUpdates: (isManual) => {
     if (isManual) manualCheck = true
-    autoUpdater.checkForUpdates()
+
+    internetAvailable().then(() => {
+      autoUpdater.checkForUpdates()
+    }).catch(() => {
+      console.log('internet disconnected')
+      if (manualCheck) {
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'Error',
+          detail: 'I can\'t check for updates, internet disconnected.'
+        })
+      }
+    })
   }
 }

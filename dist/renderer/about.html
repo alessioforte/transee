@@ -44,7 +44,7 @@
   		#b_d {
   			display: inline-block;
   			vertical-align: top;
-  			padding-top: 30px;
+  			padding-top: 20px;
         margin-left: 60px;
         text-align: center;
   		}
@@ -60,16 +60,24 @@
   		}
   		#site {
   			margin: 0px;
-  			opacity: 0.5;
   			font-size: 12px;
   			margin-top: 25px;
   			letter-spacing: 1px;
   		}
+      #link {
+        opacity: 0.5;
+        transition: .3s;
+        cursor: pointer;
+      }
+      #link:hover {
+        opacity: 1;
+      }
   		#author {
   			font-size: 12px;
   			letter-spacing: 1px;
   			margin-top: 30px;
-  			opacity: 0.4;
+  			opacity: 0.5;
+        letter-spacing: 1px;
   			transition: .3s;
   		}
   		#author:hover {
@@ -85,15 +93,17 @@
       <div id="b_d">
         <div id="title"><b>Transee</b></div>
         <div id="version"></div>
-        <div id="site"></div>
+        <div id="site">site: <a id="link" onclick="openInBrowser()">transee.tk</a></div>
         <div id="author">
           <p>Created by Alessio Forte<br />Copyright © 2017</p>
         </div>
       </div>
     </div>
     <script>
+      const shell = require('electron').shell
       let version = window.location.hash.substring(2)
       document.getElementById('version').innerHTML = 'Version: ' + version
+      function openInBrowser() { shell.openExternal("http://www.transee.tk") }
     </script>
   </body>
 </html>

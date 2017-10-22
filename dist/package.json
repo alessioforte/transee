@@ -1,7 +1,7 @@
 {
   "name": "transee",
   "productName": "Transee",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple and usefull tool for quick translation",
   "main": "./main/main.js",
   "license": "MIT",
@@ -32,12 +32,13 @@
     }
   },
   "devDependencies": {
+    "electron": "^1.7.9",
     "electron-builder": "^19.34.1"
   },
   "dependencies": {
-    "electron": "^1.7.9",
     "electron-log": "^2.2.9",
     "electron-settings": "^3.1.2",
-    "electron-updater": "2.0.0"
+    "electron-updater": "2.0.0",
+    "internet-available": "^1.0.0"
   }
 }

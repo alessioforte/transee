@@ -60,7 +60,10 @@ function appReady() {
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
     settings.get('check-automatically-updates') : true
-  if (checkAutomaticallyUpdates) updater.checkForUpdates()
+
+  if (checkAutomaticallyUpdates) {
+    setTimeout(() => updater.checkForUpdates(), 1000 * 60 * 3)
+  }
 }
 
 const createWindow = () => {
