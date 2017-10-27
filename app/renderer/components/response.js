@@ -10,39 +10,44 @@ const mapDispatchToProps = dispatch => ({
   speedTo: speed => dispatch(speedTo(speed))
 })
 
-const Response = ({ langs, obj, speed, speedTo }) => {
+class Response extends Component {
 
-  function handleClickOnPlayIcon() {
-    let text = obj.translation
-    let lang = langs.to
-    playAudio(text, lang, speed.to)
-    speedTo(!speed.to)
+  componentDidUpdate() {
+    this.textarea.style.height = '60px'
+    let height = this.textarea.scrollHeight
+    this.textarea.style.height = height + 'px'
   }
 
-  function renderPronunciation() {
+  handleClickOnPlayIcon() {
+    let text = this.props.obj.translation
+    let lang = this.props.langs.to
+    playAudio(text, lang, this.props.speed.to)
+    speedTo(!this.props.speed.to)
+  }
+
+  renderPronunciation() {
     var p
-    if (p = obj.pronunciation) {
+    if (p = this.props.obj.pronunciation) {
       return <div className='pronunciation'>{p}</div>
     } else return null
   }
 
-  function renderTanslation() {
-    if (obj.translation) {
-      let height = document.getElementById('input').scrollHeight
+  renderTanslation() {
+    if (this.props.obj.translation) {
       return (
         <div className='t_box'>
           <div className='inputContainer'>
             <textarea
+              ref={textarea => this.textarea = textarea}
               id='translation'
               type='text'
-              value={obj.translation}
+              value={this.props.obj.translation}
               disabled={true}
-              style={{ height: height }}
             />
             <div className='icons'>
               <div
                 className='audio'
-                onClick={() => handleClickOnPlayIcon()}
+                onClick={() => this.handleClickOnPlayIcon()}
               >
                 <svg
                   className="play"
@@ -59,9 +64,9 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  function renderDefinitionsOf() {
+  renderDefinitionsOf() {
     var x
-    if (x = obj.definitions) {
+    if (x = this.props.obj.definitions) {
       var types = x.map((definition, i) => {
         var sections = definition.content.map((section, j) => {
           return (
@@ -81,7 +86,7 @@ const Response = ({ langs, obj, speed, speedTo }) => {
       return (
         <div className='definitions'>
           <div className='header'>
-            {'Definitions of '}<span className='span'>{obj.target}</span>
+            {'Definitions of '}<span className='span'>{this.props.obj.target}</span>
           </div>
           {types}
         </div>
@@ -89,9 +94,9 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  function renderSynonyms() {
+  renderSynonyms() {
     var x
-    if (x = obj.synonyms) {
+    if (x = this.props.obj.synonyms) {
       var types = x.map((synonym, i) => {
         var sections = synonym.content.map((section, j) => {
           return (
@@ -114,9 +119,9 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  function renderExamples() {
+  renderExamples() {
     var x
-    if (x = obj.examples) {
+    if (x = this.props.obj.examples) {
       var examples = x.map((example, i) => {
         return <li key={i} dangerouslySetInnerHTML={{__html: example}} />
       })
@@ -129,9 +134,9 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  function renderTranslationsOf() {
+  renderTranslationsOf() {
     var x
-    if (x = obj.translations) {
+    if (x = this.props.obj.translations) {
       var types = x.map((translation, i) => {
         var sections = translation.content.map((section, j) => {
           return (
@@ -154,7 +159,7 @@ const Response = ({ langs, obj, speed, speedTo }) => {
       return (
         <div className='translations'>
           <div className='header'>
-            {'Translations of '}<span className='span'>{obj.target}</span>
+            {'Translations of '}<span className='span'>{this.props.obj.target}</span>
           </div>
           {types}
         </div>
@@ -162,9 +167,9 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  function renderSeeAlso() {
+  renderSeeAlso() {
     let s
-    if (s = obj.seeAlso) {
+    if (s = this.props.obj.seeAlso) {
       return (
         <div className='seeAlso'>
           <div className='header'>See Also</div>
@@ -176,21 +181,23 @@ const Response = ({ langs, obj, speed, speedTo }) => {
     } else return null
   }
 
-  return (
-    <div className='response'>
-      <div className='block'>
-        {renderPronunciation()}
-        {renderTanslation()}
+  render() {
+    return (
+      <div className='response'>
+        <div className='block'>
+          {this.renderPronunciation()}
+          {this.renderTanslation()}
+        </div>
+        <div className='scroll'>
+          {this.renderTranslationsOf()}
+          {this.renderDefinitionsOf()}
+          {this.renderSynonyms()}
+          {this.renderExamples()}
+          {this.renderSeeAlso()}
+        </div>
       </div>
-      <div className='scroll'>
-        {renderTranslationsOf()}
-        {renderDefinitionsOf()}
-        {renderSynonyms()}
-        {renderExamples()}
-        {renderSeeAlso()}
-      </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Response)

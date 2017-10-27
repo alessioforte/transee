@@ -103,7 +103,7 @@ class App extends Component {
   handleKeydown(e) {
     var keyCode = e.keyCode
 
-    if (this.props.suggest && this.props.suggest.sgt) {
+    if (this.props.suggest && this.props.suggest.sgt && this.props.suggest.sgt.length !== 0) {
       let children = this.suggest ? this.suggest.children : null
       let length =  children ? children.length : null
 
