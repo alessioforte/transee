@@ -1,6 +1,6 @@
 {
   "name": "transee",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple and usefull tool for quick translation",
   "scripts": {
     "dev": "npm run build && npm run start",

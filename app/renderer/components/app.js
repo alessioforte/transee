@@ -69,6 +69,7 @@ class App extends Component {
   }
 
   onInputChange(e) {
+    var textCameFromPaste = ((e.target.getAttribute('pasted') || '') === '1')
     let text = e.target.value
     let from = this.props.langs.from
     let to = this.props.langs.to
@@ -80,13 +81,20 @@ class App extends Component {
       this.props.updateTSgt(null)
       this.props.updateObj(null)
       this.autocomplete.value = ''
+      e.target.setAttribute('pasted', '0')
     } else {
-      if (text.indexOf('\n') === -1) this.searchSuggestion(text)
+      if (text.indexOf('\n') === -1 && !textCameFromPaste && text.length < 60) {
+        this.searchSuggestions(text)
+      }
       searchTranslation(text, from, to)
     }
   }
 
-  searchSuggestion(text) {
+  onInputPaste(e) {
+    e.target.setAttribute('pasted', '1')
+  }
+
+  searchSuggestions(text) {
     let from = this.props.langs.from
     let to = this.props.langs.to
 
@@ -383,6 +391,7 @@ class App extends Component {
             style={{
               display: this.props.dropdown ? 'none' : 'block',
             }}
+            onPaste={e => this.onInputPaste(e)}
             onChange={e => this.onInputChange(e)}
             onKeyDown={e => this.handleKeydown(e)}
           />

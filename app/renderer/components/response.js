@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { speedTo } from '../../redux/actions'
-import { playAudio } from '../services'
+import { playAudio, setMainWindowSize } from '../services'
 import './css/response.css'
 
 const mapStateToProps = ({ langs, obj, speed }) => ({ langs, obj, speed })
@@ -12,10 +12,18 @@ const mapDispatchToProps = dispatch => ({
 
 class Response extends Component {
 
+  componentDidMount() {
+    this.resizeTextarea()
+  }
+
   componentDidUpdate() {
+    this.resizeTextarea()
+    setMainWindowSize()
+  }
+
+  resizeTextarea() {
     this.textarea.style.height = '60px'
-    let height = this.textarea.scrollHeight
-    this.textarea.style.height = height + 'px'
+    this.textarea.style.height = this.textarea.scrollHeight + 'px'
   }
 
   handleClickOnPlayIcon() {
