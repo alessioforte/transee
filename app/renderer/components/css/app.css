@@ -28,6 +28,10 @@ body {
   color: white;
 }
 
+#input::-webkit-scrollbar {
+  width: 0;
+}
+
 #autocomplete {
   position: absolute;
   top: 25px;

@@ -2,21 +2,14 @@
   display: flex;
   height: 25px;
   justify-content: space-between;
-  font-size: 12px;
   background: var(--headersColor);
   user-select: none;
-  -ms-overflow-style: scrollbar;
   -webkit-app-region: drag;
-  -webkit-user-select: none
 }
 
-input[type="submit"],
-input[type="reset"],
-input[type="button"],
-input[type="text"],
-button,
-textarea {
-	-webkit-app-region: no-drag
+button {
+	-webkit-app-region: no-drag;
+  font-size: 12px;
 }
 
 .from,
@@ -81,6 +74,7 @@ textarea {
   fill: #999;
   width: 10px;
   height: 10px;
+  -webkit-app-region: no-drag;
   transition: all 0.3s ease-out
 }
 
@@ -138,6 +132,7 @@ textarea {
   border-radius: 50%;
   text-align: center;
   background: #555;
+  -webkit-app-region: no-drag;
 }
 
 .invert:hover {

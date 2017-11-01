@@ -54,8 +54,8 @@ const createPreferencesWindow = () => {
 }
 
 app.on('ready', () => {
-  const devTools = require('./dev-tools-extension')
-  devTools.addExtension()
+  // const devTools = require('./dev-tools-extension')
+  // devTools.addExtension()
 
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)

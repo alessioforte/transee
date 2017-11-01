@@ -27,7 +27,7 @@ app.on('before-quit', () => {
 })
 
 function appReady() {
-  app.dock.hide()
+  if (process.platform === 'darwin') app.dock.hide()
 
   let check = app.getLoginItemSettings().openAtLogin
   settings.set('start-login', check)
