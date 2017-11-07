@@ -6,7 +6,9 @@ package-lock.json
 .DS_Store
 entry.bundle.js
 preferences.bundle.js
+welcome.bundle.js
 entry.bundle.js.map
 preferences.bundle.js.map
+welcome.bundle.js.map
 dist/build/
 dev-tools-extension.js

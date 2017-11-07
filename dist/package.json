@@ -8,7 +8,8 @@
   "author": "Alessio Forte",
   "scripts": {
     "start": "electron ./main/main.js",
-    "dist": "electron-builder --mac"
+    "mac": "electron-builder --mac",
+    "win": "electron-builder --win"
   },
   "repository": "https://github.com/alessioforte/transee.git",
   "homepage": "https://alessioforte.github.io/transee/",
@@ -28,6 +29,10 @@
     "mac": {
       "icon": "assets/transee.icns",
       "category": "utility.productivity.reference",
+      "publish": "github"
+    },
+    "win": {
+      "icon": "assets/transee.ico",
       "publish": "github"
     }
   },

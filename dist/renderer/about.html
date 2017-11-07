@@ -44,8 +44,8 @@
   		#b_d {
   			display: inline-block;
   			vertical-align: top;
-  			padding-top: 20px;
-        margin-left: 60px;
+  			padding-top: 10px;
+        margin-left: 40px;
         text-align: center;
   		}
       #title {
@@ -65,12 +65,12 @@
   			letter-spacing: 1px;
   		}
       #link {
-        opacity: 0.5;
         transition: .3s;
+        color: #0077B5;
         cursor: pointer;
       }
       #link:hover {
-        opacity: 1;
+        color: #00AFF0;
       }
   		#author {
   			font-size: 12px;
@@ -83,6 +83,9 @@
   		#author:hover {
   			opacity: 1;
   		}
+      span {
+        color: darkred;
+      }
   	</style>
   </head>
   <body>
@@ -95,7 +98,7 @@
         <div id="version"></div>
         <div id="site">site: <a id="link" onclick="openInBrowser()">transee.tk</a></div>
         <div id="author">
-          <p>Created by Alessio Forte<br />Copyright © 2017</p>
+          <p>Created with <span>❤</span> by Alessio Forte<br />Copyright © 2017</p>
         </div>
       </div>
     </div>

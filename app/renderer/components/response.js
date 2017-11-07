@@ -18,7 +18,6 @@ class Response extends Component {
 
   componentDidUpdate() {
     this.resizeTextarea()
-    setMainWindowSize()
   }
 
   resizeTextarea() {
@@ -48,6 +47,7 @@ class Response extends Component {
             <textarea
               ref={textarea => this.textarea = textarea}
               id='translation'
+              className={window.navigator.platform === 'Win32' ? 'noScroll' : ''}
               type='text'
               value={this.props.obj.translation}
               disabled={true}
@@ -190,13 +190,16 @@ class Response extends Component {
   }
 
   render() {
+    var obj = this.props.obj
     return (
       <div className='response'>
         <div className='block'>
           {this.renderPronunciation()}
           {this.renderTanslation()}
         </div>
-        <div className='scroll'>
+        <div
+          className={window.navigator.platform === 'Win32' ? 'scroll noScroll' : 'scroll'}
+        >
           {this.renderTranslationsOf()}
           {this.renderDefinitionsOf()}
           {this.renderSynonyms()}

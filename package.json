@@ -6,7 +6,9 @@
     "dev": "npm run build && npm run start",
     "build": "echo 'Building...' && webpack",
     "start": "electron ./app/main/main.js",
-    "watch": "./node_modules/.bin/webpack-dev-server --port 8182"
+    "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
+    "delete": "rm dist/renderer/entry.bundle.js.map dist/renderer/preferences.bundle.js.map dist/renderer/welcome.bundle.js.map",
+    "deleteall": "rm dist/renderer/entry.bundle.js.map dist/renderer/preferences.bundle.js.map dist/renderer/welcome.bundle.js.map dist/renderer/entry.bundle.js dist/renderer/preferences.bundle.js dist/renderer/welcome.bundle.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
+    "rxjs": "^5.5.2",
     "styled-components": "^2.2.1"
   },
   "devDependencies": {
@@ -30,7 +33,7 @@
     "configstore": "^3.1.1",
     "css-loader": "^0.28.4",
     "devtron": "^1.4.0",
-    "electron": "^1.7.8",
+    "electron": "^1.7.9",
     "electron-settings": "^3.1.1",
     "eslint": "^4.4.1",
     "eslint-loader": "^1.9.0",

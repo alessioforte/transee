@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, globalShortcut } = require('electron')
+const { app, BrowserWindow, ipcMain, Tray, Menu, globalShortcut, dialog } = require('electron')
 const electron = require('electron')
 const path = require('path')
 const events = require('events')
@@ -8,9 +8,12 @@ const updater = require('./updater')
 const indexPath = `file://${__dirname}/../renderer/index.html`
 const preferencesPath = `file://${__dirname}/../renderer/preferences.html`
 const aboutPath = `file://${__dirname}/../renderer/about.html#v${app.getVersion()}`
-const iconPath = path.join(__dirname, '../assets', 'iconTemplate.png')
+const welcomePath = `file://${__dirname}/../renderer/welcome.html`
+const iconPath = process.platform === 'win32' ?
+  path.join(__dirname, '../assets', 'icon_16x16.ico') :
+  path.join(__dirname, '../assets', 'iconTemplate.png')
 
-var win, aboutWin, tray, preferencesWin
+var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
 var globalY
 
@@ -24,6 +27,10 @@ app.on('before-quit', () => {
   if (win) {
     win.webContents.send('settings', 'save')
   }
+})
+
+process.on('uncaughtException', () => {
+  console.log('uncaughtException')
 })
 
 function appReady() {
@@ -47,6 +54,8 @@ function appReady() {
     { label: 'Show', accelerator: 'Control+T', click: () => showWindow() },
     { label: 'Hide', accelerator: 'esc', click: () => hideWindow() },
     { type: 'separator' },
+    { label: 'Welcome Guide', click: () => showWelcomeWindow()},
+    { type: 'separator' },
     { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() }
   ])
 
@@ -54,9 +63,12 @@ function appReady() {
 
   createWindow()
 
-  const ret = globalShortcut.register('Control+T', () => {
-    showWindow()
-  })
+  // SHOW WELCOME GUIDE
+  let showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
+  if (showWelcome) createWelcomeWindow()
+
+  // SET GLOBAL SHORTCUT
+  const ret = globalShortcut.register('Control+T', () => { showWindow() })
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
     settings.get('check-automatically-updates') : true
@@ -89,6 +101,21 @@ const createWindow = () => {
   win.setVisibleOnAllWorkspaces(true)
   win.loadURL(indexPath)
   win.on('close', clearWindow)
+
+  win.webContents.on('crashed', () => {
+    console.log('crashed')
+
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Crash Error!',
+      detail: 'I\'m so sorry... restart Transee!',
+    })
+    app.relaunch()
+  })
+
+  win.on('unresponsive', () => {
+    console.log('unresponsive')
+  })
 
   const template = [
     {
@@ -139,11 +166,33 @@ const createPreferencesWindow = () => {
     maximizable: false,
     resizable: false,
     // vibrancy: 'ultra-dark'
+    webPreferences: {
+      devTools: false
+    }
   })
 
   preferencesWin.loadURL(preferencesPath)
   preferencesWin.on('close', () => {
     preferencesWin = null
+  })
+}
+
+const createWelcomeWindow = () => {
+  welcomeWin = new BrowserWindow({
+    width: 520,
+    height: 320,
+    titleBarStyle: 'hidden',
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+    webPreferences: {
+      devTools: false
+    }
+  })
+
+  welcomeWin.loadURL(welcomePath)
+  welcomeWin.on('closed', () => {
+    welcomeWin = null
   })
 }
 
@@ -187,6 +236,12 @@ function clearAboutWindow() {
 function showAboutWindow() {
   if (!aboutWin) {
     createAboutWindow()
+  }
+}
+
+function showWelcomeWindow() {
+  if (!welcomeWin) {
+    createWelcomeWindow()
   }
 }
 

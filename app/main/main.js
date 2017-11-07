@@ -5,10 +5,16 @@ const settings = require('electron-settings')
 
 const indexPath = `file://${process.cwd()}/app/renderer/index.html`
 const preferencesPath = `file://${process.cwd()}/app/renderer/preferences.html`
+const welcomePath = `file://${process.cwd()}/app/renderer/welcome.html`
 
 let win = null
 let tray = null
 let preferencesWin = null
+let welcomeWin = null
+
+process.on('uncaughtException', () => {
+  console.log('uncaughtException')
+})
 
 const createWindow = () => {
   var screenWidth = electron.screen.getPrimaryDisplay().size.width
@@ -27,11 +33,40 @@ const createWindow = () => {
 
   win.loadURL(indexPath);
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   win.on('closed', function () {
     win = null;
   });
+
+  win.webContents.on('crashed', () => {
+    console.log('crashed')
+    app.quit()
+  })
+
+  win.on('unresponsive', () => {
+    console.log('unresponsive')
+  })
+}
+
+const createWelcomeWindow = () => {
+  welcomeWin = new BrowserWindow({
+    x: 60,
+    y: 300,
+    width: 520,
+    height: 320,
+    titleBarStyle: 'hidden',
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+  })
+
+  welcomeWin.webContents.openDevTools();
+
+  welcomeWin.loadURL(welcomePath)
+  welcomeWin.on('closed', () => {
+    welcomeWin = null
+  })
 }
 
 const createPreferencesWindow = () => {
@@ -54,14 +89,15 @@ const createPreferencesWindow = () => {
 }
 
 app.on('ready', () => {
-  // const devTools = require('./dev-tools-extension')
-  // devTools.addExtension()
+  const devTools = require('./dev-tools-extension')
+  devTools.addExtension()
 
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  // createPreferencesWindow()
+  createPreferencesWindow()
+  createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
   if (checkAutomaticallyUpdates) {

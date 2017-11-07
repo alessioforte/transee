@@ -4,6 +4,11 @@
   --groundColor: rgba(42, 42, 42, 0.9);
 }
 
+body::-webkit-scrollbar,
+.noScroll::-webkit-scrollbar {
+  display: none;
+}
+
 * {
   font-family: 'Nunito', sans-serif;
 }
@@ -20,16 +25,12 @@ body {
   padding: 18px;
   width: 100%;
   height: 60px;
-  max-height: 210px;
+  max-height: 300px;
   font-size: 18px;
   border: 0;
   background: none;
   resize: none;
   color: white;
-}
-
-#input::-webkit-scrollbar {
-  width: 0;
 }
 
 #autocomplete {
@@ -45,10 +46,13 @@ body {
 }
 
 .inputContainer {
+  position: relative;
   display: flex;
 }
 
 .icons {
+  right: 0;
+  position: absolute;
   padding: 18px 18px 18px 0;
 }
 

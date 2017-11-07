@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import { complete, translateComplete } from '../../google-translate/api'
 import { langsFrom } from '../../google-translate/langs'
 import { connect } from 'react-redux'
 import LanguagesBar from './languages-bar'
 import Response from './response'
 import './css/app.css'
 import {
-  updateObj,
   updateSgt,
   updateTSgt,
   speedFrom,
@@ -22,14 +20,14 @@ import {
   searchTranslation,
   playAudio,
   getToPosition,
-  setMainWindowSize } from '../services'
+  setMainWindowSize,
+  createObservableOnInput } from '../services'
 
 const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar }) => {
   return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar })
 }
 
 const mapDispatchToProps = dispatch => ({
-  updateObj: obj => dispatch(updateObj(obj)),
   updateSgt: sgt => dispatch(updateSgt(sgt)),
   updateTSgt: t_sgt => dispatch(updateTSgt(t_sgt)),
   speedFrom: speed => dispatch(speedFrom(speed)),
@@ -52,6 +50,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    createObservableOnInput()
+
     this.input.focus()
     this.input.addEventListener('cut', () => window.setTimeout(this.resizeTextarea, 100))
     this.input.addEventListener('paste', () => window.setTimeout(this.resizeTextarea, 100))
@@ -69,43 +69,18 @@ class App extends Component {
   }
 
   onInputChange(e) {
-    var textCameFromPaste = ((e.target.getAttribute('pasted') || '') === '1')
-    let text = e.target.value
-    let from = this.props.langs.from
-    let to = this.props.langs.to
     this.resizeTextarea()
+    setMainWindowSize()
+    let text = e.target.value
 
     if (!text || /^\s*$/.test(text)) {
-      this.props.setError(false)
-      this.props.updateSgt(null)
-      this.props.updateTSgt(null)
-      this.props.updateObj(null)
       this.autocomplete.value = ''
       e.target.setAttribute('pasted', '0')
-    } else {
-      if (text.indexOf('\n') === -1 && !textCameFromPaste && text.length < 60) {
-        this.searchSuggestions(text)
-      }
-      searchTranslation(text, from, to)
     }
   }
 
   onInputPaste(e) {
     e.target.setAttribute('pasted', '1')
-  }
-
-  searchSuggestions(text) {
-    let from = this.props.langs.from
-    let to = this.props.langs.to
-
-    complete(text, from).then(res => {
-      this.props.updateSgt(res)
-      this.handleAutocomplete(text)
-      translateComplete(res, { from: from, to: to}).then(r => {
-        let x = Array.isArray(r) ? r : [r]
-        this.props.updateTSgt(x)
-      }).catch(err => console.error(err))
-    }).catch(err => console.error(err))
   }
 
   handleKeydown(e) {
@@ -121,7 +96,7 @@ class App extends Component {
         let to = this.props.langs.to
         this.input.value = this.props.suggest.sgt[0]
         this.autocomplete.value = ''
-        searchTranslation(this.props.suggest.sgt[0], from, to)
+        searchTranslation(this.props.suggest.sgt[0])
       }
 
       if (keyCode === 27 || keyCode === 13) {
@@ -176,7 +151,7 @@ class App extends Component {
         let from = this.props.langs.from
         let to = this.props.langs.to
         this.input.value = text
-        searchTranslation(text, from, to)
+        searchTranslation(text)
       }
     }
   }
@@ -197,23 +172,12 @@ class App extends Component {
     this.input.value = text
     let from = this.props.langs.from
     let to = this.props.langs.to
-    searchTranslation(text, from, to)
+    searchTranslation(text)
 
     this.props.speedFrom(false)
     this.props.speedTo(false)
     this.props.updateSgt(null)
     this.props.updateTSgt(null)
-  }
-
-  handleAutocomplete(text) {
-    var sgt = this.props.suggest ? this.props.suggest.sgt[0] : ''
-    var isUppecase = /[A-Z]/.test(text)
-    var hasDoubleSpace = /\s\s+/.test(text)
-    if (!text || isUppecase || !sgt || hasDoubleSpace || text[0] === ' ') {
-      this.autocomplete.value = ''
-    } else {
-      this.autocomplete.value = sgt
-    }
   }
 
   handleClickOnPlayIcon() {
@@ -227,10 +191,8 @@ class App extends Component {
   }
 
   handleClickOnDYM(text) {
-    let from = this.props.langs.from
-    let to = this.props.langs.to
     this.input.value = text
-    searchTranslation(text, from, to)
+    searchTranslation(text)
   }
 
   handleClickOnISO(from) {
@@ -267,7 +229,7 @@ class App extends Component {
       this.props.setToLang(oldFrom)
     }
 
-    searchTranslation(text, from, to)
+    searchTranslation(text)
   }
 
   hideSuggest() {
@@ -383,6 +345,7 @@ class App extends Component {
         <LanguagesBar />
         <div className='inputContainer'>
           <textarea
+            className={window.navigator.platform === 'Win32' ? 'noScroll' : ''}
             id='input'
             ref={input => this.input = input}
             type='text'

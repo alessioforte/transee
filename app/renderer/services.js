@@ -1,4 +1,5 @@
-import { translate, voice } from '../google-translate/api'
+import Rx from 'rxjs/Rx'
+import { translate, complete, translateComplete, voice } from '../google-translate/api'
 import { store } from '../redux/store'
 import {
   updateObj,
@@ -13,6 +14,8 @@ import {
   setFromActive,
   speedFrom,
   speedTo } from '../redux/actions'
+
+var input, autocomplete
 
 const ipc = require('electron').ipcRenderer
 const { webFrame } = require('electron')
@@ -67,12 +70,86 @@ window.onkeydown = e => {
   }
 }
 
-export const searchTranslation = (text, from, to) => {
-  store.dispatch(speedFrom(false))
-  store.dispatch(speedTo(false))
+export const createObservableOnInput = () => {
+  input = document.getElementById('input')
+  autocomplete = document.getElementById('autocomplete')
 
-  translate(text, { from: from, to: to }).then(obj => {
+  const streamTranslate = Rx.Observable.fromEvent(input, 'input')
+    .map(e => input.value)
+    .debounceTime(250)
+    .concatMap((text, i) => {
+
+      if (!text || /^\s*$/.test(text)) {
+        store.dispatch(setError(false))
+        store.dispatch(updateObj(null))
+        return Rx.Observable.empty()
+      }
+      let langs = {
+        from: store.getState().langs.from,
+        to: store.getState().langs.to
+      }
+      return Rx.Observable.fromPromise( translate(text, langs) )
+    })
+    .subscribe(obj => {
+      store.dispatch(updateObj(obj))
+      store.dispatch(speedFrom(false))
+      store.dispatch(speedTo(false))
+    })
+
+  const streamComplete = Rx.Observable.fromEvent(input, 'input')
+    .map(e => input.value)
+    .debounceTime(100)
+    .concatMap(text => {
+      var textCameFromPaste = ((input.getAttribute('pasted') || '') === '1')
+      if (!text || /^\s*$/.test(text)) {
+        store.dispatch(updateSgt(null))
+        store.dispatch(updateTSgt(null))
+        return Rx.Observable.empty()
+      }
+      if (text.indexOf('\n') === -1 && !textCameFromPaste && text.length < 50) {
+        let from = store.getState().langs.from
+        return Rx.Observable.fromPromise( complete(text, from) )
+      }
+      return Rx.Observable.empty()
+    })
+    .concatMap(res => {
+      store.dispatch(updateSgt(res))
+      let langs = {
+        from: store.getState().langs.from,
+        to: store.getState().langs.to
+      }
+      handleAutocomplete()
+      return Rx.Observable.fromPromise( translateComplete(res, langs) )
+    })
+    .subscribe(r => {
+      let x = Array.isArray(r) ? r : [r]
+      store.dispatch(updateTSgt(x))
+    })
+}
+
+function handleAutocomplete() {
+  var text = input.value
+  var sgt = store.getState().suggest ? store.getState().suggest.sgt[0] : ''
+  var isUppercase = /[A-Z]/.test(text)
+  var hasDoubleSpace = /\s\s+/.test(text)
+  if (!text || isUppercase || !sgt || hasDoubleSpace || text[0] === ' ') {
+    autocomplete.value = ''
+  } else {
+    autocomplete.value = sgt
+  }
+}
+
+export const searchTranslation = (text) => {
+
+  let langs = {
+    from: store.getState().langs.from,
+    to: store.getState().langs.to
+  }
+
+  translate(text, langs).then(obj => {
     store.dispatch(updateObj(obj))
+    store.dispatch(speedFrom(false))
+    store.dispatch(speedTo(false))
   }).catch(err => {
     store.dispatch(setError(true))
     console.error(err)
@@ -141,6 +218,6 @@ export const invertLanguages = () => {
     let text = document.getElementById('translation').value
     let input = document.getElementById('input')
     input.value = text
-    searchTranslation(text, to, from)
+    searchTranslation(text)
   }
 }

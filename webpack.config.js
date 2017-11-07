@@ -8,7 +8,8 @@ module.exports = {
 
   entry: {
     entry: './app/renderer/entry.js',
-    preferences: './app/renderer/preferences.js'
+    preferences: './app/renderer/preferences.js',
+    welcome: './app/renderer/welcome.js'
   },
 
   output: {

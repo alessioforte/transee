@@ -57,7 +57,6 @@ class LanguagesBar extends Component {
   }
 
   componentDidUpdate() {
-    setMainWindowSize()
     this.input.focus()
   }
 
@@ -112,7 +111,7 @@ class LanguagesBar extends Component {
 
     if (this.input.value) {
       let text = this.input.value
-      searchTranslation(text, newFrom, newTo)
+      searchTranslation(text)
     }
   }
 
@@ -165,7 +164,7 @@ class LanguagesBar extends Component {
 
     if (this.input.value) {
       let text = this.input.value
-      searchTranslation(text, newFrom, newTo)
+      searchTranslation(text)
     }
   }
 
@@ -270,7 +269,7 @@ class LanguagesBar extends Component {
 
     if (this.input.value) {
       let text = this.input.value
-      searchTranslation(text, newFrom, newTo)
+      searchTranslation(text)
     }
   }
 
@@ -315,7 +314,7 @@ class LanguagesBar extends Component {
 
     if (this.input.value) {
       let text = this.input.value
-      searchTranslation(text, newFrom, newTo)
+      searchTranslation(text)
     }
   }
 
