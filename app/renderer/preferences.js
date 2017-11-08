@@ -36,7 +36,11 @@ class Preferences extends Component {
   render() {
     return (
       <Win>
-        <Frame>Preferences</Frame>
+        <Frame
+          style={{ display: `${window.navigator.platform === 'MacIntel' ? 'block' : 'none'}`}}
+        >
+          Preferences
+        </Frame>
         <div>
 
           <Option>

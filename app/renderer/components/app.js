@@ -345,7 +345,7 @@ class App extends Component {
         <LanguagesBar />
         <div className='inputContainer'>
           <textarea
-            className={window.navigator.platform === 'Win32' ? 'noScroll' : ''}
+            className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
             id='input'
             ref={input => this.input = input}
             type='text'

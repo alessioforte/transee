@@ -33,7 +33,8 @@ module.exports = {
         test: /\.js?$/,
         loader: 'babel-loader',
         options: {
-          presets: ['react', 'env']
+          presets: ['react', 'env'],
+
         }
       },
       {
@@ -43,6 +44,19 @@ module.exports = {
       {
         test: /\.sass$/,
         loaders: ['style', 'css', 'sass']
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: '../assets/',
+              emitFile: false
+            }
+          }
+        ]
       }
     ]
   },

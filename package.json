@@ -2,6 +2,8 @@
   "name": "transee",
   "version": "1.0.3",
   "description": "Simple and usefull tool for quick translation",
+  "author": "Alessio Forte",
+  "license": "MIT",
   "scripts": {
     "dev": "npm run build && npm run start",
     "build": "echo 'Building...' && webpack",
@@ -15,8 +17,6 @@
     "url": "https://github.com/alessioforte/transee.git"
   },
   "homepage": "https://alessioforte.github.io/transee/",
-  "author": "Alessio Forte",
-  "license": "MIT",
   "dependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -37,7 +37,7 @@
     "electron-settings": "^3.1.1",
     "eslint": "^4.4.1",
     "eslint-loader": "^1.9.0",
-    "file-loader": "^0.11.2",
+    "file-loader": "^1.1.5",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.4",
     "webpack-dev-server": "^2.9.0"

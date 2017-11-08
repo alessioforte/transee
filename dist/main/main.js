@@ -17,7 +17,8 @@ var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
 var globalY
 
-app.on('ready', appReady)
+if (app.isReady()) appReady()
+else app.on('ready', appReady)
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll()
@@ -134,7 +135,7 @@ const createWindow = () => {
     }
   ]
 
-  const menu = Menu.buildFromTemplate(template)
+  const menu = process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null
   Menu.setApplicationMenu(menu)
 }
 
@@ -186,7 +187,7 @@ const createWelcomeWindow = () => {
     maximizable: false,
     resizable: false,
     webPreferences: {
-      devTools: false
+      // devTools: false
     }
   })
 
@@ -263,6 +264,6 @@ ipcMain.on('hide-window', (event, msg) => {
 ipcMain.on('set-start-login', (event, check) => {
   app.setLoginItemSettings({
     openAtLogin: check,
-    openAsHidden: check
+    // openAsHidden: check
   })
 })

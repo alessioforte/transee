@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import { Checkbox } from './components/checkbox'
 import styled from 'styled-components'
 import './components/css/styles.css'
+import icon from '../../dist/assets/icon_256x256.png'
 
 const settings = require('electron-settings')
 const { webFrame } = require('electron')
@@ -31,10 +32,14 @@ class Welcome extends Component {
   render() {
     return (
       <Win>
-        <Frame>Welcome Guide</Frame>
+        <Frame
+          style={{ display: `${window.navigator.platform === 'MacIntel' ? 'block' : 'none'}`}}
+        >
+          Welcome Guide
+        </Frame>
 
         <Header>
-          <Icon src="../../dist/assets/icon_256x256.png" />
+          <img src={icon} height="80px"/>
           <div>
             <Title>Transee</Title>
             <Details>Simple and usefull tool for quick translation</Details>
@@ -102,9 +107,6 @@ const Frame = styled.div`
   -webkit-app-region: drag;
   -webkit-user-select: none
 `
-const Icon = styled.img`
-  height: 80px;
-`
 const Header = styled.div`
   margin: 0 18px;
   display: flex;
@@ -153,6 +155,7 @@ const Short = styled.div`
   font-size: 14px;
 `
 const Option = styled.div`
+  box-sizing: border-box;
   position: absolute;
   bottom: 0;
   width: 100%;

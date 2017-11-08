@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron ./main/main.js",
     "mac": "electron-builder --mac",
-    "win": "electron-builder --win"
+    "win": "electron-builder --win",
+    "dist": "electron-builder --mac --win"
   },
   "repository": "https://github.com/alessioforte/transee.git",
   "homepage": "https://alessioforte.github.io/transee/",
@@ -43,7 +44,7 @@
   "dependencies": {
     "electron-log": "^2.2.9",
     "electron-settings": "^3.1.2",
-    "electron-updater": "2.0.0",
+    "electron-updater": "^2.16.1",
     "internet-available": "^1.0.0"
   }
 }

@@ -17,13 +17,11 @@
       }
   		body {
   			-webkit-user-select: none;
-  			/*-webkit-app-region: drag;
-  			-webkit-font-smoothing: antialiased;*/
         cursor: default;
         overflow: hidden;
         background: var(--groundColor)
   		}
-      .header {
+      #frame {
         color: #aaa;
         background: var(--headersColor);
         padding-top: 5px;
@@ -89,7 +87,7 @@
   	</style>
   </head>
   <body>
-    <div class="header">About</div>
+    <div id="frame">About</div>
     <div class="container">
       <img id="icon" src="../assets/icon_256x256.png" />
 
@@ -107,6 +105,9 @@
       let version = window.location.hash.substring(2)
       document.getElementById('version').innerHTML = 'Version: ' + version
       function openInBrowser() { shell.openExternal("http://www.transee.tk") }
+      if (window.navigator.platform !== 'MacIntel') {
+        document.getElementById('frame').style.display = 'none'
+      }
     </script>
   </body>
 </html>
