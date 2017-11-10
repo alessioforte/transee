@@ -17,8 +17,7 @@ var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
 var globalY
 
-if (app.isReady()) appReady()
-else app.on('ready', appReady)
+app.on('ready', appReady)
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll()
@@ -35,7 +34,6 @@ process.on('uncaughtException', () => {
 })
 
 function appReady() {
-  if (process.platform === 'darwin') app.dock.hide()
 
   let check = app.getLoginItemSettings().openAtLogin
   settings.set('start-login', check)
@@ -52,8 +50,8 @@ function appReady() {
     { type: 'separator' },
     { label: 'Preferences...', click: () => showPreferencesWindow() },
     { type: 'separator' },
-    { label: 'Show', accelerator: 'Control+T', click: () => showWindow() },
-    { label: 'Hide', accelerator: 'esc', click: () => hideWindow() },
+    { label: 'Show translation bar', accelerator: 'Control+T', click: () => showWindow() },
+    // { label: 'Hide translation bar', accelerator: 'esc', click: () => hideWindow() },
     { type: 'separator' },
     { label: 'Welcome Guide', click: () => showWelcomeWindow()},
     { type: 'separator' },
@@ -62,12 +60,6 @@ function appReady() {
 
   tray.setContextMenu(contextMenu)
 
-  createWindow()
-
-  // SHOW WELCOME GUIDE
-  let showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
-  if (showWelcome) createWelcomeWindow()
-
   // SET GLOBAL SHORTCUT
   const ret = globalShortcut.register('Control+T', () => { showWindow() })
 
@@ -75,8 +67,14 @@ function appReady() {
     settings.get('check-automatically-updates') : true
 
   if (checkAutomaticallyUpdates) {
-    setTimeout(() => updater.checkForUpdates(), 1000 * 60 * 3)
+    setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3)
   }
+
+  // SHOW WELCOME GUIDE
+  let showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
+  if (showWelcome) createWelcomeWindow()
+
+  if (process.platform === 'darwin' && !showWelcome) app.dock.hide()
 }
 
 const createWindow = () => {
@@ -101,7 +99,9 @@ const createWindow = () => {
 
   win.setVisibleOnAllWorkspaces(true)
   win.loadURL(indexPath)
-  win.on('close', clearWindow)
+  win.on('close', () => {
+    win = null
+  })
 
   win.webContents.on('crashed', () => {
     console.log('crashed')
@@ -111,7 +111,7 @@ const createWindow = () => {
       message: 'Crash Error!',
       detail: 'I\'m so sorry... restart Transee!',
     })
-    app.relaunch()
+    app.quit()
   })
 
   win.on('unresponsive', () => {
@@ -154,7 +154,9 @@ const createAboutWindow = () => {
   })
 
   aboutWin.loadURL(aboutPath)
-  aboutWin.on('close', clearAboutWindow)
+  aboutWin.on('close', () => {
+    aboutWin = null
+  })
   aboutWin.show()
 }
 
@@ -182,19 +184,22 @@ const createWelcomeWindow = () => {
   welcomeWin = new BrowserWindow({
     width: 520,
     height: 320,
+    show: true,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
     resizable: false,
     webPreferences: {
-      // devTools: false
+      devTools: false
     }
   })
 
   welcomeWin.loadURL(welcomePath)
-  welcomeWin.on('closed', () => {
+  welcomeWin.on('close', () => {
     welcomeWin = null
+    app.dock.hide()
   })
+  welcomeWin.show()
 }
 
 function showWindow() {
@@ -214,10 +219,6 @@ function hideWindow() {
   win.hide()
 }
 
-function clearWindow() {
-  win = null
-}
-
 function getWindowPosition() {
   let screen = electron.screen
   let point = screen.getCursorScreenPoint()
@@ -228,10 +229,6 @@ function getWindowPosition() {
   const y = globalY
 
   return {x, y}
-}
-
-function clearAboutWindow() {
-  aboutWin = null
 }
 
 function showAboutWindow() {

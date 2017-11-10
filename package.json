@@ -1,6 +1,6 @@
 {
   "name": "transee",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Simple and usefull tool for quick translation",
   "author": "Alessio Forte",
   "license": "MIT",
@@ -9,8 +9,8 @@
     "build": "echo 'Building...' && webpack",
     "start": "electron ./app/main/main.js",
     "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
-    "delete": "rm dist/renderer/entry.bundle.js.map dist/renderer/preferences.bundle.js.map dist/renderer/welcome.bundle.js.map",
-    "deleteall": "rm dist/renderer/entry.bundle.js.map dist/renderer/preferences.bundle.js.map dist/renderer/welcome.bundle.js.map dist/renderer/entry.bundle.js dist/renderer/preferences.bundle.js dist/renderer/welcome.bundle.js"
+    "delete": "rm dist/renderer/*.bundle.js.map",
+    "deleteall": "rm dist/renderer/*.bundle.js.map dist/renderer/*.bundle.js"
   },
   "repository": {
     "type": "git",

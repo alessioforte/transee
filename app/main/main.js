@@ -12,10 +12,6 @@ let tray = null
 let preferencesWin = null
 let welcomeWin = null
 
-process.on('uncaughtException', () => {
-  console.log('uncaughtException')
-})
-
 const createWindow = () => {
   var screenWidth = electron.screen.getPrimaryDisplay().size.width
 
@@ -89,8 +85,8 @@ const createPreferencesWindow = () => {
 }
 
 app.on('ready', () => {
-  const devTools = require('./dev-tools-extension')
-  devTools.addExtension()
+  // const devTools = require('./dev-tools-extension')
+  // devTools.addExtension()
 
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)

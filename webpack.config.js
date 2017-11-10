@@ -4,7 +4,7 @@ module.exports = {
 
   target: 'electron',
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   entry: {
     entry: './app/renderer/entry.js',

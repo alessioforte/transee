@@ -24,7 +24,7 @@
 
 #translation {
   box-sizing: border-box;
-  padding: 18px;
+  padding: 18px 48px 18px 18px;
   width: 100%;
   max-height: 300px;
   font-size: 18px;
@@ -145,4 +145,5 @@
 .values {
   margin: 3px;
   color: #aaa;
+  width: 405px;
 }
