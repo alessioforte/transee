@@ -29,7 +29,7 @@ const createWindow = () => {
 
   win.loadURL(indexPath);
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   win.on('closed', function () {
     win = null;
@@ -92,8 +92,8 @@ app.on('ready', () => {
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  createPreferencesWindow()
-  createWelcomeWindow()
+  // createPreferencesWindow()
+  // createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
   if (checkAutomaticallyUpdates) {

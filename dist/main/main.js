@@ -184,7 +184,6 @@ const createWelcomeWindow = () => {
   welcomeWin = new BrowserWindow({
     width: 520,
     height: 320,
-    show: true,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
@@ -199,7 +198,6 @@ const createWelcomeWindow = () => {
     welcomeWin = null
     app.dock.hide()
   })
-  welcomeWin.show()
 }
 
 function showWindow() {

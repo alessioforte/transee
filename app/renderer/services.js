@@ -1,4 +1,4 @@
-import Rx from 'rxjs/Rx'
+const Observable = require('rxjs/Rx').Observable
 import { translate, complete, translateComplete, voice } from '../google-translate/api'
 import { store } from '../redux/store'
 import {
@@ -74,7 +74,7 @@ export const createObservableOnInput = () => {
   input = document.getElementById('input')
   autocomplete = document.getElementById('autocomplete')
 
-  const streamTranslate = Rx.Observable.fromEvent(input, 'input')
+  const streamTranslate = Observable.fromEvent(input, 'input')
     .map(e => input.value)
     .debounceTime(250)
     .concatMap((text, i) => {
@@ -82,13 +82,13 @@ export const createObservableOnInput = () => {
       if (!text || /^\s*$/.test(text)) {
         store.dispatch(setError(false))
         store.dispatch(updateObj(null))
-        return Rx.Observable.empty()
+        return Observable.empty()
       }
       let langs = {
         from: store.getState().langs.from,
         to: store.getState().langs.to
       }
-      return Rx.Observable.fromPromise( translate(text, langs) )
+      return Observable.fromPromise( translate(text, langs) )
     })
     .subscribe(obj => {
       store.dispatch(updateObj(obj))
@@ -96,21 +96,21 @@ export const createObservableOnInput = () => {
       store.dispatch(speedTo(false))
     })
 
-  const streamComplete = Rx.Observable.fromEvent(input, 'input')
+  const streamComplete = Observable.fromEvent(input, 'input')
     .map(e => input.value)
-    .debounceTime(100)
+    .debounceTime()
     .concatMap(text => {
       var textCameFromPaste = ((input.getAttribute('pasted') || '') === '1')
       if (!text || /^\s*$/.test(text)) {
         store.dispatch(updateSgt(null))
         store.dispatch(updateTSgt(null))
-        return Rx.Observable.empty()
+        return Observable.empty()
       }
       if (text.indexOf('\n') === -1 && !textCameFromPaste && text.length < 50) {
         let from = store.getState().langs.from
-        return Rx.Observable.fromPromise( complete(text, from) )
+        return Observable.fromPromise( complete(text, from) )
       }
-      return Rx.Observable.empty()
+      return Observable.empty()
     })
     .concatMap(res => {
       store.dispatch(updateSgt(res))
@@ -119,7 +119,7 @@ export const createObservableOnInput = () => {
         to: store.getState().langs.to
       }
       handleAutocomplete()
-      return Rx.Observable.fromPromise( translateComplete(res, langs) )
+      return Observable.fromPromise( translateComplete(res, langs) )
     })
     .subscribe(r => {
       let x = Array.isArray(r) ? r : [r]
