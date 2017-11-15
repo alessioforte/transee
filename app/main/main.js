@@ -50,7 +50,7 @@ const createWelcomeWindow = () => {
     x: 60,
     y: 300,
     width: 520,
-    height: 600,
+    height: 420,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,

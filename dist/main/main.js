@@ -183,7 +183,7 @@ const createPreferencesWindow = () => {
 const createWelcomeWindow = () => {
   welcomeWin = new BrowserWindow({
     width: 520,
-    height: 320,
+    height: 420,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
