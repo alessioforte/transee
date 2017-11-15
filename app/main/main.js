@@ -50,7 +50,7 @@ const createWelcomeWindow = () => {
     x: 60,
     y: 300,
     width: 520,
-    height: 320,
+    height: 600,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
@@ -91,9 +91,9 @@ app.on('ready', () => {
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)
   settings.set('start-login', check)
-  createWindow()
+  // createWindow()
   // createPreferencesWindow()
-  // createWelcomeWindow()
+  createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
   if (checkAutomaticallyUpdates) {

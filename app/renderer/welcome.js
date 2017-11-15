@@ -85,6 +85,7 @@ class Welcome extends Component {
           />
           <Label>Show Welcome Guide when opening Transee</Label>
         </Option>
+        <Navigator items={3}/>
       </Win>
     )
   }
@@ -170,5 +171,43 @@ const Label = styled.div`
   padding: 12px 0;
   font-size: 12px;
 `
+
+const Navigator = (props) => {
+  var dots = []
+
+  const Dot = styled.div`
+    box-sizing: border-box;
+    background: gray;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 4px;
+    display: inline-block;
+  `
+  const Dots = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+  `
+
+  for (let i = 0; i < props.items; i++) {
+    var dot = (
+      <Dot
+        key={i}
+        style={{background: i === props.active ? 'white' : 'gray'}}
+        onClick={(e) => returnIndex(e, i)}
+      ></Dot>
+    )
+
+    dots.push(dot)
+  }
+
+  function returnIndex(e, i) {
+    props.onClick(i)
+  }
+
+  return <Dots>{ dots }</Dots>
+}
 
 render(<Welcome />, document.getElementById('root'))
