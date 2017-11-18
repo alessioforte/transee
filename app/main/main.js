@@ -91,7 +91,7 @@ app.on('ready', () => {
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)
   settings.set('start-login', check)
-  // createWindow()
+  createWindow()
   // createPreferencesWindow()
   createWelcomeWindow()
 

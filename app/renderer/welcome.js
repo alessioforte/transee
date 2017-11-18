@@ -4,7 +4,9 @@ import { Checkbox } from './components/checkbox'
 import styled from 'styled-components'
 import './components/css/styles.css'
 import icon from '../../dist/assets/icon_256x256.png'
-import menubar from '../../dist/assets/menubar.png'
+import menubarIMG from '../../dist/assets/menubar.png'
+import taskbarIMG from '../../dist/assets/taskbar.png'
+const barIMG = window.navigator.platform === 'Win32' ? taskbarIMG : menubarIMG
 
 const settings = require('electron-settings')
 const { webFrame } = require('electron')
@@ -16,6 +18,9 @@ class Welcome extends Component {
     super()
 
     var showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
+
+    this.barTitle = window.navigator.platform === 'Win32' ? 'Taskbar' : 'Menu bar'
+    this.barName = window.navigator.platform === 'Win32' ? 'taskbar' : 'menu bar'
 
     this.state = {
       active: 0,
@@ -113,10 +118,10 @@ class Welcome extends Component {
           </Card>
 
           <Card>
-            <h2>Menu bar</h2><br />
-            <img src={menubar} style={{marginBottom: 20}} />
+            <h2>{this.barTitle}</h2>
+            <img src={barIMG} style={{margin: 18}} />
             <br />
-            Transee lives in your menu bar<br />
+            Transee lives in your {this.barName}<br />
             and it starts automatically,<br />
             so you can forget about it.
           </Card>
@@ -178,7 +183,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 3px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(85, 85, 85, 0.5);
 `
 const Title = styled.div`
   text-align: right;
@@ -216,7 +221,7 @@ const Label = styled.div`
   font-size: 12px;
 `
 const Arrow = styled.div`
-  top: 215px;
+  top: 200px;
   position: absolute;
   height: 30px;
   width: 30px;
@@ -231,6 +236,7 @@ const Arrow = styled.div`
   }
 `
 const Cards = styled.div`
+  margin-top: 9px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -245,8 +251,11 @@ const Card = styled.div`
   width: 350px;
   border-radius: 5px;
   margin: 0 30px;
-  padding: 18px;
-  flex-shrink: 0
+  padding: 12px;
+  flex-shrink: 0;
+  h2 {
+    font-size: 24px;
+  }
 `
 
 const Navigator = (props) => {

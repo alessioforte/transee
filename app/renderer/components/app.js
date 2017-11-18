@@ -74,6 +74,7 @@ class App extends Component {
     let text = e.target.value
 
     if (!text || /^\s*$/.test(text)) {
+      this.props.setError(false)
       this.autocomplete.value = ''
       e.target.setAttribute('pasted', '0')
     }
@@ -302,7 +303,7 @@ class App extends Component {
     if (this.props.error) {
       return (
         <div className='error'>
-          {'Sorry, I can\'t translate...'}
+          {'Sorry I can\'t translate!'}
         </div>
       )
     }

@@ -1,7 +1,7 @@
 {
   "name": "transee",
   "productName": "Transee",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple and usefull tool for quick translation",
   "main": "./main/main.js",
   "license": "MIT",

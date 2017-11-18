@@ -88,7 +88,13 @@ export const createObservableOnInput = () => {
         from: store.getState().langs.from,
         to: store.getState().langs.to
       }
-      return Observable.fromPromise( translate(text, langs) )
+      return Observable
+        .fromPromise(translate(text, langs))
+        .catch(err => {
+          store.dispatch(setError(true))
+          console.error(err)
+          return Observable.empty()
+        })
     })
     .subscribe(obj => {
       store.dispatch(updateObj(obj))
@@ -98,7 +104,7 @@ export const createObservableOnInput = () => {
 
   const streamComplete = Observable.fromEvent(input, 'input')
     .map(e => input.value)
-    .debounceTime()
+    .debounceTime(100)
     .concatMap(text => {
       var textCameFromPaste = ((input.getAttribute('pasted') || '') === '1')
       if (!text || /^\s*$/.test(text)) {
@@ -108,7 +114,12 @@ export const createObservableOnInput = () => {
       }
       if (text.indexOf('\n') === -1 && !textCameFromPaste && text.length < 50) {
         let from = store.getState().langs.from
-        return Observable.fromPromise( complete(text, from) )
+        return Observable
+          .fromPromise(complete(text, from))
+          .catch(err => {
+            console.error(err)
+            return Observable.empty()
+          })
       }
       return Observable.empty()
     })
@@ -119,7 +130,12 @@ export const createObservableOnInput = () => {
         to: store.getState().langs.to
       }
       handleAutocomplete()
-      return Observable.fromPromise( translateComplete(res, langs) )
+      return Observable
+        .fromPromise(translateComplete(res, langs))
+        .catch(err => {
+          console.error(err)
+          return Observable.empty()
+        })
     })
     .subscribe(r => {
       let x = Array.isArray(r) ? r : [r]
