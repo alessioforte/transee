@@ -3,7 +3,7 @@
 ![Transee](https://alessioforte.github.io/transee/assets/icon_128x128.png)
 
 # Transee
-Simple and usefull tool for quick translation - reference to Google Translate
+Simple and useful tool for quick translation - reference to Google Translate
 
 ![screenshot](https://alessioforte.github.io/transee/assets/rainbow.png)
 

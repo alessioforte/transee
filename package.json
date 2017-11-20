@@ -1,7 +1,7 @@
 {
   "name": "transee",
   "version": "1.1.1",
-  "description": "Simple and usefull tool for quick translation",
+  "description": "Simple and useful tool for quick translation",
   "author": "Alessio Forte",
   "license": "MIT",
   "scripts": {
