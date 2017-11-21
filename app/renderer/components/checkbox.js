@@ -8,7 +8,6 @@ export const Checkbox = props => {
   }
 
   const Box = styled.div`
-    margin: 9px 0;
     width: 16px;
     height: 16px;
     border-radius: 3px;

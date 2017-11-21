@@ -17,7 +17,14 @@ class Preferences extends Component {
     var checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
       settings.get('check-automatically-updates') : true
 
-    this.state = { startLogin, checkAutomaticallyUpdates }
+    this.state = {
+      startLogin,
+      checkAutomaticallyUpdates,
+      record: 'Click to record new shortcut'
+    }
+
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleKeyUp = this.handleKeyUp.bind(this)
   }
 
   setStartAtLogin() {
@@ -33,6 +40,25 @@ class Preferences extends Component {
     settings.set('check-automatically-updates', check)
   }
 
+  handleRecordOnClick() {
+    document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup', this.handleKeyUp)
+  }
+
+  handleKeyDown(e) {
+    let key = e.key
+    if (key === 'Meta') key = 'Command'
+    if (key === 'Escape') key = 'Esc'
+    console.log(key)
+    this.setState({
+      record: key
+    })
+  }
+
+  handleKeyUp(e) {
+    this.setState({ record: '' })
+  }
+
   render() {
     return (
       <Win>
@@ -44,19 +70,38 @@ class Preferences extends Component {
         <div>
 
           <Option>
-            <Label>Auto start at login</Label>
+            <Label>
+              Auto start at login
               <Checkbox
                 value={this.state.startLogin}
                 onClick={() => this.setStartAtLogin()}
               />
+            </Label>
           </Option>
 
           <Option>
-            <Label>Check automatically for updates</Label>
+            <Label>
+              Check automatically for updates
               <Checkbox
                 value={this.state.checkAutomaticallyUpdates}
                 onClick={() => this.setCheckAutomaticallyUpdates()}
               />
+            </Label>
+          </Option>
+
+          <Option>
+            <Label>
+              Define a shortcut
+              <Record
+                onClick={() => this.handleRecordOnClick()}
+              >
+                <div
+                  ref={record => this.record = record}
+                >
+                  {this.state.record}
+                </div>
+              </Record>
+            </Label>
           </Option>
 
         </div>
@@ -73,7 +118,6 @@ const Win = styled.div`
   user-select: none;
   cursor: default;
 `
-
 const Frame = styled.div`
   color: #aaa;
   background: ${headerColor};
@@ -84,17 +128,33 @@ const Frame = styled.div`
   -webkit-app-region: drag;
   -webkit-user-select: none
 `
-
 const Option = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 9px 18px;
+  height: 80px;
+  padding: 0 18px;
   color: #aaa;
   border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 `
-
 const Label = styled.div`
-  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  font-size: 14px;
+`
+const Record = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: #999;
+  width: 200px;
+  height: 50px;
+  border-radius: 5px;
+  color: #1a1a1a;
   font-size: 12px;
 `
 

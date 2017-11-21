@@ -100,7 +100,7 @@ class Welcome extends Component {
           <img src={icon} height="80px"/>
           <div>
             <Title>Transee</Title>
-            <Details>Simple and usefull tool for quick translation</Details>
+            <Details>Simple and useful tool for quick translation</Details>
           </div>
         </Header>
 

@@ -57,7 +57,7 @@ const createWelcomeWindow = () => {
     resizable: false,
   })
 
-  welcomeWin.webContents.openDevTools();
+  welcomeWin.webContents.openDevTools()
 
   welcomeWin.loadURL(welcomePath)
   welcomeWin.on('closed', () => {
@@ -69,8 +69,8 @@ const createPreferencesWindow = () => {
   preferencesWin = new BrowserWindow({
     x: 60,
     y: 300,
-    width: 300,
-    height: 200,
+    width: 420,
+    height: 300,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
@@ -78,6 +78,7 @@ const createPreferencesWindow = () => {
     // vibrancy: 'ultra-dark'
   })
 
+  preferencesWin.webContents.openDevTools()
   preferencesWin.loadURL(preferencesPath)
   preferencesWin.on('closed', () => {
     preferencesWin = null
@@ -91,9 +92,9 @@ app.on('ready', () => {
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)
   settings.set('start-login', check)
-  createWindow()
-  // createPreferencesWindow()
-  createWelcomeWindow()
+  // createWindow()
+  createPreferencesWindow()
+  // createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
   if (checkAutomaticallyUpdates) {
