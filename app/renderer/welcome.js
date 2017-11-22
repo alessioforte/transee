@@ -2,15 +2,19 @@ import React, { Component } from 'react'
 import { render } from 'react-dom'
 import { Checkbox } from './components/checkbox'
 import styled from 'styled-components'
+import { frameColor } from './colors'
 import './components/css/styles.css'
 import icon from '../../dist/assets/icon_256x256.png'
 import menubarIMG from '../../dist/assets/menubar.png'
 import taskbarIMG from '../../dist/assets/taskbar.png'
+
 const barIMG = window.navigator.platform === 'Win32' ? taskbarIMG : menubarIMG
 
 const settings = require('electron-settings')
 const { webFrame } = require('electron')
 webFrame.setZoomLevelLimits(1, 1)
+
+var shortcut = settings.get('shortcut') || 'Ctrl+T'
 
 class Welcome extends Component {
 
@@ -110,11 +114,13 @@ class Welcome extends Component {
           }}
         >
           <Card>
-            <h2>Start</h2><br />
-            Press <Short>Ctrl+T</Short><br />
-            and starts translating<br />
+            <h2>Start</h2>
+            Transee is always at your fingertips.<br />
+            Press <Short>{shortcut}</Short> and starts translating<br />
             press <Short>Esc</Short> to hide the search bar<br />
-            that's it!
+            or click anywhere on your desktop.
+            <Note>You can change the shortcut in preferences window.</Note>
+
           </Card>
 
           <Card>
@@ -127,7 +133,7 @@ class Welcome extends Component {
           </Card>
 
           <Card>
-            <h2>Shortcuts</h2><br />
+            <h2>Other shortcuts</h2>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <div style={{ textAlign: 'right' }}>
                 <Row><Short>Alt+Shift</Short></Row>
@@ -144,24 +150,25 @@ class Welcome extends Component {
 
         </Cards>
 
-        <Option>
-          <Checkbox
-            value={this.state.showWelcome}
-            onClick={() => this.setShowWelcomeGuide()}
-          />
-          <Label>Show Welcome Guide when opening Transee</Label>
-        </Option>
         <Navigator
           items={3}
           active={this.state.active}
           onClick={(i) => this.returnIndex(i)}
         />
+
+        <Option>
+          <Label>
+            <Checkbox
+              value={this.state.showWelcome}
+              onClick={() => this.setShowWelcomeGuide()}
+            />
+            Show Welcome Guide when opening Transee
+          </Label>
+        </Option>
       </Win>
     )
   }
 }
-
-const frameColor = 'rgba(26, 26, 26, 1)'
 
 const Win = styled.div`
   color: #fff;
@@ -203,21 +210,24 @@ const Short = styled.div`
   background: #2182BD;
   border-radius: 3px;
   font-size: 14px;
+  font-weight: lighter;
 `
 const Option = styled.div`
-  box-sizing: border-box;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 9px 18px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 18px;
   color: #aaa;
   border-top: 1px solid rgba(85, 85, 85, 0.3);
 `
 const Label = styled.div`
-  margin-left: 9px;
-  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 270px;
+  height: 60px;
   font-size: 12px;
 `
 const Arrow = styled.div`
@@ -255,7 +265,13 @@ const Card = styled.div`
   flex-shrink: 0;
   h2 {
     font-size: 24px;
+    margin-bottom: 9px;
   }
+`
+const Note = styled.div`
+  margin-top: 18px;
+  font-size: 12px;
+  color: #999
 `
 
 const Navigator = (props) => {

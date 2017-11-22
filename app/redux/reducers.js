@@ -1,5 +1,5 @@
 export const langs = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'FROM_LANG':
       return Object.assign({}, state, {
         from: action.data
@@ -14,7 +14,7 @@ export const langs = (state = null, action) => {
 }
 
 export const obj = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'UPDATE_OBJ':
       return action.data
     default:
@@ -23,7 +23,7 @@ export const obj = (state = null, action) => {
 }
 
 export const suggest = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'UPDATE_SGT':
       return Object.assign({}, state, {
         sgt: action.data
@@ -38,7 +38,7 @@ export const suggest = (state = null, action) => {
 }
 
 export const speed = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SPEED_FROM':
       return Object.assign({}, state, {
         from: action.data
@@ -53,7 +53,7 @@ export const speed = (state = null, action) => {
 }
 
 export const dropdown = (state = false, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_DROPDOWN':
       return action.data
     default:
@@ -62,7 +62,7 @@ export const dropdown = (state = false, action) => {
 }
 
 export const error = (state = false, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_ERR':
       return action.data
     default:
@@ -73,7 +73,7 @@ export const error = (state = false, action) => {
 
 
 export const fromActive = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_FROM_ACTIVE':
       return action.data
     default:
@@ -82,7 +82,7 @@ export const fromActive = (state = null, action) => {
 }
 
 export const toActive = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_TO_ACTIVE':
       return action.data
     default:
@@ -91,7 +91,7 @@ export const toActive = (state = null, action) => {
 }
 
 export const fromBar = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_FROM_1':
       return Object.assign({}, state, {
         from1: action.data
@@ -110,7 +110,7 @@ export const fromBar = (state = null, action) => {
 }
 
 export const toBar = (state = null, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_TO_1':
       return Object.assign({}, state, {
         to1: action.data
@@ -123,6 +123,15 @@ export const toBar = (state = null, action) => {
       return Object.assign({}, state, {
         to3: action.data
       })
+    default:
+      return state
+  }
+}
+
+export const isTransparent = (state = false, action) => {
+  switch (action.type) {
+    case 'SET_TRANSPARENCY':
+      return action.data
     default:
       return state
   }

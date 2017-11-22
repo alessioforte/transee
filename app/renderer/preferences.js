@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 import { Checkbox } from './components/checkbox'
+import { frameColor } from './colors'
 import './components/css/styles.css'
 
 const settings = require('electron-settings')
@@ -13,14 +14,22 @@ class Preferences extends Component {
 
   constructor() {
     super()
-    var startLogin = settings.has('start-login') ? settings.get('start-login') : false
-    var checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
-      settings.get('check-automatically-updates') : true
+    var startLogin = settings.get('start-login') || false
+    var checkAutomaticallyUpdates = settings.get('check-automatically-updates') || true
+    var hasShortcut = settings.has('shortcut')
+    var shortcut = settings.get('shortcut') || 'Click to record new shortcut'
+    var shortStyle = hasShortcut ? successShortStyle : defaultShortStyle
+    var isTransparent = settings.has('settings') ? settings.get('settings').isTransparent : false
 
     this.state = {
       startLogin,
       checkAutomaticallyUpdates,
-      record: 'Click to record new shortcut'
+      isTransparent,
+      shortcut: shortcut,
+      showDelete: hasShortcut,
+      shortStyle: shortStyle,
+      char: '',
+      modifier: ''
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -40,23 +49,77 @@ class Preferences extends Component {
     settings.set('check-automatically-updates', check)
   }
 
-  handleRecordOnClick() {
+  setTransparent() {
+    let check = !this.state.isTransparent
+    this.setState({ isTransparent: check })
+
+    ipc.send('set-transparency', check)
+
+  }
+
+  clickOnRecord() {
+    this.setState({
+      shortcut: 'Type shortcut',
+      showDelete: true,
+      shortStyle: null
+    })
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
   }
 
   handleKeyDown(e) {
-    let key = e.key
-    if (key === 'Meta') key = 'Command'
-    if (key === 'Escape') key = 'Esc'
-    console.log(key)
+    e.preventDefault()
+
+    let shift = e.shiftKey ? 'Shift+' : ''
+    let ctrl = e.ctrlKey ? 'Ctrl+' : ''
+    let alt = e.altKey ? 'Alt+' : ''
+    let cmd = e.metaKey ? 'Cmd+' : ''
+    let modifier = shift + ctrl + alt + cmd
+    let keyCode = e.keyCode
+    let char = ''
+
+    if ((keyCode > 47 && keyCode < 58) || (keyCode > 64 && keyCode < 91)) {
+      char = String.fromCharCode(keyCode)
+    }
+
     this.setState({
-      record: key
+      modifier,
+      char,
+      shortcut: modifier + char,
+      shortStyle: null
     })
   }
 
   handleKeyUp(e) {
-    this.setState({ record: '' })
+    let modifier = this.state.modifier
+    let isCmdOrCtrl = /cmd|ctrl/i.test(modifier)
+
+    if (!isCmdOrCtrl || this.state.char === '') {
+      this.setState({
+        shortcut: 'Please type valid shortcut',
+        shortStyle: errorShortStyle
+      })
+    } else {
+      this.setState({
+        shortStyle: successShortStyle
+      })
+      settings.set('shortcut', this.state.shortcut)
+      ipc.send('change-shortcut', this.state.shortcut)
+      document.removeEventListener('keydown', this.handleKeyDown)
+      document.removeEventListener('keyup', this.handleKeyUp)
+    }
+  }
+
+  clickOnDelete(e) {
+    e.stopPropagation()
+
+    this.setState({
+      shortcut: 'Click to record new shortcut',
+      showDelete: false,
+      shortStyle: defaultShortStyle
+    })
+    document.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keyup', this.handleKeyUp)
   }
 
   render() {
@@ -91,17 +154,44 @@ class Preferences extends Component {
 
           <Option>
             <Label>
+              Transparency in translation bar
+              <Checkbox
+                value={this.state.isTransparent}
+                onClick={() => this.setTransparent()}
+              />
+            </Label>
+            <Comment>
+              Sometimes transparency is helpful when you want to read behind the window
+            </Comment>
+          </Option>
+
+          <Option>
+            <Label>
               Define a shortcut
               <Record
-                onClick={() => this.handleRecordOnClick()}
+                onClick={!this.state.showDelete ? () => this.clickOnRecord() : null}
               >
-                <div
-                  ref={record => this.record = record}
+                <Short
+                  style={this.state.shortStyle}
                 >
-                  {this.state.record}
-                </div>
+                  {this.state.shortcut}
+                </Short>
+
+                <Delete
+                  style={{display: this.state.showDelete ? 'block' : 'none'}}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 461.31 461.31"
+                  width='12px'
+                  onClick={(e) => this.clickOnDelete(e)}
+                >
+                  <path d="M421.85,67C294.47,67,191.2,170.25,191.2,297.64S294.47,528.29,421.85,528.29,652.51,425,652.51,297.64,549.24,67,421.85,67ZM533.8,237.3l-61,61,58.87,58.87a36.19,36.19,0,1,1-53.21,48.6l-56.56-56.56-59.57,59.57a36.19,36.19,0,1,1-48.6-53.21L371,298.32l-57.9-57.9a36.19,36.19,0,1,1,47.07-54.72h0l61.72,61.72,57.19-57.19a36.19,36.19,0,1,1,54.72,47.07h0Z" transform="translate(-191.2 -66.99)"/>
+                </Delete>
               </Record>
             </Label>
+            <Comment>
+              The shortcut must contain at least ctrl or cmd, you can add shift or alt if you want, and finally a letter or number.
+              Pay attention to not use a system shortcuts or any other that can interfere with other programs.
+            </Comment>
           </Option>
 
         </div>
@@ -110,7 +200,18 @@ class Preferences extends Component {
   }
 }
 
-const headerColor = 'rgba(26, 26, 26, 1)'
+const defaultShortStyle = {
+  color: '#2182BD'
+}
+
+const errorShortStyle = {
+  color: 'palevioletred'
+}
+
+const successShortStyle = {
+  background: '#2182BD',
+  color: '#fff'
+}
 
 const Win = styled.div`
   dislay: flex;
@@ -120,7 +221,7 @@ const Win = styled.div`
 `
 const Frame = styled.div`
   color: #aaa;
-  background: ${headerColor};
+  background: ${frameColor};
   padding-top: 5px;
   height: 18px;
   font-size: 12px;
@@ -129,12 +230,9 @@ const Frame = styled.div`
   -webkit-user-select: none
 `
 const Option = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 80px;
-  padding: 0 18px;
-  color: #aaa;
+  height: auto;
+  padding: 18px;
+  color: #ccc;
   border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 `
 const Label = styled.div`
@@ -146,16 +244,36 @@ const Label = styled.div`
   font-size: 14px;
 `
 const Record = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   box-sizing: border-box;
-  background: #999;
-  width: 200px;
+  background: #333;
+  width: 230px;
   height: 50px;
   border-radius: 5px;
-  color: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+`
+const Delete = styled.svg`
+  position: absolute;
+  top: 16px;
+  right: 9px;
+  fill: #555;
+  margin: 3px;
+  &:hover {
+    fill: #999;
+  }
+`
+const Short = styled.div`
+  padding: 9px;
+  border-radius: 5px;
+`
+const Comment = styled.div`
   font-size: 12px;
+  color: #999;
+  padding-top: 9px;
 `
 
-render(<Preferences />, document.getElementById('root'))
+render(<Preferences />,document.getElementById('root'))

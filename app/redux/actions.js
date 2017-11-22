@@ -35,3 +35,5 @@ export const setFromBar = (from, i) => {
       return ({ type: 'SET_FROM_3', data: from })
   }
 }
+
+export const setTrasparency = bool => ({ type: 'SET_TRANSPARENCY', data: bool})

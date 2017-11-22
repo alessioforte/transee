@@ -12,6 +12,41 @@ let tray = null
 let preferencesWin = null
 let welcomeWin = null
 
+app.on('ready', () => {
+  // const devTools = require('./dev-tools-extension')
+  // devTools.addExtension()
+
+  let check = app.getLoginItemSettings().openAtLogin
+  console.log('start at login:', check)
+  settings.set('start-login', check)
+  createWindow()
+  createPreferencesWindow()
+  createWelcomeWindow()
+
+  let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
+  if (checkAutomaticallyUpdates) {
+    console.log('automatically check updates')
+  } else {
+    console.log('no check for updates')
+  }
+});
+
+app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('before-quit', () => {
+  // win.webContents.send('settings', 'save')
+})
+
+app.on('activate', function () {
+    if (win === null) {
+        createWindow();
+    }
+});
+
 const createWindow = () => {
   var screenWidth = electron.screen.getPrimaryDisplay().size.width
 
@@ -70,12 +105,11 @@ const createPreferencesWindow = () => {
     x: 60,
     y: 300,
     width: 420,
-    height: 300,
+    height: 420,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
     resizable: false,
-    // vibrancy: 'ultra-dark'
   })
 
   preferencesWin.webContents.openDevTools()
@@ -84,41 +118,6 @@ const createPreferencesWindow = () => {
     preferencesWin = null
   })
 }
-
-app.on('ready', () => {
-  // const devTools = require('./dev-tools-extension')
-  // devTools.addExtension()
-
-  let check = app.getLoginItemSettings().openAtLogin
-  console.log('start at login:', check)
-  settings.set('start-login', check)
-  // createWindow()
-  createPreferencesWindow()
-  // createWelcomeWindow()
-
-  let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
-  if (checkAutomaticallyUpdates) {
-    console.log('automatically check updates')
-  } else {
-    console.log('no check for updates')
-  }
-});
-
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('before-quit', () => {
-  // win.webContents.send('settings', 'save')
-})
-
-app.on('activate', function () {
-    if (win === null) {
-        createWindow();
-    }
-});
 
 ipcMain.on('window-height', (event, height) => {
   win.setSize(680, height)
@@ -134,4 +133,13 @@ ipcMain.on('set-start-login', (event, check) => {
     openAtLogin: check,
     openAsHidden: check
   })
+})
+
+ipcMain.on('change-shortcut', (event, shortcut) => {
+  console.log(shortcut)
+})
+
+ipcMain.on('set-transparency', (event, check) => {
+  console.log(check)
+  win.webContents.send('set-transparency', check)
 })

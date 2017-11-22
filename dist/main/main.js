@@ -16,6 +16,7 @@ const iconPath = process.platform === 'win32' ?
 var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
 var globalY
+var accelerator = settings.has('shortcut') ? settings.get('shortcut') : settings.set('shortcut', 'Ctrl+T')
 
 app.on('ready', appReady)
 
@@ -50,8 +51,7 @@ function appReady() {
     { type: 'separator' },
     { label: 'Preferences...', click: () => showPreferencesWindow() },
     { type: 'separator' },
-    { label: 'Show translation bar', accelerator: 'Control+T', click: () => showWindow() },
-    // { label: 'Hide translation bar', accelerator: 'esc', click: () => hideWindow() },
+    { label: 'Show translation bar', accelerator: accelerator, click: () => showWindow() },
     { type: 'separator' },
     { label: 'Welcome Guide', click: () => showWelcomeWindow()},
     { type: 'separator' },
@@ -61,7 +61,7 @@ function appReady() {
   tray.setContextMenu(contextMenu)
 
   // SET GLOBAL SHORTCUT
-  const ret = globalShortcut.register('Control+T', () => { showWindow() })
+  const ret = globalShortcut.register(accelerator, () => { showWindow() })
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
     settings.get('check-automatically-updates') : true
@@ -162,13 +162,13 @@ const createAboutWindow = () => {
 
 const createPreferencesWindow = () => {
   preferencesWin = new BrowserWindow({
-    width: 300,
-    height: 200,
+    width: 420,
+    height: 420,
     titleBarStyle: 'hidden',
+    // vibrancy: 'ultra-dark'
     minimizable: false,
     maximizable: false,
     resizable: false,
-    // vibrancy: 'ultra-dark'
     webPreferences: {
       devTools: false
     }
@@ -261,4 +261,13 @@ ipcMain.on('set-start-login', (event, check) => {
     openAtLogin: check,
     // openAsHidden: check
   })
+})
+
+ipcMain.on('change-shortcut', (event, shortcut) => {
+  globalShortcut.unregisterAll()
+  globalShortcut.register(shortcut, () => { showWindow() })
+})
+
+ipcMain.on('set-transparency', (event, check) => {
+  win.webContents.send('set-transparency', check)
 })

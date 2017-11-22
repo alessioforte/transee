@@ -13,7 +13,8 @@ import {
   setToActive,
   setFromActive,
   speedFrom,
-  speedTo } from '../redux/actions'
+  speedTo,
+  setTrasparency } from '../redux/actions'
 
 var input, autocomplete
 
@@ -21,8 +22,9 @@ const ipc = require('electron').ipcRenderer
 const { webFrame } = require('electron')
 webFrame.setZoomLevelLimits(1, 1)
 
+const settings = require('electron-settings')
+
 ipc.on('settings', (event, msg) => {
-  const settings = require('electron-settings')
   var s = store.getState()
   var obj = {
     langs: s.langs,
@@ -30,9 +32,14 @@ ipc.on('settings', (event, msg) => {
     fromActive: s.fromActive,
     toActive: s.toActive,
     fromBar: s.fromBar,
-    toBar: s.toBar
+    toBar: s.toBar,
+    isTransparent: s.isTransparent
   }
   settings.set('settings', obj)
+})
+
+ipc.on('set-transparency', (event, check) => {
+  store.dispatch(setTrasparency(check))
 })
 
 window.onkeydown = e => {

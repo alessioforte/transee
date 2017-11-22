@@ -23,8 +23,10 @@ import {
   setMainWindowSize,
   createObservableOnInput } from '../services'
 
-const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar }) => {
-  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar })
+import { bgColor, bgTransparent } from '../colors'
+
+const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar, isTransparent }) => {
+  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar, isTransparent })
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -333,7 +335,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className='app'>
+      <div style={{background: this.props.isTransparent ? bgTransparent : bgColor}}>
         <textarea
           id='autocomplete'
           ref={autocomplete => this.autocomplete = autocomplete}

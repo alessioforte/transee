@@ -17,7 +17,6 @@ body::-webkit-scrollbar,
 body {
   margin: 0;
   padding: 0;
-  background: var(--groundColor);
 }
 
 #input,
@@ -38,7 +37,7 @@ body {
   position: absolute;
   top: 25px;
   color: #555;
-  z-index: -1;
+  z-index: 0
 }
 
 #input:focus,
