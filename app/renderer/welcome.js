@@ -36,21 +36,21 @@ class Welcome extends Component {
   returnIndex(i) {
     this.setState({
       active: i,
-      left: i * -410
+      left: i * -414
     })
   }
 
   leftArrow() {
     this.setState({
       active: this.state.active - 1,
-      left: this.state.left + 410
+      left: this.state.left + 414
     })
   }
 
   rightArrow() {
     this.setState({
       active: this.state.active + 1,
-      left: this.state.left - 410
+      left: this.state.left - 414
     })
   }
 
@@ -116,9 +116,10 @@ class Welcome extends Component {
           <Card>
             <h2>Start</h2>
             Transee is always at your fingertips.<br />
-            Press <Short>{shortcut}</Short> and starts translating<br />
-            press <Short>Esc</Short> to hide the search bar<br />
-            or click anywhere on your desktop.
+            Press <Short>{shortcut}</Short> and start.<br />
+            Click anywhere on your desktop<br />
+            to hide the search bar<br />
+            or press the <Short>Esc</Short> key.
             <Note>You can change the shortcut in preferences window.</Note>
 
           </Card>
@@ -134,7 +135,8 @@ class Welcome extends Component {
 
           <Card>
             <h2>Other shortcuts</h2>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            Try them to speed up your translations.
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 18 }}>
               <div style={{ textAlign: 'right' }}>
                 <Row><Short>Alt+Shift</Short></Row>
                 <Row><Short>Ctrl+P</Short></Row>
@@ -202,6 +204,7 @@ const Details = styled.div`
   font-size: 16px;
 `
 const Row = styled.div`
+  font-size: 14px;
   margin: 9px 3px;
 `
 const Short = styled.div`
@@ -246,12 +249,11 @@ const Arrow = styled.div`
   }
 `
 const Cards = styled.div`
-  margin-top: 9px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
   transition: 0.3s ease;
-  padding-left: 55px;
+  padding-left: 53px
 `
 const Card = styled.div`
   box-sizing: border-box;
@@ -260,16 +262,17 @@ const Card = styled.div`
   background: none;
   width: 350px;
   border-radius: 5px;
-  margin: 0 30px;
+  margin: 0 32px;
   padding: 12px;
   flex-shrink: 0;
   h2 {
     font-size: 24px;
     margin-bottom: 9px;
+    color: #2182BD;
   }
 `
 const Note = styled.div`
-  margin-top: 18px;
+  margin-top: 9px;
   font-size: 12px;
   color: #999
 `

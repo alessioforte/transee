@@ -15,8 +15,14 @@ const iconPath = process.platform === 'win32' ?
 
 var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
-var globalY
-var accelerator = settings.has('shortcut') ? settings.get('shortcut') : settings.set('shortcut', 'Ctrl+T')
+var globalY, accelerator
+
+if (settings.has('shortcut')) {
+  accelerator = settings.get('shortcut')
+} else {
+  accelerator = 'Ctrl+T'
+  settings.set('shortcut', accelerator)
+}
 
 app.on('ready', appReady)
 
@@ -163,7 +169,7 @@ const createAboutWindow = () => {
 const createPreferencesWindow = () => {
   preferencesWin = new BrowserWindow({
     width: 420,
-    height: 420,
+    height: 430,
     titleBarStyle: 'hidden',
     // vibrancy: 'ultra-dark'
     minimizable: false,
@@ -183,7 +189,7 @@ const createPreferencesWindow = () => {
 const createWelcomeWindow = () => {
   welcomeWin = new BrowserWindow({
     width: 520,
-    height: 420,
+    height: 430,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,

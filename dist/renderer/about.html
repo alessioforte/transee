@@ -102,10 +102,12 @@
       </div>
     </div>
     <script>
+      const { webFrame } = require('electron')
+      webFrame.setZoomLevelLimits(1, 1)
       const shell = require('electron').shell
       let version = window.location.hash.substring(2)
       document.getElementById('version').innerHTML = 'Version: ' + version
-      function openInBrowser() { shell.openExternal("http://www.transee.tk") }
+      function openInBrowser() { shell.openExternal("https://alessioforte.github.io/transee/") }
       if (window.navigator.platform !== 'MacIntel') {
         document.getElementById('frame').style.display = 'none'
       }

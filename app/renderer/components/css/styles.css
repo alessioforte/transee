@@ -12,4 +12,9 @@ body {
   font-family: 'Nunito', sans-serif;
   font-size: 14px;
   background: var(--groundColor);
+  overflow: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }

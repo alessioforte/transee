@@ -1,7 +1,7 @@
 {
   "name": "transee",
   "productName": "Transee",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Simple and useful tool for quick translation",
   "main": "./main/main.js",
   "license": "MIT",
@@ -16,7 +16,7 @@
   "homepage": "https://alessioforte.github.io/transee/",
   "build": {
     "productName": "Transee",
-    "appId": "com.github.alessioforte.transee",
+    "appId": "",
     "directories": {
       "output": "build"
     },
