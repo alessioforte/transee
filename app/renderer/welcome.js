@@ -136,13 +136,15 @@ class Welcome extends Component {
           <Card>
             <h2>Other shortcuts</h2>
             Try them to speed up your translations.
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 9 }}>
               <div style={{ textAlign: 'right' }}>
+                <Row><Short>Tab</Short></Row>
                 <Row><Short>Alt+Shift</Short></Row>
                 <Row><Short>Ctrl+P</Short></Row>
                 <Row><Short>Ctrl+O</Short></Row>
               </div>
               <div style={{ textAlign: 'left' }}>
+                <Row>Complete the suggestion</Row>
                 <Row>Invert languages</Row>
                 <Row>Listen voice</Row>
                 <Row>Listen translated voice</Row>

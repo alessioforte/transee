@@ -112,6 +112,7 @@ class Preferences extends Component {
 
   clickOnDelete(e) {
     e.stopPropagation()
+    ipc.send('delete-shortcut', null)
 
     this.setState({
       shortcut: 'Click to record new shortcut',
@@ -161,7 +162,7 @@ class Preferences extends Component {
               />
             </Label>
             <Comment>
-              Sometimes transparency is helpful when you want to read behind the window
+              Sometimes transparency is helpful when you want to read behind the window.
             </Comment>
           </Option>
 

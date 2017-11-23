@@ -9,7 +9,12 @@ var manualCheck = false
 var version = app.getVersion()
 
 autoUpdater.on('error', (event, error) => {
-  dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
+  // dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
+  dialog.showMessageBox({
+    type: 'info',
+    message: 'Error',
+    detail: 'An error has occurred, I can\'t check for updates!'
+  })
 })
 
 autoUpdater.on('checking-for-update', () => { })

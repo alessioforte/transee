@@ -17,13 +17,6 @@ var win, aboutWin, tray, preferencesWin, welcomeWin
 var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
 var globalY, accelerator
 
-if (settings.has('shortcut')) {
-  accelerator = settings.get('shortcut')
-} else {
-  accelerator = 'Ctrl+T'
-  settings.set('shortcut', accelerator)
-}
-
 app.on('ready', appReady)
 
 app.on('will-quit', () => {
@@ -49,6 +42,16 @@ function appReady() {
   let screenHeight = screen.getPrimaryDisplay().size.height
   globalY = screenHeight > 800 ? 160 : 80
 
+  // SET GLOBAL SHORTCUT
+  if (settings.has('shortcut')) {
+    accelerator = settings.get('shortcut')
+  } else {
+    accelerator = 'Ctrl+T'
+    settings.set('shortcut', accelerator)
+  }
+  const ret = globalShortcut.register(accelerator, () => { showWindow() })
+
+  // CREATE TRAY AND CONTEXT MENU
   tray = new Tray(iconPath)
 
   const contextMenu = Menu.buildFromTemplate([
@@ -66,9 +69,7 @@ function appReady() {
 
   tray.setContextMenu(contextMenu)
 
-  // SET GLOBAL SHORTCUT
-  const ret = globalShortcut.register(accelerator, () => { showWindow() })
-
+  // AUTOMATICALLY UPDATES
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
     settings.get('check-automatically-updates') : true
 
@@ -276,4 +277,8 @@ ipcMain.on('change-shortcut', (event, shortcut) => {
 
 ipcMain.on('set-transparency', (event, check) => {
   win.webContents.send('set-transparency', check)
+})
+
+ipcMain.on('delete-shortcut', (event) => {
+  globalShortcut.unregisterAll()
 })
