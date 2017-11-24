@@ -55,7 +55,7 @@ class Preferences extends Component {
     let check = !this.state.isTransparent
     this.setState({ isTransparent: check })
     ipc.send('set-transparency', check)
-    var set = settings.get('settings')
+    var set = settings.get('settings') || {}
     set.isTransparent = check
     settings.set('settings', set)
   }

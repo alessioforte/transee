@@ -3,6 +3,13 @@ const electron = require('electron')
 const path = require('path')
 const settings = require('electron-settings')
 
+const {
+  default: installExtension,
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS } = require('electron-devtools-installer')
+
+
+
 const indexPath = `file://${process.cwd()}/app/renderer/index.html`
 const preferencesPath = `file://${process.cwd()}/app/renderer/preferences.html`
 const welcomePath = `file://${process.cwd()}/app/renderer/welcome.html`
@@ -13,8 +20,13 @@ let preferencesWin = null
 let welcomeWin = null
 
 app.on('ready', () => {
-  // const devTools = require('./dev-tools-extension')
-  // devTools.addExtension()
+
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then(name => console.log(`Added Extension: ${name}`))
+    .catch(err => console.log('An error occurred: ', err))
+  installExtension(REDUX_DEVTOOLS)
+    .then(name => console.log(`Added Extension: ${name}`))
+    .catch(err => console.log('An error occurred: ', err))
 
   let check = app.getLoginItemSettings().openAtLogin
   console.log('start at login:', check)
@@ -38,7 +50,7 @@ app.on('window-all-closed', function () {
 });
 
 app.on('before-quit', () => {
-  // win.webContents.send('settings', 'save')
+
 })
 
 app.on('activate', function () {
