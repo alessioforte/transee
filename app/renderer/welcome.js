@@ -146,8 +146,8 @@ class Welcome extends Component {
               <div style={{ textAlign: 'left' }}>
                 <Row>Complete the suggestion</Row>
                 <Row>Invert languages</Row>
-                <Row>Listen voice</Row>
-                <Row>Listen translated voice</Row>
+                <Row>Listen pronunciation</Row>
+                <Row>Listen translated pronunciation</Row>
               </div>
             </div>
           </Card>

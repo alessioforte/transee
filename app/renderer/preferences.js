@@ -15,7 +15,9 @@ class Preferences extends Component {
   constructor() {
     super()
     var startLogin = settings.get('start-login') || false
-    var checkAutomaticallyUpdates = settings.get('check-automatically-updates') || true
+    var checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
+      settings.get('check-automatically-updates') : true
+
     var hasShortcut = settings.has('shortcut')
     var shortcut = settings.get('shortcut') || 'Click to record new shortcut'
     var shortStyle = hasShortcut ? successShortStyle : defaultShortStyle
@@ -52,9 +54,10 @@ class Preferences extends Component {
   setTransparent() {
     let check = !this.state.isTransparent
     this.setState({ isTransparent: check })
-
     ipc.send('set-transparency', check)
-
+    var set = settings.get('settings')
+    set.isTransparent = check
+    settings.set('settings', set)
   }
 
   clickOnRecord() {

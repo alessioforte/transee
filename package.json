@@ -10,7 +10,7 @@
     "start": "electron ./app/main/main.js",
     "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
     "deletemap": "rm dist/renderer/*.bundle.js.map",
-    "deleteall": "rm dist/renderer/*.bundle.js.map dist/renderer/*.bundle.js"
+    "delete": "rm dist/renderer/*.bundle.js"
   },
   "repository": {
     "type": "git",

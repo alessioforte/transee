@@ -265,8 +265,7 @@ ipcMain.on('hide-window', (event, msg) => {
 
 ipcMain.on('set-start-login', (event, check) => {
   app.setLoginItemSettings({
-    openAtLogin: check,
-    // openAsHidden: check
+    openAtLogin: check
   })
 })
 
