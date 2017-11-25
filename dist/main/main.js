@@ -42,6 +42,15 @@ function appReady() {
   let screenHeight = screen.getPrimaryDisplay().size.height
   globalY = screenHeight > 800 ? 160 : 80
 
+  // HANDLE APP VERSION
+  let version = app.getVersion()
+  let versionInSettings = settings.get('version')
+
+  if (version !== versionInSettings) {
+    settings.set('version', version)
+    settings.set('show-welcome', true)
+  }
+
   // SET GLOBAL SHORTCUT
   if (settings.has('shortcut')) {
     accelerator = settings.get('shortcut')
@@ -81,6 +90,7 @@ function appReady() {
   let showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
   if (showWelcome) createWelcomeWindow()
 
+  // HIDE DOCK ICON IN MACOS
   if (process.platform === 'darwin' && !showWelcome) app.dock.hide()
 }
 
@@ -88,16 +98,11 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 680,
     height: 85,
-    show: false,
     frame: false,
     fullscreenable: false,
     resizable: false,
     transparent: true,
-    // vibrancy: 'ultra-dark',
-    webPreferences: {
-      backgroundThrottling: false,
-      devTools: false
-    }
+    // vibrancy: 'ultra-dark'
   })
 
   win.on('blur', () => {
@@ -110,20 +115,8 @@ const createWindow = () => {
     win = null
   })
 
-  win.webContents.on('crashed', () => {
-    console.log('crashed')
-
-    dialog.showMessageBox({
-      type: 'info',
-      message: 'Crash Error!',
-      detail: 'I\'m so sorry... restart Transee!',
-    })
-    app.quit()
-  })
-
-  win.on('unresponsive', () => {
-    console.log('unresponsive')
-  })
+  win.webContents.on('crashed', () => { })
+  win.on('unresponsive', () => { })
 
   const template = [
     {
@@ -137,7 +130,8 @@ const createWindow = () => {
         {role: 'paste'},
         {role: 'pasteandmatchstyle'},
         {role: 'delete'},
-        {role: 'selectall'}
+        {role: 'selectall'},
+        // {role: 'toggledevtools'}
       ]
     }
   ]
@@ -151,13 +145,10 @@ const createAboutWindow = () => {
     width: 520,
     height: 250,
     titleBarStyle: 'hidden',
-    // vibrancy: 'dark',
+    // vibrancy: 'ultra-dark',
     minimizable: false,
     maximizable: false,
-    resizable: false,
-    webPreferences: {
-      devTools: false
-    }
+    resizable: false
   })
 
   aboutWin.loadURL(aboutPath)
@@ -175,10 +166,7 @@ const createPreferencesWindow = () => {
     // vibrancy: 'ultra-dark'
     minimizable: false,
     maximizable: false,
-    resizable: false,
-    webPreferences: {
-      devTools: false
-    }
+    resizable: false
   })
 
   preferencesWin.loadURL(preferencesPath)
@@ -194,10 +182,7 @@ const createWelcomeWindow = () => {
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
-    resizable: false,
-    webPreferences: {
-      devTools: false
-    }
+    resizable: false
   })
 
   welcomeWin.loadURL(welcomePath)
@@ -215,8 +200,6 @@ function showWindow() {
   var { x, y } = getWindowPosition()
   win.setPosition(x, y)
   win.show()
-
-  return
 }
 
 function hideWindow() {
