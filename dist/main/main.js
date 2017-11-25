@@ -5,9 +5,10 @@ const events = require('events')
 const settings = require('electron-settings')
 const updater = require('./updater')
 
+const appVersion = app.getVersion()
 const indexPath = `file://${__dirname}/../renderer/index.html`
 const preferencesPath = `file://${__dirname}/../renderer/preferences.html`
-const aboutPath = `file://${__dirname}/../renderer/about.html#v${app.getVersion()}`
+const aboutPath = `file://${__dirname}/../renderer/about.html#v${appVersion}`
 const welcomePath = `file://${__dirname}/../renderer/welcome.html`
 const iconPath = process.platform === 'win32' ?
   path.join(__dirname, '../assets', 'icon_16x16.ico') :
@@ -43,10 +44,8 @@ function appReady() {
   globalY = screenHeight > 800 ? 160 : 80
 
   // HANDLE APP VERSION
-  let version = app.getVersion()
   let versionInSettings = settings.get('version')
-
-  if (version !== versionInSettings) {
+  if (appVersion !== versionInSettings) {
     settings.set('version', version)
     settings.set('show-welcome', true)
   }
