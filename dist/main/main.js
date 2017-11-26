@@ -38,7 +38,7 @@ function appReady() {
   // HANDLE APP VERSION
   let versionInSettings = settings.get('version')
   if (appVersion !== versionInSettings) {
-    settings.set('version', version)
+    settings.set('version', appVersion)
     settings.set('show-welcome', true)
   }
 
@@ -121,14 +121,12 @@ const createWindow = () => {
         {role: 'paste'},
         {role: 'pasteandmatchstyle'},
         {role: 'delete'},
-        {role: 'selectall'},
-        {role: 'toggledevtools'}
+        {role: 'selectall'}
       ]
     }
   ]
 
-  // const menu = process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null
-  const menu = Menu.buildFromTemplate(template)
+  const menu = process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null
   Menu.setApplicationMenu(menu)
 }
 
