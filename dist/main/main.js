@@ -14,20 +14,12 @@ const iconPath = process.platform === 'win32' ?
   path.join(__dirname, '../assets', 'icon_16x16.ico') :
   path.join(__dirname, '../assets', 'iconTemplate.png')
 
-var win, aboutWin, tray, preferencesWin, welcomeWin
-var windowPosition = (process.platform === 'win32') ? 'trayBottomCenter' : 'trayCenter'
-var globalY, accelerator
+var win, aboutWin, tray, preferencesWin, welcomeWin, globalY, accelerator
 
 app.on('ready', appReady)
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll()
-})
-
-app.on('before-quit', () => {
-  if (win) {
-    win.webContents.send('settings', 'save')
-  }
 })
 
 process.on('uncaughtException', () => {
@@ -54,7 +46,7 @@ function appReady() {
   if (settings.has('shortcut')) {
     accelerator = settings.get('shortcut')
   } else {
-    accelerator = 'Ctrl+T'
+    accelerator = 'Ctrl+Alt+T'
     settings.set('shortcut', accelerator)
   }
   const ret = globalShortcut.register(accelerator, () => { showWindow() })
@@ -130,12 +122,13 @@ const createWindow = () => {
         {role: 'pasteandmatchstyle'},
         {role: 'delete'},
         {role: 'selectall'},
-        // {role: 'toggledevtools'}
+        {role: 'toggledevtools'}
       ]
     }
   ]
 
-  const menu = process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null
+  // const menu = process.platform === 'darwin' ? Menu.buildFromTemplate(template) : null
+  const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
 
@@ -151,10 +144,10 @@ const createAboutWindow = () => {
   })
 
   aboutWin.loadURL(aboutPath)
+
   aboutWin.on('close', () => {
     aboutWin = null
   })
-  aboutWin.show()
 }
 
 const createPreferencesWindow = () => {
@@ -169,6 +162,7 @@ const createPreferencesWindow = () => {
   })
 
   preferencesWin.loadURL(preferencesPath)
+
   preferencesWin.on('close', () => {
     preferencesWin = null
   })
@@ -185,6 +179,7 @@ const createWelcomeWindow = () => {
   })
 
   welcomeWin.loadURL(welcomePath)
+
   welcomeWin.on('close', () => {
     welcomeWin = null
     app.dock.hide()
@@ -202,8 +197,7 @@ function showWindow() {
 }
 
 function hideWindow() {
-  if (!win) return
-  win.hide()
+  if (win) win.hide()
 }
 
 function getWindowPosition() {
@@ -215,7 +209,7 @@ function getWindowPosition() {
   const x = Math.round(displayBounds.x + (displayBounds.width - windowBounds.width) / 2)
   const y = globalY
 
-  return {x, y}
+  return { x, y }
 }
 
 function showAboutWindow() {

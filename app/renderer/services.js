@@ -24,20 +24,6 @@ webFrame.setZoomLevelLimits(1, 1)
 
 const settings = require('electron-settings')
 
-ipc.on('settings', (event, msg) => {
-  var s = store.getState()
-  var obj = {
-    langs: s.langs,
-    speed: s.speed,
-    fromActive: s.fromActive,
-    toActive: s.toActive,
-    fromBar: s.fromBar,
-    toBar: s.toBar,
-    isTransparent: s.isTransparent
-  }
-  settings.set('settings', obj)
-})
-
 ipc.on('set-transparency', (event, check) => {
   store.dispatch(setTrasparency(check))
 })
@@ -243,4 +229,18 @@ export const invertLanguages = () => {
     input.value = text
     searchTranslation(text)
   }
+}
+
+export const saveSettings = () => {
+  var s = store.getState()
+  var obj = {
+    langs: s.langs,
+    speed: s.speed,
+    fromActive: s.fromActive,
+    toActive: s.toActive,
+    fromBar: s.fromBar,
+    toBar: s.toBar,
+    isTransparent: s.isTransparent
+  }
+  settings.set('settings', obj)
 }

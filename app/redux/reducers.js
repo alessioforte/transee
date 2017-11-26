@@ -1,4 +1,28 @@
-export const langs = (state = null, action) => {
+const DEFAULT_STATE = {
+  langs: {
+    from: 'en',
+    to: 'it'
+  },
+  speed: {
+    from: false,
+    to: false
+  },
+  fromBar: {
+    from1: 'en',
+    from2: 'it',
+    from3: 'es'
+  },
+  toBar: {
+    to1: 'it',
+    to2: 'en',
+    to3: 'es'
+  },
+  fromActive: [true, false, false],
+  toActive: [true, false, false],
+  isTransparent: false
+}
+
+export const langs = (state = DEFAULT_STATE.langs, action) => {
   switch (action.type) {
     case 'FROM_LANG':
       return Object.assign({}, state, {
@@ -37,7 +61,7 @@ export const suggest = (state = null, action) => {
   }
 }
 
-export const speed = (state = null, action) => {
+export const speed = (state = DEFAULT_STATE.speed, action) => {
   switch (action.type) {
     case 'SPEED_FROM':
       return Object.assign({}, state, {
@@ -72,7 +96,7 @@ export const error = (state = false, action) => {
 
 
 
-export const fromActive = (state = null, action) => {
+export const fromActive = (state = DEFAULT_STATE.fromActive, action) => {
   switch (action.type) {
     case 'SET_FROM_ACTIVE':
       return action.data
@@ -81,7 +105,7 @@ export const fromActive = (state = null, action) => {
   }
 }
 
-export const toActive = (state = null, action) => {
+export const toActive = (state = DEFAULT_STATE.toActive, action) => {
   switch (action.type) {
     case 'SET_TO_ACTIVE':
       return action.data
@@ -90,7 +114,7 @@ export const toActive = (state = null, action) => {
   }
 }
 
-export const fromBar = (state = null, action) => {
+export const fromBar = (state = DEFAULT_STATE.fromBar, action) => {
   switch (action.type) {
     case 'SET_FROM_1':
       return Object.assign({}, state, {
@@ -109,7 +133,7 @@ export const fromBar = (state = null, action) => {
   }
 }
 
-export const toBar = (state = null, action) => {
+export const toBar = (state = DEFAULT_STATE.toBar, action) => {
   switch (action.type) {
     case 'SET_TO_1':
       return Object.assign({}, state, {
@@ -128,7 +152,7 @@ export const toBar = (state = null, action) => {
   }
 }
 
-export const isTransparent = (state = false, action) => {
+export const isTransparent = (state = DEFAULT_STATE.isTransparent, action) => {
   switch (action.type) {
     case 'SET_TRANSPARENCY':
       return action.data

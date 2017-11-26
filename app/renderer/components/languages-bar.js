@@ -14,7 +14,8 @@ import {
   getFromPosition,
   getToPosition,
   setMainWindowSize,
-  invertLanguages } from '../services'
+  invertLanguages,
+  saveSettings } from '../services'
 import './css/languages-bar.css'
 
 const mapStateToProps = ({ langs, dropdown, fromBar, fromActive, toBar, toActive }) => {
@@ -58,6 +59,7 @@ class LanguagesBar extends Component {
 
   componentDidUpdate() {
     this.input.focus()
+    saveSettings()
   }
 
   selectFrom(e) {

@@ -1,6 +1,5 @@
 const { app, dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
-const log = require('electron-log')
 
 const internetAvailable = require('internet-available')
 
