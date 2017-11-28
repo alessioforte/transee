@@ -14,7 +14,7 @@ const settings = require('electron-settings')
 const { webFrame } = require('electron')
 webFrame.setZoomLevelLimits(1, 1)
 
-var shortcut = settings.get('shortcut') || 'Ctrl+T'
+var shortcut = settings.get('shortcut')
 
 class Welcome extends Component {
 
@@ -113,16 +113,31 @@ class Welcome extends Component {
             marginLeft: this.state.left
           }}
         >
-          <Card>
-            <h2>Start</h2>
-            Transee is always at your fingertips.<br />
-            Press <Short>{shortcut}</Short> and start.<br />
-            Click anywhere on your desktop<br />
-            to hide the search bar<br />
-            or press the <Short>Esc</Short> key.
-            <Note>You can change the shortcut in preferences window.</Note>
 
-          </Card>
+          {
+            shortcut ?
+            (
+              <Card>
+                <h2>Start</h2>
+                Transee is always at your fingertips.<br />
+                Press <Short>{shortcut}</Short> and start.<br />
+                Click anywhere on your desktop<br />
+                to hide the translation bar<br />
+                or press the <Short>Esc</Short> key.
+                <Note>You can change the shortcut in preferences window.</Note>
+              </Card>
+            ) :
+            (
+              <Card>
+                <h2>Start</h2>
+                Transee is always at your fingertips.<br />
+                Register a shortcut<br />
+                for a better user experience<br />
+                or open translation bar from menu.<br /><br />
+                <Note>You can set the shortcut in preferences window.</Note>
+              </Card>
+            )
+          }
 
           <Card>
             <h2>{this.barTitle}</h2>

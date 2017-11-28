@@ -49,7 +49,9 @@ function appReady() {
     accelerator = 'Ctrl+Alt+T'
     settings.set('shortcut', accelerator)
   }
-  const ret = globalShortcut.register(accelerator, () => { showWindow() })
+  if (accelerator) {
+    const ret = globalShortcut.register(accelerator, () => { showWindow() })
+  }
 
   // CREATE TRAY AND CONTEXT MENU
   tray = new Tray(iconPath)
@@ -254,4 +256,5 @@ ipcMain.on('set-transparency', (event, check) => {
 
 ipcMain.on('delete-shortcut', (event) => {
   globalShortcut.unregisterAll()
+  settings.set('shortcut', '')
 })

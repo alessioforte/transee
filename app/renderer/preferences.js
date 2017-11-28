@@ -18,18 +18,19 @@ class Preferences extends Component {
     var checkAutomaticallyUpdates = settings.has('check-automatically-updates') ?
       settings.get('check-automatically-updates') : true
 
-    var hasShortcut = settings.has('shortcut')
-    var shortcut = settings.get('shortcut') || 'Click to record new shortcut'
-    var shortStyle = hasShortcut ? successShortStyle : defaultShortStyle
+    var shortcutInSettings = settings.get('shortcut')
+    var shortcut = shortcutInSettings || 'Click to record new shortcut'
+    var shortStyle = shortcutInSettings ? successShortStyle : defaultShortStyle
+    var showDelete = shortcutInSettings ? true : false
     var isTransparent = settings.has('settings') ? settings.get('settings').isTransparent : false
 
     this.state = {
       startLogin,
       checkAutomaticallyUpdates,
       isTransparent,
-      shortcut: shortcut,
-      showDelete: hasShortcut,
-      shortStyle: shortStyle,
+      shortcut,
+      shortStyle,
+      showDelete,
       char: '',
       modifier: ''
     }
