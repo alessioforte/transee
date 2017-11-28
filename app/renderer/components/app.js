@@ -71,8 +71,8 @@ class App extends Component {
   }
 
   onInputChange(e) {
-    this.resizeTextarea()
     setMainWindowSize()
+
     let text = e.target.value
 
     if (!text || /^\s*$/.test(text)) {
@@ -334,8 +334,9 @@ class App extends Component {
   }
 
   render() {
+    document.body.style.background = this.props.isTransparent ? bgTransparent : bgColor
     return (
-      <div style={{background: this.props.isTransparent ? bgTransparent : bgColor}}>
+      <div>
         <textarea
           id='autocomplete'
           ref={autocomplete => this.autocomplete = autocomplete}

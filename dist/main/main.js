@@ -92,10 +92,10 @@ const createWindow = () => {
     width: 680,
     height: 85,
     frame: false,
+    // vibrancy: 'ultra-dark',
     fullscreenable: false,
     resizable: false,
-    transparent: true,
-    // vibrancy: 'ultra-dark'
+    transparent: true
   })
 
   win.on('blur', () => {

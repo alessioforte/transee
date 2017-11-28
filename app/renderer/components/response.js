@@ -28,8 +28,9 @@ class Response extends Component {
   handleClickOnPlayIcon() {
     let text = this.props.obj.translation
     let lang = this.props.langs.to
-    playAudio(text, lang, this.props.speed.to)
-    speedTo(!this.props.speed.to)
+    let speed = this.props.speed.to
+    playAudio(text, lang, speed)
+    this.props.speedTo(!speed)
   }
 
   renderPronunciation() {

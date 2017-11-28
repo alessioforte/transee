@@ -269,7 +269,7 @@ function translateComplete(words, opts) {
 function voice(text, lang, speed) {
   return token.get(text).then(token => {
     var textlen = text.length
-    var url = 'http://translate.google.com/translate_tts'
+    var url = 'https://translate.google.com/translate_tts'
     var data = {
       ie: 'UTF-8',
       q: text,

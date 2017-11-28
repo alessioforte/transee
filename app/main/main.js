@@ -8,8 +8,6 @@ const {
   REACT_DEVELOPER_TOOLS,
   REDUX_DEVTOOLS } = require('electron-devtools-installer')
 
-
-
 const indexPath = `file://${process.cwd()}/app/renderer/index.html`
 const preferencesPath = `file://${process.cwd()}/app/renderer/preferences.html`
 const welcomePath = `file://${process.cwd()}/app/renderer/welcome.html`
