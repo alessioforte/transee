@@ -29,6 +29,7 @@ ipc.on('set-transparency', (event, check) => {
 })
 
 window.onkeydown = e => {
+
   if (e.keyCode === 27) {
     e.preventDefault()
     ipc.send('hide-window', 'hide')
@@ -60,6 +61,10 @@ window.onkeydown = e => {
       playAudio(text, to, speed)
       store.dispatch(speedTo(!speed))
     } else return
+  }
+
+  if (e.ctrlKey && e.altKey && e.keyCode === 8) {
+    ipc.send('devtools', null)
   }
 }
 

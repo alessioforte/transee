@@ -258,3 +258,7 @@ ipcMain.on('delete-shortcut', (event) => {
   globalShortcut.unregisterAll()
   settings.set('shortcut', '')
 })
+
+ipcMain.on('devtools', (event) => {
+  win.webContents.openDevTools();
+})

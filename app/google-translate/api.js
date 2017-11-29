@@ -27,6 +27,7 @@ function translate(text, opts) {
     return getContent(url).then(res => {
 
       var parse = JSON.parse(res)
+      if (global.showResponse) console.log(parse)
 
       var obj = {
         correction: {
@@ -208,6 +209,8 @@ function complete(text, lang) {
   return getContent(url).then(res => {
 
     var parse = JSON.parse(res.slice(19, -1))
+    if (global.showResponse) console.log(parse)
+
     var obj = []
 
     if (parse[1]) {
@@ -252,6 +255,8 @@ function translateComplete(words, opts) {
     return getContent(url).then(res => {
 
       var parse = JSON.parse(res)
+      if (global.showResponse) console.log(parse)
+      
       return parse
 
     }).catch(err => {

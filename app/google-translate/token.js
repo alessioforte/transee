@@ -5,7 +5,7 @@
  * Everything between 'BEGIN' and 'END' was copied from the url above.
  */
 
-const Configstore = require('configstore');
+const settings = require('electron-settings')
 const getContent = require('./get-content')
 
 /* eslint-disable */
@@ -67,10 +67,8 @@ var wr = function(a) {
 // END
 /* eslint-enable */
 
-var config = new Configstore('google-translate-api');
-
 var window = {
-    TKK: config.get('TKK') || '0'
+    TKK: settings.get('TKK') || '0'
 };
 
 function updateTKK() {
@@ -88,7 +86,7 @@ function updateTKK() {
                     /* eslint-disable no-undef */
                     if (typeof TKK !== 'undefined') {
                         window.TKK = TKK;
-                        config.set('TKK', TKK);
+                        settings.set('TKK', TKK)
                     }
                     /* eslint-enable no-undef */
                 }
