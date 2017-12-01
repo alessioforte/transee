@@ -58,7 +58,6 @@ class App extends Component {
     this.input.addEventListener('cut', () => window.setTimeout(this.resizeTextarea, 100))
     this.input.addEventListener('paste', () => window.setTimeout(this.resizeTextarea, 100))
     this.input.addEventListener('drop', () => window.setTimeout(this.resizeTextarea, 100))
-    this.input.addEventListener('keydown', () => window.setTimeout(this.resizeTextarea, 100))
   }
 
   componentDidUpdate() {
@@ -71,6 +70,7 @@ class App extends Component {
   }
 
   onInputChange(e) {
+    this.resizeTextarea()
     setMainWindowSize()
 
     let text = e.target.value

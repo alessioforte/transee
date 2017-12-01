@@ -13,7 +13,6 @@ import {
   searchTranslation,
   getFromPosition,
   getToPosition,
-  setMainWindowSize,
   invertLanguages,
   saveSettings } from '../services'
 import './css/languages-bar.css'

@@ -63,7 +63,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     frame: false,
     width: 680,
-    height: 85,
+    height: 91,
     y: 100,
     x: 60,
     fullscreenable: false,

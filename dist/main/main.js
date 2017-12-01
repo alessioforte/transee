@@ -90,7 +90,7 @@ function appReady() {
 const createWindow = () => {
   win = new BrowserWindow({
     width: 680,
-    height: 85,
+    height: 91,
     frame: false,
     // vibrancy: 'ultra-dark',
     fullscreenable: false,

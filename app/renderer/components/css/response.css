@@ -32,6 +32,7 @@
   background: none;
   resize: none;
   color: white;
+  margin-bottom: 6px;
 }
 
 #translation:focus {
