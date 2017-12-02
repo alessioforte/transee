@@ -156,7 +156,7 @@ class Welcome extends Component {
                 <Row><Short>Tab</Short></Row>
                 <Row><Short>Alt+Shift</Short></Row>
                 <Row><Short>Ctrl+P</Short></Row>
-                <Row><Short>Ctrl+O</Short></Row>
+                <Row><Short>Ctrl+Alt+P</Short></Row>
               </div>
               <div style={{ textAlign: 'left' }}>
                 <Row>Complete the suggestion</Row>

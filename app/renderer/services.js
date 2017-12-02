@@ -46,7 +46,7 @@ window.onkeydown = e => {
     invertLanguages()
   }
 
-  if (e.ctrlKey && e.keyCode === 80) {
+  if (e.ctrlKey && !e.altKey && e.keyCode === 80) {
     e.preventDefault()
     let text = document.getElementById('input').value
     if (text === '') return
@@ -57,7 +57,7 @@ window.onkeydown = e => {
     store.dispatch(speedFrom(!speed))
   }
 
-  if (e.ctrlKey && e.keyCode === 79) {
+  if (e.ctrlKey && e.altKey && e.keyCode === 80) {
     e.preventDefault()
     if (document.getElementById('translation')) {
       let text = document.getElementById('translation').value

@@ -6,7 +6,7 @@ module.exports = {
 
   target: 'electron',
 
-  // devtool: 'source-map',
+  devtool: 'source-map',
 
   entry: {
     transee: './app/renderer/entry.js',
@@ -70,6 +70,6 @@ module.exports = {
 
   plugins: [
     // new webpack.optimize.CommonsChunkPlugin('commons'),
-    new UglifyJsPlugin(),
+    // new UglifyJsPlugin(),
   ]
 }

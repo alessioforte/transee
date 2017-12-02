@@ -93,7 +93,6 @@ function appReady() {
 
   // CREATE TRANSEE WINDOW IN BACKGROUND
   createWindow()
-  win.hide()
 
   // HIDE DOCK ICON IN MACOS
   if (process.platform === 'darwin' && !showWelcome) app.dock.hide()
@@ -106,7 +105,8 @@ const createWindow = () => {
     frame: false,
     fullscreenable: false,
     resizable: false,
-    transparent: true
+    transparent: true,
+    show: false
   })
 
   win.on('blur', () => {
