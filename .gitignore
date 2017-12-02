@@ -7,8 +7,8 @@ package-lock.json
 
 .DS_Store
 
-*.bundle.js
-*.bundle.js.map
+dist/renderer/*.js
+dist/renderer/*.map
 
 dist/build/
 

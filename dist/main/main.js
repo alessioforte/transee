@@ -91,6 +91,10 @@ function appReady() {
   let showWelcome = settings.has('show-welcome') ? settings.get('show-welcome') : true
   if (showWelcome) createWelcomeWindow()
 
+  // CREATE TRANSEE WINDOW IN BACKGROUND
+  createWindow()
+  win.hide()
+
   // HIDE DOCK ICON IN MACOS
   if (process.platform === 'darwin' && !showWelcome) app.dock.hide()
 }

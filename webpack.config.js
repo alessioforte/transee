@@ -1,4 +1,6 @@
+const webpack = require('webpack')
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
 
@@ -7,7 +9,7 @@ module.exports = {
   // devtool: 'source-map',
 
   entry: {
-    entry: './app/renderer/entry.js',
+    transee: './app/renderer/entry.js',
     preferences: './app/renderer/preferences.js',
     welcome: './app/renderer/welcome.js'
   },
@@ -64,5 +66,10 @@ module.exports = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx']
-  }
+  },
+
+  plugins: [
+    // new webpack.optimize.CommonsChunkPlugin('commons'),
+    new UglifyJsPlugin(),
+  ]
 }

@@ -1,4 +1,11 @@
-const Observable = require('rxjs/Rx').Observable
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/observable/fromEvent'
+import 'rxjs/add/observable/fromPromise'
+import 'rxjs/add/observable/empty'
+import 'rxjs/add/operator/catch'
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/debounceTime'
+import 'rxjs/add/operator/concatMap'
 import { translate, complete, translateComplete, voice } from '../google-translate/api'
 import { store } from '../redux/store'
 import {

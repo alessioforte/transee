@@ -9,8 +9,7 @@
     "build": "echo 'Building...' && webpack",
     "start": "electron ./app/main/main.js",
     "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
-    "deletemap": "rm dist/renderer/*.bundle.js.map",
-    "delete": "rm dist/renderer/*.bundle.js"
+    "deletejs": "rm dist/renderer/*.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +38,7 @@
     "eslint-loader": "^1.9.0",
     "file-loader": "^1.1.5",
     "style-loader": "^0.18.2",
+    "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^3.5.4",
     "webpack-dev-server": "^2.9.0"
   }
