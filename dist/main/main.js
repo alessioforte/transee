@@ -16,6 +16,14 @@ const iconPath = process.platform === 'win32' ?
 
 var win, aboutWin, tray, preferencesWin, welcomeWin, globalY, accelerator
 
+const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
+  showWindow()
+})
+
+if (isSecondInstance) {
+  app.quit()
+}
+
 app.on('ready', appReady)
 
 app.on('will-quit', () => {
@@ -92,7 +100,6 @@ const createWindow = () => {
     width: 680,
     height: 91,
     frame: false,
-    // vibrancy: 'ultra-dark',
     fullscreenable: false,
     resizable: false,
     transparent: true
@@ -137,7 +144,6 @@ const createAboutWindow = () => {
     width: 520,
     height: 250,
     titleBarStyle: 'hidden',
-    // vibrancy: 'ultra-dark',
     minimizable: false,
     maximizable: false,
     resizable: false
@@ -155,7 +161,6 @@ const createPreferencesWindow = () => {
     width: 420,
     height: 430,
     titleBarStyle: 'hidden',
-    // vibrancy: 'ultra-dark'
     minimizable: false,
     maximizable: false,
     resizable: false
