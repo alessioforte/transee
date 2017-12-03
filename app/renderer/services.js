@@ -70,7 +70,7 @@ window.onkeydown = e => {
     } else return
   }
 
-  if (e.ctrlKey && e.altKey && e.keyCode === 8) {
+  if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {
     ipc.send('devtools', null)
   }
 }

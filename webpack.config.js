@@ -69,7 +69,6 @@ module.exports = {
   },
 
   plugins: [
-    // new webpack.optimize.CommonsChunkPlugin('commons'),
-    // new UglifyJsPlugin(),
+    // new UglifyJsPlugin()
   ]
 }

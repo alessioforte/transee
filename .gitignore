@@ -11,5 +11,3 @@ dist/renderer/*.js
 dist/renderer/*.map
 
 dist/build/
-
-dev-tools-extension.js

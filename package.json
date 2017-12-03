@@ -5,11 +5,12 @@
   "author": "Alessio Forte",
   "license": "MIT",
   "scripts": {
-    "dev": "npm run build && npm run start",
-    "build": "echo 'Building...' && webpack",
+    "dev": "webpack && npm run start",
+    "build": "webpack -p",
     "start": "electron ./app/main/main.js",
     "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
-    "deletejs": "rm dist/renderer/*.js"
+    "deletejs": "rm dist/renderer/*.js",
+    "deletemap": "rm dist/renderer/*.map"
   },
   "repository": {
     "type": "git",
