@@ -46,6 +46,7 @@ function appReady() {
   // HANDLE APP VERSION
   let versionInSettings = settings.get('version')
   if (appVersion !== versionInSettings) {
+    settings.deleteAll()
     settings.set('version', appVersion)
     settings.set('show-welcome', true)
   }

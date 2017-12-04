@@ -33,6 +33,8 @@ autoUpdater.on('update-available', () => {
 
 autoUpdater.on('update-not-available', () => {
   if (manualCheck) {
+    manualCheck = false
+    
     dialog.showMessageBox({
       type: 'info',
       message: 'No Updates',
