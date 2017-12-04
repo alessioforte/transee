@@ -36,9 +36,6 @@ process.on('uncaughtException', () => {
 
 function appReady() {
 
-  let check = app.getLoginItemSettings().openAtLogin
-  settings.set('start-login', check)
-
   let screen = electron.screen
   let screenHeight = screen.getPrimaryDisplay().size.height
   globalY = screenHeight > 800 ? 160 : 80
@@ -50,6 +47,10 @@ function appReady() {
     settings.set('version', appVersion)
     settings.set('show-welcome', true)
   }
+
+  //  SET START AT LOGIN
+  let check = app.getLoginItemSettings().openAtLogin
+  settings.set('start-login', check)
 
   // SET GLOBAL SHORTCUT
   if (settings.has('shortcut')) {
