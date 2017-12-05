@@ -1,12 +1,8 @@
-const webpack = require('webpack')
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
 
   target: 'electron',
-
-  devtool: 'source-map',
 
   entry: {
     transee: './app/renderer/entry.js',
@@ -17,11 +13,6 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist/renderer'),
     filename: '[name].bundle.js'
-  },
-
-  devServer: {
-    contentBase: './app/renderer',
-    publicPath: 'http://localhost:8182/build/'
   },
 
   module: {
@@ -66,9 +57,6 @@ module.exports = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx']
-  },
+  }
 
-  plugins: [
-    // new UglifyJsPlugin()
-  ]
 }

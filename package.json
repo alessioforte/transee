@@ -5,10 +5,10 @@
   "author": "Alessio Forte",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack && npm run start",
-    "build": "webpack -p",
+    "dev": "webpack --config webpack.dev.js && npm run start",
+    "build": "webpack -p --config webpack.prod.js",
     "start": "electron ./app/main/main.js",
-    "watch": "./node_modules/.bin/webpack-dev-server --port 8182",
+    "watch": "webpack-dev-server --port 8182 --config webpack.dev.js",
     "deletejs": "rm dist/renderer/*.js",
     "deletemap": "rm dist/renderer/*.map"
   },
@@ -39,8 +39,8 @@
     "eslint-loader": "^1.9.0",
     "file-loader": "^1.1.5",
     "style-loader": "^0.18.2",
-    "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^3.5.4",
-    "webpack-dev-server": "^2.9.0"
+    "webpack-dev-server": "^2.9.0",
+    "webpack-merge": "^4.1.1"
   }
 }
