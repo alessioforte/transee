@@ -82,9 +82,10 @@ function updateTKK() {
                 var code = res.match(/TKK=(.*?)\(\)\)'\);/g);
                 var TKK
                 if (code) {
-                    eval(code[0]);
+                    var n = code[0].match(/[-0-9]+/g)
+                    TKK = n[4] + '.' + (Number(n[1]) + Number(n[3]))
                     /* eslint-disable no-undef */
-                    if (typeof TKK !== 'undefined') {
+                    if (!isNaN(Number(TKK))) {
                         window.TKK = TKK;
                         settings.set('TKK', TKK)
                     }

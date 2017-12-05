@@ -35,6 +35,10 @@ ipc.on('set-transparency', (event, check) => {
   store.dispatch(setTrasparency(check))
 })
 
+window.eval = global.eval = function() {
+  throw new Error("Sorry, Transee does not support eval() for security reasons.");
+}
+
 window.onkeydown = e => {
 
   if (e.keyCode === 27) {
