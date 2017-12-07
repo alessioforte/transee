@@ -30,7 +30,7 @@ app.on('ready', () => {
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  // createPreferencesWindow()
+  createPreferencesWindow()
   // createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
@@ -152,4 +152,14 @@ ipcMain.on('change-shortcut', (event, shortcut) => {
 ipcMain.on('set-transparency', (event, check) => {
   console.log(check)
   win.webContents.send('set-transparency', check)
+})
+
+ipcMain.on('restore-settings', (event, msg) => {
+  let check = app.getLoginItemSettings().openAtLogin
+  settings.set('version', app.getVersion())
+  settings.set('show-welcome', true)
+  settings.set('start-login', check)
+  settings.set('shortcut', 'Ctrl+Alt+T')
+  app.relaunch()
+  app.exit(0)
 })

@@ -273,3 +273,13 @@ ipcMain.on('delete-shortcut', (event) => {
 ipcMain.on('devtools', (event) => {
   win.webContents.openDevTools();
 })
+
+ipcMain.on('restore-settings', (event, msg) => {
+  let check = app.getLoginItemSettings().openAtLogin
+  settings.set('version', appVersion)
+  settings.set('show-welcome', true)
+  settings.set('start-login', check)
+  settings.set('shortcut', 'Ctrl+Alt+T')
+  app.relaunch()
+  app.exit(0)
+})

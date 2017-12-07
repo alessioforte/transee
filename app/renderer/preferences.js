@@ -127,6 +127,11 @@ class Preferences extends Component {
     document.removeEventListener('keyup', this.handleKeyUp)
   }
 
+  restoreSettings() {
+    settings.deleteAll()
+    ipc.send('restore-settings')
+  }
+
   render() {
     return (
       <Win>
@@ -199,6 +204,20 @@ class Preferences extends Component {
             </Comment>
           </Option>
 
+          <Option>
+            <Label>
+              Restore default settings
+              <Button
+                onClick={() => this.restoreSettings()}
+              >
+                Restore
+              </Button>
+            </Label>
+            <Comment>
+              Transee will be restarted.
+            </Comment>
+          </Option>
+
         </div>
       </Win>
     )
@@ -236,7 +255,7 @@ const Frame = styled.div`
 `
 const Option = styled.div`
   height: auto;
-  padding: 18px;
+  padding: 14px 18px;
   color: #ccc;
   border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 `
@@ -279,6 +298,18 @@ const Comment = styled.div`
   font-size: 12px;
   color: #999;
   padding-top: 9px;
+`
+const Button = styled.div`
+  background: #2182BD;
+  color: #fff;
+  padding: 3px 16px;
+  border-radius: 5px;
+  &:hover {
+    background: #238ed1;
+  }
+  &:active {
+    box-shadow: inset 0 0 10px 1px #0464a0;
+  }
 `
 
 render(<Preferences />,document.getElementById('root'))
