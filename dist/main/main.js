@@ -105,7 +105,6 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 680,
     height: 91,
-    backgroundColor: backgroundColor,
     frame: false,
     fullscreenable: false,
     resizable: false,
