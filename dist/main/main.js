@@ -13,6 +13,7 @@ const welcomePath = `file://${__dirname}/../renderer/welcome.html`
 const iconPath = process.platform === 'win32' ?
   path.join(__dirname, '../assets', 'icon_16x16.ico') :
   path.join(__dirname, '../assets', 'iconTemplate.png')
+const backgroundColor = '#2a2a2a'
 
 var win, aboutWin, tray, preferencesWin, welcomeWin, globalY, accelerator
 
@@ -104,6 +105,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 680,
     height: 91,
+    backgroundColor: backgroundColor,
     frame: false,
     fullscreenable: false,
     resizable: false,
@@ -149,6 +151,7 @@ const createAboutWindow = () => {
   aboutWin = new BrowserWindow({
     width: 520,
     height: 250,
+    backgroundColor: backgroundColor,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
@@ -166,6 +169,7 @@ const createPreferencesWindow = () => {
   preferencesWin = new BrowserWindow({
     width: 420,
     height: 430,
+    backgroundColor: backgroundColor,
     titleBarStyle: 'hidden',
     minimizable: false,
     maximizable: false,
@@ -184,6 +188,7 @@ const createWelcomeWindow = () => {
     width: 520,
     height: 430,
     titleBarStyle: 'hidden',
+    backgroundColor: backgroundColor,
     minimizable: false,
     maximizable: false,
     resizable: false
