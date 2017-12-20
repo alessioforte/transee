@@ -65,7 +65,7 @@ class App extends Component {
   }
 
   resizeTextarea() {
-    this.input.style.height = '60px'
+    this.input.style.height = '66px'
     this.input.style.height = this.input.scrollHeight + 'px'
   }
 

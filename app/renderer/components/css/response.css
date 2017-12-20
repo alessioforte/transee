@@ -24,15 +24,14 @@
 
 #translation {
   box-sizing: border-box;
-  padding: 18px 48px 18px 18px;
-  width: 100%;
+  padding: 18px 44px 24px 18px;
+  width: 99%;
   max-height: 300px;
   font-size: 18px;
   border: 0;
   background: none;
   resize: none;
   color: white;
-  margin-bottom: 6px;
 }
 
 #translation:focus {

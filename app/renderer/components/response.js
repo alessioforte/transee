@@ -21,7 +21,7 @@ class Response extends Component {
   }
 
   resizeTextarea() {
-    this.textarea.style.height = '60px'
+    this.textarea.style.height = '66px'
     this.textarea.style.height = this.textarea.scrollHeight + 'px'
   }
 
