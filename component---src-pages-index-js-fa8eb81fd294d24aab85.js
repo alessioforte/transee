@@ -1,2 +1,0 @@
-webpackJsonp([35783957827783],{201:function(t,e){"use strict";function n(){document.getElementById("mask").style.opacity=0}window.setTimeout(n,512)}});
-//# sourceMappingURL=component---src-pages-index-js-fa8eb81fd294d24aab85.js.map
