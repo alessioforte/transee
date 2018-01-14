@@ -106,6 +106,7 @@
 
 .obj {
   display: flex;
+  justify-content: space-between;
   border-bottom: 1px solid var(--tinyLineColor);
 }
 
@@ -139,12 +140,17 @@
 
 .word {
   margin: 3px;
-  width: 120px;
+
   color: white;
 }
 
 .values {
   margin: 3px;
   color: #aaa;
-  width: 405px;
+  width: 380px;
+}
+
+.article {
+  margin: 3px;
+  min-width: 10px;
 }

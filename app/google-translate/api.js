@@ -92,7 +92,7 @@ function translate(text, opts) {
 
           for (let j = 0; j < parse[1][i][2].length; j++) {
             var rating = parse[1][i][2][j][3]
-            var bar
+            var bar, article
 
             switch (true) {
               case (rating > 0.03):
@@ -109,19 +109,24 @@ function translate(text, opts) {
             }
 
             let obj = {
+              article: parse[1][i][2][j][4] || null,
               word: parse[1][i][2][j][0],
               meaning: parse[1][i][2][j][1],
               rating,
               bar
             }
+            
             content.push(obj)
           }
+
           let section = {
             type,
             content
           }
+
           translations.push(section)
         }
+
         obj.translations = translations
       }
 
@@ -256,7 +261,7 @@ function translateComplete(words, opts) {
 
       var parse = JSON.parse(res)
       if (global.showResponse) console.log(parse)
-      
+
       return parse
 
     }).catch(err => {
