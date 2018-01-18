@@ -150,11 +150,13 @@ class Response extends Component {
         var sections = translation.content.map((section, j) => {
           return (
             <div key={j} className='obj'>
-              <div className='rating'>
-                <div className={'bar ' + section.bar}></div>
+              <div className='left-box'>
+                <div className='rating'>
+                  <div className={'bar ' + section.bar}></div>
+                </div>
+                { section.article && <div className='article'>{section.article}</div> }
+                <div className='word'>{section.word}</div>
               </div>
-              { section.article && <div className='article'>{section.article}</div> }
-              <div className='word'>{section.word}</div>
               <div className='values'>{section.meaning.join(', ')}</div>
             </div>
           )

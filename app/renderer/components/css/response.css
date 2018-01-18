@@ -106,7 +106,6 @@
 
 .obj {
   display: flex;
-  justify-content: space-between;
   border-bottom: 1px solid var(--tinyLineColor);
 }
 
@@ -114,9 +113,14 @@
   border-bottom: 0;
 }
 
+.left-box {
+  display: flex;
+  width: 180px;
+}
+
 .rating {
   width: 35px;
-  margin-right: 3px;
+  margin-right: 5px;
 }
 
 .bar {
@@ -147,7 +151,6 @@
 .values {
   margin: 3px;
   color: #aaa;
-  width: 380px;
 }
 
 .article {

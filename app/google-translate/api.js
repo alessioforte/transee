@@ -95,13 +95,13 @@ function translate(text, opts) {
             var bar, article
 
             switch (true) {
-              case (rating > 0.03):
+              case (rating > 0.05):
                 bar = 'common'
                 break
-              case (rating < 0.03 && rating > 0.003):
+              case (rating < 0.05 && rating > 0.002):
                 bar = 'uncommon'
                 break
-              case (rating < 0.003):
+              case (rating < 0.002):
                 bar = 'rare'
                 break
               case (rating === undefined):
@@ -115,7 +115,7 @@ function translate(text, opts) {
               rating,
               bar
             }
-            
+
             content.push(obj)
           }
 
