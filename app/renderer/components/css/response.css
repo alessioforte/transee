@@ -115,7 +115,7 @@
 
 .left-box {
   display: flex;
-  width: 180px;
+  width: 210px;
 }
 
 .rating {
@@ -144,13 +144,13 @@
 
 .word {
   margin: 3px;
-
   color: white;
 }
 
 .values {
   margin: 3px;
   color: #aaa;
+  width: 380px;
 }
 
 .article {

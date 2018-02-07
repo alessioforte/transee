@@ -477,7 +477,7 @@ class LanguagesBar extends Component {
 
 const Dropdown = ({lang1, lang2, lang3, active, setLang, side}) => {
 
-  var langs = (side) ? langsFrom : langsTo
+  var langs = side ? langsFrom : langsTo
 
   function handleClick(i) {
     setLang(i)

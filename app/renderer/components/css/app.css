@@ -19,6 +19,8 @@ body::-webkit-scrollbar,
 body {
   margin: 0;
   padding: 0;
+  position: fixed;
+  overflow: hidden;
 }
 
 #input,

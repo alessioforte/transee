@@ -53,11 +53,7 @@ class App extends Component {
 
   componentDidMount() {
     createObservableOnInput()
-
     this.input.focus()
-    this.input.addEventListener('cut', () => window.setTimeout(this.resizeTextarea, 100))
-    this.input.addEventListener('paste', () => window.setTimeout(this.resizeTextarea, 100))
-    this.input.addEventListener('drop', () => window.setTimeout(this.resizeTextarea, 100))
   }
 
   componentDidUpdate() {
