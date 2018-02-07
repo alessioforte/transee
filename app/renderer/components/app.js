@@ -330,52 +330,39 @@ class App extends Component {
   }
 
   render() {
-    document.body.style.background = this.props.isTransparent ? bgTransparent : bgColor
     return (
-      <div>
-        <textarea
-          id='autocomplete'
-          ref={autocomplete => this.autocomplete = autocomplete}
-          type='text'
-          disabled={true}
-          style={{
-            display: this.props.dropdown ? 'none' : 'block',
-          }}
-        />
+      <div style={{ background: this.props.isTransparent ? bgTransparent : bgColor }}>
         <LanguagesBar />
-        <div className='inputContainer'>
+        <div style={{ display: this.props.dropdown ? 'none' : 'block' }}>
           <textarea
-            className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
-            id='input'
-            ref={input => this.input = input}
+            id='autocomplete'
+            ref={autocomplete => this.autocomplete = autocomplete}
             type='text'
-            placeholder='Translate'
-            maxLength={5000}
-            style={{
-              display: this.props.dropdown ? 'none' : 'block',
-            }}
-            onPaste={e => this.onInputPaste(e)}
-            onChange={e => this.onInputChange(e)}
-            onKeyDown={e => this.handleKeydown(e)}
+            disabled={true}
           />
-          <div
-            className='icons'
-            style={{
-              display: this.props.dropdown ? 'none' : 'block',
-            }}
-          >
-            { this.renderIcons() }
+          <div className='inputContainer'>
+            <textarea
+              className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
+              id='input'
+              ref={input => this.input = input}
+              type='text'
+              placeholder='Translate'
+              maxLength={5000}
+              onPaste={e => this.onInputPaste(e)}
+              onChange={e => this.onInputChange(e)}
+              onKeyDown={e => this.handleKeydown(e)}
+            />
+            <div className='icons'>
+              { this.renderIcons() }
+            </div>
           </div>
-        </div>
-        {
-          this.props.dropdown ? null :
           <div>
             { this.renderError() }
             { this.renderDidYouMean() }
             { this.renderSuggest() }
             { this.renderResponse() }
           </div>
-        }
+        </div>
       </div>
     )
   }
