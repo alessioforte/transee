@@ -5,9 +5,9 @@ module.exports = {
   target: 'electron',
 
   entry: {
-    transee: './app/renderer/entry.js',
-    preferences: './app/renderer/preferences.js',
-    welcome: './app/renderer/welcome.js'
+    transee: './src/renderer/app/entry.js',
+    preferences: './src/renderer/preferences/preferences.js',
+    welcome: './src/renderer/welcome/welcome.js'
   },
 
   output: {

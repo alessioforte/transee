@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
-import { Checkbox } from './components/checkbox'
+import { Checkbox } from '../components/checkbox'
 import styled from 'styled-components'
-import { frameColor } from './colors'
-import './components/css/styles.css'
-import icon from '../../dist/assets/icon_256x256.png'
-import menubarIMG from '../../dist/assets/menubar.png'
-import taskbarIMG from '../../dist/assets/taskbar.png'
+import { frameColor } from '../colors'
+import '../styles.css'
+import icon from '../../../dist/assets/icon_256x256.png'
+import menubarIMG from '../../../dist/assets/menubar.png'
+import taskbarIMG from '../../../dist/assets/taskbar.png'
 
 const barIMG = window.navigator.platform === 'Win32' ? taskbarIMG : menubarIMG
 

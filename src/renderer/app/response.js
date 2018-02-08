@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { speedTo } from '../../redux/actions'
-import { playAudio } from '../services'
+import { speedTo } from '../redux/actions'
+import { playAudio } from './services'
 import './css/response.css'
 
 const mapStateToProps = ({ langs, obj, speed }) => ({ langs, obj, speed })

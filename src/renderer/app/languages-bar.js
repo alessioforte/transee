@@ -8,13 +8,13 @@ import {
   setFromActive,
   setToBar,
   setFromBar,
-  setToActive } from '../../redux/actions'
+  setToActive } from '../redux/actions'
 import {
   searchTranslation,
   getFromPosition,
   getToPosition,
   invertLanguages,
-  saveSettings } from '../services'
+  saveSettings } from './services'
 import './css/languages-bar.css'
 
 const mapStateToProps = ({ langs, dropdown, fromBar, fromActive, toBar, toActive }) => {

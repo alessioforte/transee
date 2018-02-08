@@ -6,7 +6,7 @@ import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/debounceTime'
 import 'rxjs/add/operator/concatMap'
-import { translate, complete, translateComplete, voice } from '../google-translate/api'
+import { translate, complete, translateComplete, voice } from '../../google-translate/api'
 import { store } from '../redux/store'
 import {
   updateObj,
@@ -23,13 +23,12 @@ import {
   speedTo,
   setTrasparency } from '../redux/actions'
 
-var input, autocomplete
-
 const ipc = require('electron').ipcRenderer
-const { webFrame } = require('electron')
-webFrame.setZoomLevelLimits(1, 1)
-
 const settings = require('electron-settings')
+var input, autocomplete
+const { webFrame } = require('electron')
+
+webFrame.setZoomLevelLimits(1, 1)
 
 ipc.on('set-transparency', (event, check) => {
   store.dispatch(setTrasparency(check))
@@ -85,7 +84,7 @@ export const createObservableOnInput = () => {
 
   const streamTranslate = Observable.fromEvent(input, 'input')
     .map(e => input.value)
-    .debounceTime(250)
+    .debounceTime(320)
     .concatMap((text, i) => {
 
       if (!text || /^\s*$/.test(text)) {
@@ -113,7 +112,7 @@ export const createObservableOnInput = () => {
 
   const streamComplete = Observable.fromEvent(input, 'input')
     .map(e => input.value)
-    .debounceTime(100)
+    .debounceTime(64)
     .concatMap(text => {
       var textCameFromPaste = ((input.getAttribute('pasted') || '') === '1')
       if (!text || /^\s*$/.test(text)) {

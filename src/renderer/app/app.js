@@ -15,13 +15,13 @@ import {
   setToActive,
   setToBar,
   setFromBar,
-  setError } from '../../redux/actions'
+  setError } from '../redux/actions'
 import {
   searchTranslation,
   playAudio,
   getToPosition,
   setMainWindowSize,
-  createObservableOnInput } from '../services'
+  createObservableOnInput } from './services'
 
 import { bgColor, bgTransparent } from '../colors'
 

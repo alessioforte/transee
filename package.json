@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack --config webpack.dev.js && npm run start",
     "build": "webpack -p --config webpack.prod.js",
-    "start": "electron ./app/main/main.js",
+    "start": "electron ./src/main/main.dev.js",
     "watch": "webpack-dev-server --port 8182 --config webpack.dev.js",
     "deleteall": "rm dist/renderer/*.js dist/renderer/*.map",
     "deletejs": "rm dist/renderer/*.js"

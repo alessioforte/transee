@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
-import { Checkbox } from './components/checkbox'
-import { frameColor } from './colors'
-import './components/css/styles.css'
+import { Checkbox } from '../components/checkbox'
+import { frameColor } from '../colors'
+import '../styles.css'
 
 const settings = require('electron-settings')
 const ipc = require('electron').ipcRenderer

@@ -8,9 +8,9 @@ const {
   REACT_DEVELOPER_TOOLS,
   REDUX_DEVTOOLS } = require('electron-devtools-installer')
 
-const indexPath = `file://${process.cwd()}/app/renderer/index.html`
-const preferencesPath = `file://${process.cwd()}/app/renderer/preferences.html`
-const welcomePath = `file://${process.cwd()}/app/renderer/welcome.html`
+const indexPath = `file://${process.cwd()}/src/renderer/app/index.html`
+const preferencesPath = `file://${process.cwd()}/src/renderer/preferences/preferences.html`
+const welcomePath = `file://${process.cwd()}/src/renderer/welcome/welcome.html`
 
 let win = null
 let tray = null
@@ -30,7 +30,7 @@ app.on('ready', () => {
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  createPreferencesWindow()
+  // createPreferencesWindow()
   // createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true

@@ -6,7 +6,7 @@ module.exports = merge(config, {
   devtool: 'source-map',
 
   devServer: {
-    contentBase: './app/renderer',
+    contentBase: './src/renderer',
     publicPath: 'http://localhost:8182/build/'
   },
 
