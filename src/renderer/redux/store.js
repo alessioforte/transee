@@ -23,8 +23,7 @@ const state = {
     to3: 'es'
   },
   fromActive: [true, false, false],
-  toActive: [true, false, false],
-  isTransparent: false
+  toActive: [true, false, false]
 }
 
 var initialState = settings.has('settings') ? settings.get('settings') : state

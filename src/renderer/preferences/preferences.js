@@ -22,12 +22,10 @@ class Preferences extends Component {
     var shortcut = shortcutInSettings || 'Click to record new shortcut'
     var shortStyle = shortcutInSettings ? successShortStyle : defaultShortStyle
     var showDelete = shortcutInSettings ? true : false
-    var isTransparent = settings.has('settings') ? settings.get('settings').isTransparent : false
 
     this.state = {
       startLogin,
       checkAutomaticallyUpdates,
-      isTransparent,
       shortcut,
       shortStyle,
       showDelete,
@@ -50,15 +48,6 @@ class Preferences extends Component {
     let check = !this.state.checkAutomaticallyUpdates
     this.setState({ checkAutomaticallyUpdates: check })
     settings.set('check-automatically-updates', check)
-  }
-
-  setTransparent() {
-    let check = !this.state.isTransparent
-    this.setState({ isTransparent: check })
-    ipc.send('set-transparency', check)
-    var set = settings.get('settings') || {}
-    set.isTransparent = check
-    settings.set('settings', set)
   }
 
   clickOnRecord() {
@@ -160,19 +149,6 @@ class Preferences extends Component {
                 onClick={() => this.setCheckAutomaticallyUpdates()}
               />
             </Label>
-          </Option>
-
-          <Option>
-            <Label>
-              Transparency in translation bar
-              <Checkbox
-                value={this.state.isTransparent}
-                onClick={() => this.setTransparent()}
-              />
-            </Label>
-            <Comment>
-              Sometimes transparency is helpful when you want to read behind the window.
-            </Comment>
           </Option>
 
           <Option>

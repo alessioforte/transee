@@ -12,10 +12,11 @@ const indexPath = `file://${process.cwd()}/src/renderer/app/index.html`
 const preferencesPath = `file://${process.cwd()}/src/renderer/preferences/preferences.html`
 const welcomePath = `file://${process.cwd()}/src/renderer/welcome/welcome.html`
 
-let win = null
-let tray = null
-let preferencesWin = null
-let welcomeWin = null
+var win = null
+var tray = null
+var preferencesWin = null
+var welcomeWin = null
+var backgroundColor = '#2a2a2a'
 
 app.on('ready', () => {
 
@@ -30,7 +31,7 @@ app.on('ready', () => {
   console.log('start at login:', check)
   settings.set('start-login', check)
   createWindow()
-  // createPreferencesWindow()
+  createPreferencesWindow()
   // createWelcomeWindow()
 
   let checkAutomaticallyUpdates = settings.has('check-automatically-updates') ? settings.get('check-automatically-updates') : true
@@ -68,7 +69,7 @@ const createWindow = () => {
     x: 60,
     fullscreenable: false,
     resizable: false,
-    transparent: true,
+    backgroundColor: backgroundColor
     // vibrancy: 'ultra-dark',
   });
 
@@ -147,11 +148,6 @@ ipcMain.on('set-start-login', (event, check) => {
 
 ipcMain.on('change-shortcut', (event, shortcut) => {
   console.log(shortcut)
-})
-
-ipcMain.on('set-transparency', (event, check) => {
-  console.log(check)
-  win.webContents.send('set-transparency', check)
 })
 
 ipcMain.on('restore-settings', (event, msg) => {

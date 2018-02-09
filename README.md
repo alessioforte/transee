@@ -38,7 +38,7 @@ Now run Transee in another terminal:
 
     npm run dev
 
-The main process in src/main/ folder is just for development version. After `npm run dev` the bundles are created in dist/renderer folder
+The main process in src/main/ folder is just for development version. After `npm run dev` the bundles are created in dist/renderer/ folder
 
 To run a distribution version open dist/ directory and install Node dependencies:
 

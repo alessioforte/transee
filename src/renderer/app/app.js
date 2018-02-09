@@ -23,10 +23,8 @@ import {
   setMainWindowSize,
   createObservableOnInput } from './services'
 
-import { bgColor, bgTransparent } from '../colors'
-
-const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar, isTransparent }) => {
-  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar, isTransparent })
+const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar }) => {
+  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar })
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -47,7 +45,6 @@ class App extends Component {
 
   constructor() {
     super()
-    this.resizeTextarea = this.resizeTextarea.bind(this)
     this.hideSuggest = this.hideSuggest.bind(this)
   }
 
@@ -331,7 +328,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ background: this.props.isTransparent ? bgTransparent : bgColor }}>
+      <div>
         <LanguagesBar />
         <div style={{ display: this.props.dropdown ? 'none' : 'block' }}>
           <textarea

@@ -20,19 +20,15 @@ import {
   setToActive,
   setFromActive,
   speedFrom,
-  speedTo,
-  setTrasparency } from '../redux/actions'
+  speedTo } from '../redux/actions'
 
 const ipc = require('electron').ipcRenderer
 const settings = require('electron-settings')
-var input, autocomplete
 const { webFrame } = require('electron')
 
-webFrame.setZoomLevelLimits(1, 1)
+var input, autocomplete
 
-ipc.on('set-transparency', (event, check) => {
-  store.dispatch(setTrasparency(check))
-})
+webFrame.setZoomLevelLimits(1, 1)
 
 window.eval = global.eval = function() {
   throw new Error("Sorry, Transee does not support eval() for security reasons.");
@@ -254,8 +250,7 @@ export const saveSettings = () => {
     fromActive: s.fromActive,
     toActive: s.toActive,
     fromBar: s.fromBar,
-    toBar: s.toBar,
-    isTransparent: s.isTransparent
+    toBar: s.toBar
   }
   settings.set('settings', obj)
 }

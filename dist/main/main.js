@@ -108,7 +108,7 @@ const createWindow = () => {
     frame: false,
     fullscreenable: false,
     resizable: false,
-    transparent: true,
+    backgroundColor: backgroundColor,
     show: false
   })
 
@@ -263,10 +263,6 @@ ipcMain.on('set-start-login', (event, check) => {
 ipcMain.on('change-shortcut', (event, shortcut) => {
   globalShortcut.unregisterAll()
   globalShortcut.register(shortcut, () => { showWindow() })
-})
-
-ipcMain.on('set-transparency', (event, check) => {
-  win.webContents.send('set-transparency', check)
 })
 
 ipcMain.on('delete-shortcut', (event) => {

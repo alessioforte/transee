@@ -18,8 +18,7 @@ const DEFAULT_STATE = {
     to3: 'es'
   },
   fromActive: [true, false, false],
-  toActive: [true, false, false],
-  isTransparent: false
+  toActive: [true, false, false]
 }
 
 export const langs = (state = DEFAULT_STATE.langs, action) => {
@@ -147,15 +146,6 @@ export const toBar = (state = DEFAULT_STATE.toBar, action) => {
       return Object.assign({}, state, {
         to3: action.data
       })
-    default:
-      return state
-  }
-}
-
-export const isTransparent = (state = DEFAULT_STATE.isTransparent, action) => {
-  switch (action.type) {
-    case 'SET_TRANSPARENCY':
-      return action.data
     default:
       return state
   }
