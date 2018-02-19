@@ -96,19 +96,24 @@ export const createObservableOnInput = () => {
         .fromPromise(translate(text, langs))
         .catch(err => {
           store.dispatch(setError(true))
+          store.dispatch(updateObj(null))
+          store.dispatch(updateSgt(null))
+          store.dispatch(updateTSgt(null))
           console.error(err)
           return Observable.empty()
         })
     })
-    .subscribe(obj => {
-      store.dispatch(updateObj(obj))
-      store.dispatch(speedFrom(false))
-      store.dispatch(speedTo(false))
-    })
+    .subscribe(
+      obj => {
+        store.dispatch(updateObj(obj))
+        store.dispatch(speedFrom(false))
+        store.dispatch(speedTo(false))
+      }
+    )
 
   const streamComplete = Observable.fromEvent(input, 'input')
     .map(e => input.value)
-    .debounceTime(64)
+    .debounceTime(128)
     .concatMap(text => {
       var textCameFromPaste = ((input.getAttribute('pasted') || '') === '1')
       if (!text || /^\s*$/.test(text)) {

@@ -3,6 +3,8 @@ import { langsFrom } from '../../google-translate/langs'
 import { connect } from 'react-redux'
 import LanguagesBar from './languages-bar'
 import Response from './response'
+import CircularProgress from 'material-ui/CircularProgress'
+import { Speaker } from '../svg/speaker'
 import './css/app.css'
 import {
   updateSgt,
@@ -58,7 +60,7 @@ class App extends Component {
   }
 
   resizeTextarea() {
-    this.input.style.height = '66px'
+    this.input.style.height = '60px'
     this.input.style.height = this.input.scrollHeight + 'px'
   }
 
@@ -88,11 +90,9 @@ class App extends Component {
 
       if (keyCode === 9 && this.props.suggest.sgt.length) {
         e.preventDefault()
-        let from = this.props.langs.from
-        let to = this.props.langs.to
         this.input.value = this.props.suggest.sgt[0]
         this.autocomplete.value = ''
-        searchTranslation(this.props.suggest.sgt[0])
+        setTimeout(() => searchTranslation(this.input.value), 321)
       }
 
       if (keyCode === 27 || keyCode === 13) {
@@ -144,8 +144,6 @@ class App extends Component {
           }
         }
 
-        let from = this.props.langs.from
-        let to = this.props.langs.to
         this.input.value = text
         searchTranslation(text)
       }
@@ -166,8 +164,6 @@ class App extends Component {
 
   handleClickOnSuggest(e, text) {
     this.input.value = text
-    let from = this.props.langs.from
-    let to = this.props.langs.to
     searchTranslation(text)
 
     this.props.speedFrom(false)
@@ -267,20 +263,12 @@ class App extends Component {
   }
 
   renderIcons() {
-    if (this.props.obj) {
+    if ((this.props.suggest && this.props.suggest.sgt) || this.props.obj) {
       return (
-        <div>
-          <div
-            className='audio'
-            onClick={() => this.handleClickOnPlayIcon()}
-          >
-            <svg
-              className="play"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 351.54 392.52"
-            ><path d="M484.21,305.42L192.29,472c-23.28,13.29-42.15,2.33-42.15-24.48V115.24c0-26.81,18.87-37.77,42.15-24.48L484.21,257.32C507.49,270.6,507.49,292.14,484.21,305.42Z" transform="translate(-150.13 -85.11)"/>
-            </svg>
-          </div>
+        <div
+          onClick={() => this.handleClickOnPlayIcon()}
+        >
+          <Speaker />
         </div>
       )
     }
@@ -295,7 +283,7 @@ class App extends Component {
   }
 
   renderError() {
-    if (this.props.error) {
+    if (this.props.error && !this.props.obj) {
       return (
         <div className='error'>
           {'Sorry I can\'t translate!'}
@@ -349,9 +337,9 @@ class App extends Component {
               onChange={e => this.onInputChange(e)}
               onKeyDown={e => this.handleKeydown(e)}
             />
-            <div className='icons'>
-              { this.renderIcons() }
-            </div>
+          </div>
+          <div className='icons'>
+            { this.renderIcons() }
           </div>
           <div>
             { this.renderError() }

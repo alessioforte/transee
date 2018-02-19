@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { speedTo } from '../redux/actions'
 import { playAudio } from './services'
+import { Speaker } from '../svg/speaker'
 import './css/response.css'
 
 const mapStateToProps = ({ langs, obj, speed }) => ({ langs, obj, speed })
@@ -21,7 +22,7 @@ class Response extends Component {
   }
 
   resizeTextarea() {
-    this.textarea.style.height = '66px'
+    this.textarea.style.height = '60px'
     this.textarea.style.height = this.textarea.scrollHeight + 'px'
   }
 
@@ -44,28 +45,17 @@ class Response extends Component {
     if (this.props.obj.translation) {
       return (
         <div className='t_box'>
-          <div className='inputContainer'>
-            <textarea
-              ref={textarea => this.textarea = textarea}
-              id='translation'
-              className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
-              type='text'
-              value={this.props.obj.translation}
-              disabled={true}
-            />
-            <div className='icons'>
-              <div
-                className='audio'
-                onClick={() => this.handleClickOnPlayIcon()}
-              >
-                <svg
-                  className="play"
-                  data-name="play"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 351.54 392.52"
-                ><path d="M484.21,305.42L192.29,472c-23.28,13.29-42.15,2.33-42.15-24.48V115.24c0-26.81,18.87-37.77,42.15-24.48L484.21,257.32C507.49,270.6,507.49,292.14,484.21,305.42Z" transform="translate(-150.13 -85.11)"/>
-                </svg>
-              </div>
+          <textarea
+            ref={textarea => this.textarea = textarea}
+            id='translation'
+            className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
+            type='text'
+            value={this.props.obj.translation}
+            disabled={true}
+          />
+          <div className='icons'>
+            <div onClick={() => this.handleClickOnPlayIcon()}>
+              <Speaker />
             </div>
           </div>
         </div>
@@ -194,7 +184,6 @@ class Response extends Component {
   }
 
   render() {
-    var obj = this.props.obj
     return (
       <div className='response'>
         <div className='block'>

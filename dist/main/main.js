@@ -104,7 +104,7 @@ function appReady() {
 const createWindow = () => {
   win = new BrowserWindow({
     width: 680,
-    height: 91,
+    height: 85,
     frame: false,
     fullscreenable: false,
     resizable: false,
