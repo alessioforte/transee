@@ -11,7 +11,7 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, 'dist/renderer'),
+    path: path.join(__dirname, '../dist/renderer'),
     filename: '[name].bundle.js'
   },
 
@@ -26,8 +26,7 @@ module.exports = {
         test: /\.js?$/,
         loader: 'babel-loader',
         options: {
-          presets: ['react', 'env'],
-
+          presets: ['react', 'env']
         }
       },
       {

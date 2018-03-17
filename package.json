@@ -5,13 +5,13 @@
   "author": "Alessio Forte",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --config webpack.dev.js && npm run start",
-    "build": "webpack -p --config webpack.prod.js",
+    "dev": "webpack --config config/webpack.dev.js && npm run start",
+    "build": "webpack -p --config config/webpack.prod.js",
     "start": "electron ./src/main/main.dev.js",
-    "watch": "webpack-dev-server --port 8182 --config webpack.dev.js",
-    "deleteall": "rimraf dist/renderer/*.js dist/renderer/*.map",
-    "deletejs": "rimraf dist/renderer/*.js",
-    "deletebuild": "rimraf dist/build"
+    "watch": "webpack-dev-server --port 8182 --config config/webpack.dev.js",
+    "delete:alljs": "rimraf dist/renderer/*.js dist/renderer/*.map",
+    "delete:js": "rimraf dist/renderer/*.js",
+    "delete:build": "rimraf dist/build"
   },
   "repository": {
     "type": "git",
