@@ -3,7 +3,6 @@ import { langsFrom } from '../../google-translate/langs'
 import { connect } from 'react-redux'
 import LanguagesBar from './languages-bar'
 import Response from './response'
-import CircularProgress from 'material-ui/CircularProgress'
 import { Speaker } from '../svg/speaker'
 import './css/app.css'
 import {
