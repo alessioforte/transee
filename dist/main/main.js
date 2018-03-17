@@ -37,10 +37,6 @@ process.on('uncaughtException', () => {
 
 function appReady() {
 
-  let screen = electron.screen
-  let screenHeight = screen.getPrimaryDisplay().size.height
-  globalY = screenHeight > 800 ? 160 : 80
-
   // HANDLE APP VERSION
   let versionInSettings = settings.get('version')
   if (appVersion !== versionInSettings) {
@@ -222,7 +218,7 @@ function getWindowPosition() {
   let windowBounds = win.getBounds()
 
   const x = Math.round(displayBounds.x + (displayBounds.width - windowBounds.width) / 2)
-  const y = globalY
+  const y = (displayBounds.height - 800) / 2
 
   return { x, y }
 }

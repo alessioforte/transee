@@ -3,6 +3,7 @@ node_modules
 publish.sh
 
 yarn.lock
+yarn-error.log
 package-lock.json
 
 .DS_Store
