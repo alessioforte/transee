@@ -218,7 +218,7 @@ function getWindowPosition() {
   let windowBounds = win.getBounds()
 
   const x = Math.round(displayBounds.x + (displayBounds.width - windowBounds.width) / 2)
-  const y = (displayBounds.height - 800) / 2
+  const y = (displayBounds.height - 800) / 2 + displayBounds.y
 
   return { x, y }
 }
