@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { speedTo } from '../redux/actions'
+import { speedTo } from './actions'
 import { playAudio } from './services'
 import { Speaker } from '../svg/speaker'
 import './css/response.css'

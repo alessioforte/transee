@@ -17,7 +17,7 @@ import {
   setToActive,
   setToBar,
   setFromBar,
-  setError } from '../redux/actions'
+  setError } from './actions'
 import {
   searchTranslation,
   playAudio,

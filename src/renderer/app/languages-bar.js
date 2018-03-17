@@ -8,7 +8,7 @@ import {
   setFromActive,
   setToBar,
   setFromBar,
-  setToActive } from '../redux/actions'
+  setToActive } from './actions'
 import {
   searchTranslation,
   getFromPosition,

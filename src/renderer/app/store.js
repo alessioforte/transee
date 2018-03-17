@@ -29,4 +29,8 @@ const state = {
 var initialState = settings.has('settings') ? settings.get('settings') : state
 
 const allReducers = combineReducers(reducers)
-export const store = createStore(allReducers, initialState)
+
+export const store = createStore(
+  allReducers,
+  initialState
+)

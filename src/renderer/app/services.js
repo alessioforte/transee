@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/debounceTime'
 import 'rxjs/add/operator/concatMap'
 import { translate, complete, translateComplete, voice } from '../../google-translate/api'
-import { store } from '../redux/store'
+import { store } from './store'
 import {
   updateObj,
   updateSgt,
@@ -20,7 +20,7 @@ import {
   setToActive,
   setFromActive,
   speedFrom,
-  speedTo } from '../redux/actions'
+  speedTo } from './actions'
 
 const ipc = require('electron').ipcRenderer
 const settings = require('electron-settings')
