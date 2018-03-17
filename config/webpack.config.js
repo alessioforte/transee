@@ -5,9 +5,9 @@ module.exports = {
   target: 'electron',
 
   entry: {
-    transee: './src/renderer/app/entry.js',
-    preferences: './src/renderer/preferences/preferences.js',
-    welcome: './src/renderer/welcome/welcome.js'
+    transee: ['babel-polyfill', './src/renderer/app/entry.js'],
+    preferences: ['babel-polyfill', './src/renderer/preferences/preferences.js'],
+    welcome: ['babel-polyfill', './src/renderer/welcome/welcome.js']
   },
 
   output: {

@@ -1,4 +1,5 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 import * as reducers from './reducers'
 
 const settings = require('electron-settings')
@@ -28,9 +29,19 @@ const state = {
 
 var initialState = settings.has('settings') ? settings.get('settings') : state
 
+const sagaMiddleware = createSagaMiddleware()
+const middleware = [
+  sagaMiddleware
+]
+
 const allReducers = combineReducers(reducers)
 
-export const store = createStore(
+const store = createStore(
   allReducers,
-  initialState
+  initialState,
+  applyMiddleware(...middleware)
 )
+
+store.runSaga = sagaMiddleware.run
+
+export default store

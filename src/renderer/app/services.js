@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/debounceTime'
 import 'rxjs/add/operator/concatMap'
 import { translate, complete, translateComplete, voice } from '../../google-translate/api'
-import { store } from './store'
+import store from './store'
 import {
   updateObj,
   updateSgt,
