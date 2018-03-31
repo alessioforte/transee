@@ -48,7 +48,6 @@ class Response extends Component {
           <textarea
             ref={textarea => this.textarea = textarea}
             id='translation'
-            className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
             type='text'
             value={this.props.obj.translation}
             disabled={true}
@@ -190,9 +189,7 @@ class Response extends Component {
           {this.renderPronunciation()}
           {this.renderTanslation()}
         </div>
-        <div
-          className={window.navigator.platform === 'MacIntel' ? 'scroll' : 'scroll noScroll'}
-        >
+        <div>
           {this.renderTranslationsOf()}
           {this.renderDefinitionsOf()}
           {this.renderSynonyms()}

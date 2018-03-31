@@ -5,11 +5,11 @@
 * {
   padding: 0;
   margin: 0;
+  font-family: 'Nunito', sans-serif;
   font-weight: 300;
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
   font-size: 14px;
   background: var(--groundColor);
   overflow: hidden;

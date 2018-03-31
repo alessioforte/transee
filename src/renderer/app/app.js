@@ -24,24 +24,6 @@ import {
   setMainWindowSize,
   createObservableOnInput } from './services'
 
-const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar }) => {
-  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar })
-}
-
-const mapDispatchToProps = dispatch => ({
-  updateSgt: sgt => dispatch(updateSgt(sgt)),
-  updateTSgt: t_sgt => dispatch(updateTSgt(t_sgt)),
-  speedFrom: speed => dispatch(speedFrom(speed)),
-  speedTo: speed => dispatch(speedTo(speed)),
-  setError: isErr => dispatch(setError(isErr)),
-  setToLang: lang => dispatch(setToLang(lang)),
-  setFromLang: lang => dispatch(setFromLang(lang)),
-  setFromBar: (from, i) => dispatch(setFromBar(from, i)),
-  setToBar: (to, i) => dispatch(setToBar(to, i)),
-  setFromActive: active => dispatch(setFromActive(active)),
-  setToActive: active => dispatch(setToActive(active))
-})
-
 class App extends Component {
 
   constructor() {
@@ -56,6 +38,7 @@ class App extends Component {
 
   componentDidUpdate() {
     setMainWindowSize()
+    this.input.focus()
   }
 
   resizeTextarea() {
@@ -326,7 +309,6 @@ class App extends Component {
           />
           <div className='inputContainer'>
             <textarea
-              className={window.navigator.platform === 'MacIntel' ? '' : 'noScroll'}
               id='input'
               ref={input => this.input = input}
               type='text'
@@ -351,5 +333,23 @@ class App extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar }) => {
+  return ({ langs, obj, suggest, speed, dropdown, error, fromBar, toBar })
+}
+
+const mapDispatchToProps = dispatch => ({
+  updateSgt: sgt => dispatch(updateSgt(sgt)),
+  updateTSgt: t_sgt => dispatch(updateTSgt(t_sgt)),
+  speedFrom: speed => dispatch(speedFrom(speed)),
+  speedTo: speed => dispatch(speedTo(speed)),
+  setError: isErr => dispatch(setError(isErr)),
+  setToLang: lang => dispatch(setToLang(lang)),
+  setFromLang: lang => dispatch(setFromLang(lang)),
+  setFromBar: (from, i) => dispatch(setFromBar(from, i)),
+  setToBar: (to, i) => dispatch(setToBar(to, i)),
+  setFromActive: active => dispatch(setFromActive(active)),
+  setToActive: active => dispatch(setToActive(active))
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

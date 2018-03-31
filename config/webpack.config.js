@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
 
-  target: 'electron',
+  target: 'electron-renderer',
 
   entry: {
     transee: ['babel-polyfill', './src/renderer/app/entry.js'],

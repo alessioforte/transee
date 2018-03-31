@@ -5,10 +5,10 @@
   "author": "Alessio Forte",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --config config/webpack.dev.js && npm run start",
-    "build": "webpack -p --config config/webpack.prod.js",
+    "dev": "webpack --mode development --config config/webpack.dev.js && npm run start",
+    "build": "webpack -p --mode production --config config/webpack.prod.js",
     "start": "electron ./src/main/main.dev.js",
-    "watch": "webpack-dev-server --port 8182 --config config/webpack.dev.js",
+    "watch": "webpack-dev-server --mode development --port 8182 --config config/webpack.dev.js",
     "delete:alljs": "rimraf dist/renderer/*.js dist/renderer/*.map",
     "delete:js": "rimraf dist/renderer/*.js",
     "delete:build": "rimraf dist/build"
@@ -39,13 +39,14 @@
     "electron": "^1.8.2",
     "electron-devtools-installer": "^2.2.1",
     "electron-settings": "^3.1.1",
-    "eslint": "^4.4.1",
-    "eslint-loader": "^1.9.0",
+    "eslint": "^4.19.1",
+    "eslint-loader": "^2.0.0",
     "file-loader": "^1.1.5",
     "rimraf": "^2.6.2",
     "style-loader": "^0.18.2",
-    "webpack": "^3.5.4",
-    "webpack-dev-server": "^2.9.0",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.1",
     "webpack-merge": "^4.1.1"
   }
 }

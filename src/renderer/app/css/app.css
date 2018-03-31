@@ -4,18 +4,6 @@
   --groundColor: rgba(42, 42, 42, 0.9);
 }
 
-body::-webkit-scrollbar,
-.noScroll::-webkit-scrollbar,
-#input::-webkit-scrollbar,
-#autocomplete::-webkit-scrollbar {
-  display: none;
-}
-
-* {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 300;
-}
-
 body {
   margin: 0;
   padding: 0;
