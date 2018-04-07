@@ -25,8 +25,6 @@ render(
 
 injectGlobal`
   * {
-    padding: 0;
-    margin: 0;
     font-family: 'Nunito', sans-serif;
     font-weight: 300;
   }

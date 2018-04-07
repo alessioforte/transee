@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { speedTo } from './actions'
-import { playAudio } from './services'
+import { playAudio } from './utils'
 import { Speaker } from '../svg/speaker'
 import './css/response.css'
-
-const mapStateToProps = ({ langs, obj, speed }) => ({ langs, obj, speed })
-
-const mapDispatchToProps = dispatch => ({
-  speedTo: speed => dispatch(speedTo(speed))
-})
 
 class Response extends Component {
 
@@ -22,12 +16,14 @@ class Response extends Component {
   }
 
   resizeTextarea() {
-    this.textarea.style.height = '60px'
-    this.textarea.style.height = this.textarea.scrollHeight + 'px'
+    if (this.textarea) {
+      this.textarea.style.height = '60px'
+      this.textarea.style.height = this.textarea.scrollHeight + 'px'
+    }
   }
 
   handleClickOnPlayIcon() {
-    let text = this.props.obj.translation
+    let text = this.props.translate.data.translation
     let lang = this.props.langs.to
     let speed = this.props.speed.to
     playAudio(text, lang, speed)
@@ -35,21 +31,22 @@ class Response extends Component {
   }
 
   renderPronunciation() {
-    var p
-    if (p = this.props.obj.pronunciation) {
-      return <div className='pronunciation'>{p}</div>
+    let data = this.props.translate.data
+    if (data && data.pronunciation) {
+      return <div className='pronunciation'>{data.pronunciation}</div>
     } else return null
   }
 
   renderTanslation() {
-    if (this.props.obj.translation) {
+    let data = this.props.translate ? this.props.translate.data : null
+    if (data) {
       return (
         <div className='t_box'>
           <textarea
             ref={textarea => this.textarea = textarea}
             id='translation'
             type='text'
-            value={this.props.obj.translation}
+            value={data.translation}
             disabled={true}
           />
           <div className='icons'>
@@ -63,9 +60,9 @@ class Response extends Component {
   }
 
   renderDefinitionsOf() {
-    var x
-    if (x = this.props.obj.definitions) {
-      var types = x.map((definition, i) => {
+    let data = this.props.translate.data
+    if (data && data.definitions) {
+      var types = data.definitions.map((definition, i) => {
         var sections = definition.content.map((section, j) => {
           return (
             <div key={j} className='section'>
@@ -84,7 +81,7 @@ class Response extends Component {
       return (
         <div className='definitions'>
           <div className='header'>
-            {'Definitions of '}<span className='span'>{this.props.obj.target}</span>
+            {'Definitions of '}<span className='span'>{data.target}</span>
           </div>
           {types}
         </div>
@@ -93,9 +90,9 @@ class Response extends Component {
   }
 
   renderSynonyms() {
-    var x
-    if (x = this.props.obj.synonyms) {
-      var types = x.map((synonym, i) => {
+    let data = this.props.translate.data
+    if (data && data.synonyms) {
+      var types = data.synonyms.map((synonym, i) => {
         var sections = synonym.content.map((section, j) => {
           return (
             <li key={j}>{section.join(', ')}</li>
@@ -118,9 +115,9 @@ class Response extends Component {
   }
 
   renderExamples() {
-    var x
-    if (x = this.props.obj.examples) {
-      var examples = x.map((example, i) => {
+    let data = this.props.translate.data
+    if (data && data.examples) {
+      var examples = data.examples.map((example, i) => {
         return <li key={i} dangerouslySetInnerHTML={{__html: example}} />
       })
       return (
@@ -133,9 +130,9 @@ class Response extends Component {
   }
 
   renderTranslationsOf() {
-    var x
-    if (x = this.props.obj.translations) {
-      var types = x.map((translation, i) => {
+    let data = this.props.translate.data
+    if (data && data.translations) {
+      var types = data.translations.map((translation, i) => {
         var sections = translation.content.map((section, j) => {
           return (
             <div key={j} className='obj'>
@@ -160,7 +157,7 @@ class Response extends Component {
       return (
         <div className='translations'>
           <div className='header'>
-            {'Translations of '}<span className='span'>{this.props.obj.target}</span>
+            {'Translations of '}<span className='span'>{data.target}</span>
           </div>
           {types}
         </div>
@@ -169,13 +166,13 @@ class Response extends Component {
   }
 
   renderSeeAlso() {
-    let s
-    if (s = this.props.obj.seeAlso) {
+    let data = this.props.translate.data
+    if (data && data.seeAlso) {
       return (
         <div className='seeAlso'>
           <div className='header'>See Also</div>
           <div className='content'>
-            <div>{s.join(', ')}</div>
+            <div>{data.seeAlso.join(', ')}</div>
           </div>
         </div>
       )
@@ -189,7 +186,7 @@ class Response extends Component {
           {this.renderPronunciation()}
           {this.renderTanslation()}
         </div>
-        <div>
+        <div className='scroll'>
           {this.renderTranslationsOf()}
           {this.renderDefinitionsOf()}
           {this.renderSynonyms()}
@@ -200,5 +197,11 @@ class Response extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ langs, translate, speed }) => ({ langs, translate, speed })
+
+const mapDispatchToProps = dispatch => ({
+  speedTo: speed => dispatch(speedTo(speed))
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Response)
