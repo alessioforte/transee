@@ -15,7 +15,6 @@ function* getHints(action) {
     try {
         let text = action.payload.text
         if (!text || /^\s*$/.test(text) || text.length > 50 || text.indexOf('\n') !== -1) {
-            yield put({ type: SET_AUTOCOMPLETE, payload: '' })
             yield put({ type: RESET_HINTS })
         } else {
             let hints = yield call(complete, text, action.payload.langs.from)
@@ -52,11 +51,11 @@ function* getTranslation(action) {
  */
 
 function* watchGetHints() {
-    yield throttle(128, GET_HINTS, getHints)
+    yield takeLatest(GET_HINTS, getHints)
 }
 
 function* watchGetTranslation() {
-    yield throttle(500, GET_TRANSLATION, getTranslation)
+    yield throttle(600, GET_TRANSLATION, getTranslation)
 }
 
 export default function* sagas() {

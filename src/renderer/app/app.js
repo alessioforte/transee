@@ -29,13 +29,7 @@ import {
 import Textarea from './textarea'
 import Suggestions from './suggestions'
 
-import store from './store'
-
 class App extends Component {
-
-    constructor() {
-        super()
-    }
 
     componentDidUpdate() {
         setMainWindowSize()
@@ -52,7 +46,6 @@ class App extends Component {
 
     handleClickOnDYM(text) {
         this.props.setText(text)
-        this.props.setAutocomplete('')
         this.props.resetTranslate()
         this.props.getTranslation(text, this.props.langs)
     }
@@ -91,7 +84,6 @@ class App extends Component {
             this.props.setToLang(oldFrom)
         }
 
-        this.props.setAutocomplete('')
         this.props.resetTranslate()
         this.props.getTranslation(text, { from, to })
     }
@@ -141,7 +133,6 @@ class App extends Component {
     }
 
     render() {
-        console.log(store.getState())
         return (
             <div>
                 <LanguagesBar />
