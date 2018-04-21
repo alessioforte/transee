@@ -180,21 +180,25 @@ class Response extends Component {
   }
 
   render() {
-    return (
-      <div className='response'>
-        <div className='block'>
-          {this.renderPronunciation()}
-          {this.renderTanslation()}
+    const { translate } = this.props
+
+    if (translate.data) {
+      return (
+        <div className='response'>
+          <div className='block'>
+            {this.renderPronunciation()}
+            {this.renderTanslation()}
+          </div>
+          <div className='scroll'>
+            {this.renderTranslationsOf()}
+            {this.renderDefinitionsOf()}
+            {this.renderSynonyms()}
+            {this.renderExamples()}
+            {this.renderSeeAlso()}
+          </div>
         </div>
-        <div className='scroll'>
-          {this.renderTranslationsOf()}
-          {this.renderDefinitionsOf()}
-          {this.renderSynonyms()}
-          {this.renderExamples()}
-          {this.renderSeeAlso()}
-        </div>
-      </div>
-    )
+      )
+    } else return null
   }
 }
 

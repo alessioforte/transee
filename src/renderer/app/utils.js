@@ -41,7 +41,7 @@ window.onkeydown = e => {
 
     if (e.ctrlKey && !e.altKey && e.keyCode === 80) {
         e.preventDefault()
-        let text = document.getElementById('input').value
+        let text = store.getState().text
         if (text === '') return
 
         let from = store.getState().langs.from

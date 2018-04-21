@@ -43,6 +43,10 @@ class LanguagesBar extends Component {
         saveSettings()
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.langs !== this.props.langs || nextProps.dropdown
+    }
+
     selectFrom(e) {
         let newFrom = e.target.value
         let oldFrom = this.props.langs.from

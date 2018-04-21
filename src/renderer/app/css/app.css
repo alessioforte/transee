@@ -50,11 +50,6 @@ body {
   padding: 18px 18px 18px 0;
 }
 
-.icons {
-  width: 16px;
-  margin: 0 18px 3px;
-}
-
 .sgt {
   padding: 3px 18px;
   border-top: 1px solid var(--tinyLineColor);
@@ -70,33 +65,4 @@ body {
 
 .sgt div:first-child {
   color: white;
-}
-
-.error {
-  padding: 18px;
-  color: palevioletred;
-}
-
-.didYouMean {
-  font-size: 14px;
-  color: #999;
-  padding: 6px 18px;
-  cursor: default;
-}
-
-.didYouMean p {
-  margin: 0;
-}
-
-.didYouMean i {
-  color: #0077B5;
-  transition: all 0.1s ease-out;
-}
-
-.didYouMean i:hover {
-  color: #00AFF0;
-}
-
-.didYouMean i:active {
-  color: #333;
 }

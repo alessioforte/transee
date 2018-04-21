@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import store from './store'
 import sagas from './sagas'
 import { injectGlobal } from 'styled-components'
+import './css/app.css'
 
 store.runSaga(sagas)
 

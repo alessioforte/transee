@@ -9,8 +9,11 @@ import {
     resetHints,
     getTranslation,
     resetTranslate,
-    resetSpeed
+    resetSpeed,
+    speedFrom
 } from './actions'
+import { playAudio } from './utils'
+import { Speaker } from '../svg/speaker'
 
 class Textarea extends Component {
 
@@ -42,6 +45,7 @@ class Textarea extends Component {
         let langs = this.props.langs
 
         this.props.setText(text)
+        this.props.resetSpeed()
 
         var textCameFromPaste = ((e.target.getAttribute('pasted') || '') === '1')
         if (!textCameFromPaste) this.props.getHints(text, langs)
@@ -63,8 +67,17 @@ class Textarea extends Component {
         e.target.setAttribute('pasted', '1')
     }
 
+    handleClickOnPlayIcon() {
+        let text = this.props.text
+        let lang = this.props.langs.from
+        let speed = this.props.speed.from
+        playAudio(text, lang, speed)
+        this.props.speedFrom(!speed)
+    }
+
     render() {
         return (
+            <React.Fragment>
             <Container>
                 {
                     this.state.showAutocomplete &&
@@ -84,6 +97,16 @@ class Textarea extends Component {
                     onChange={e => this.onInputChange(e)}
                 />
             </Container>
+            {
+                this.props.translate.data && (
+                    <Icons>
+                        <div onClick={() => this.handleClickOnPlayIcon()}>
+                            <Speaker />
+                        </div>
+                    </Icons>
+                )
+            }
+            </React.Fragment>
         )
     }
 }
@@ -114,11 +137,16 @@ const Autocomplete = Input.extend`
     color: #555;
     z-index: -1;
 `
+const Icons = styled.div`
+    width: 16px;
+    margin: 0 18px 3px;
+`
 
-const mapStateToProps = ({ text, langs, translate }) => ({
+const mapStateToProps = ({ text, langs, translate, speed }) => ({
     text,
     langs,
-    translate
+    translate,
+    speed
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -129,7 +157,8 @@ const mapDispatchToProps = dispatch => ({
     resetSpeed: () => dispatch(resetSpeed()),
     setText: text => dispatch(setText(text)),
     setAutocomplete: hint => dispatch(setAutocomplete(hint)),
-    setError: isErr => dispatch(setError(isErr))
+    setError: isErr => dispatch(setError(isErr)),
+    speedFrom: speed => dispatch(speedFrom(speed))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Textarea)
