@@ -29,38 +29,42 @@ window.eval = global.eval = function() {
 }
 
 window.onkeydown = e => {
-
+    // esc
     if (e.keyCode === 27) {
         e.preventDefault()
         ipc.send('hide-window', 'hide')
     }
 
+    // alt shify
     if (e.altKey && e.keyCode === 16) {
         invertLanguages()
     }
 
+    // ctrl p - voice
     if (e.ctrlKey && !e.altKey && e.keyCode === 80) {
         e.preventDefault()
         let text = store.getState().text
-        if (text === '') return
-
-        let from = store.getState().langs.from
-        let speed = store.getState().speed.from
-        playAudio(text, from, speed)
-        store.dispatch(speedFrom(!speed))
+        if (text !== '') {
+            let from = store.getState().langs.from
+            let speed = store.getState().speed.from
+            playAudio(text, from, speed)
+            store.dispatch(speedFrom(!speed))
+        }
     }
 
+    // ctrl alt p - voice
     if (e.ctrlKey && e.altKey && e.keyCode === 80) {
         e.preventDefault()
-        if (document.getElementById('translation')) {
-            let text = document.getElementById('translation').value
-            if (text === '') return
+        let data = store.getState().translate.data
 
+        if (data) {
+            let text = data.translation
             let to = store.getState().langs.to
             let speed = store.getState().speed.to
+
             playAudio(text, to, speed)
             store.dispatch(speedTo(!speed))
-        } else return
+        }
     }
 
     if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {
@@ -134,13 +138,6 @@ export const invertLanguages = () => {
         store.dispatch(resetHints())
         store.dispatch(getTranslation(text, { from: to, to: from }))
     }
-
-    // if (document.getElementById('translation')) {
-    //     let text = document.getElementById('translation').value
-    //     let input = document.getElementById('input')
-    //     input.value = text
-    //     searchTranslation(text)
-    // }
 }
 
 export const saveSettings = () => {
