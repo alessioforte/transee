@@ -12,8 +12,9 @@ import {
     resetSpeed,
     speedFrom
 } from './actions'
-import { playAudio } from './utils'
+import { playAudio, setMainWindowSize } from './utils'
 import { Speaker } from '../svg/speaker'
+import Spinner from '../svg/spinner'
 
 class Textarea extends Component {
 
@@ -36,6 +37,7 @@ class Textarea extends Component {
 
     componentDidUpdate() {
         this.input.focus()
+        setMainWindowSize()
     }
 
     onInputChange(e) {
@@ -78,39 +80,71 @@ class Textarea extends Component {
     render() {
         return (
             <React.Fragment>
-            <Container>
-                {
-                    this.state.showAutocomplete &&
-                    <Autocomplete
+                <Container>
+                    {
+                        this.state.showAutocomplete &&
+                        <Autocomplete
+                            type='text'
+                            disabled
+                            value={this.props.translate.autocomplete}
+                        />
+                    }
+                    <Input
                         type='text'
-                        disabled
-                        value={this.props.translate.autocomplete}
+                        placeholder='Translate'
+                        maxLength={5000}
+                        innerRef={input => this.input = input}
+                        value={this.props.text}
+                        onPaste={e => this.onInputPaste(e)}
+                        onChange={e => this.onInputChange(e)}
                     />
+                    {
+                        this.props.text && !this.props.translate.data && !this.props.error && (
+                            <Loading>
+                                <Spinner />
+                            </Loading>
+                        )
+                    }
+                </Container>
+                {
+                    this.props.translate.data && (
+                        <Icons>
+                            <div onClick={() => this.handleClickOnPlayIcon()}>
+                                <Speaker />
+                            </div>
+                        </Icons>
+                    )
                 }
-                <Input
-                    type='text'
-                    placeholder='Translate'
-                    maxLength={5000}
-                    innerRef={input => this.input = input}
-                    value={this.props.text}
-                    onPaste={e => this.onInputPaste(e)}
-                    onChange={e => this.onInputChange(e)}
-                />
-            </Container>
-            {
-                this.props.translate.data && (
-                    <Icons>
-                        <div onClick={() => this.handleClickOnPlayIcon()}>
-                            <Speaker />
-                        </div>
-                    </Icons>
-                )
-            }
             </React.Fragment>
         )
     }
 }
 
+const mapStateToProps = ({ text, langs, translate, speed, error }) => ({
+    text,
+    langs,
+    translate,
+    speed,
+    error
+})
+
+const mapDispatchToProps = dispatch => ({
+    getHints: (text, langs) => dispatch(getHints(text, langs)),
+    getTranslation: (text, langs) => dispatch(getTranslation(text, langs)),
+    resetHints: () => dispatch(resetHints()),
+    resetTranslate: () => dispatch(resetTranslate()),
+    resetSpeed: () => dispatch(resetSpeed()),
+    setText: text => dispatch(setText(text)),
+    setAutocomplete: hint => dispatch(setAutocomplete(hint)),
+    setError: isErr => dispatch(setError(isErr)),
+    speedFrom: speed => dispatch(speedFrom(speed))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Textarea)
+
+/**
+ * STYLES
+ */
 const Container = styled.div`
     position: relative;
     display: flex;
@@ -141,24 +175,8 @@ const Icons = styled.div`
     width: 16px;
     margin: 0 18px 3px;
 `
-
-const mapStateToProps = ({ text, langs, translate, speed }) => ({
-    text,
-    langs,
-    translate,
-    speed
-})
-
-const mapDispatchToProps = dispatch => ({
-    getHints: (text, langs) => dispatch(getHints(text, langs)),
-    getTranslation: (text, langs) => dispatch(getTranslation(text, langs)),
-    resetHints: () => dispatch(resetHints()),
-    resetTranslate: () => dispatch(resetTranslate()),
-    resetSpeed: () => dispatch(resetSpeed()),
-    setText: text => dispatch(setText(text)),
-    setAutocomplete: hint => dispatch(setAutocomplete(hint)),
-    setError: isErr => dispatch(setError(isErr)),
-    speedFrom: speed => dispatch(speedFrom(speed))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Textarea)
+const Loading = styled.div`
+    position: absolute;
+    right: 18px;
+    top: 12px;
+`
