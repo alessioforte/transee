@@ -20,7 +20,8 @@ import {
     SET_TO_3,
     SET_FROM_1,
     SET_FROM_2,
-    SET_FROM_3
+    SET_FROM_3,
+    SET_LOADING
 } from './actions'
 
 const DEFAULT_LANGS = { from: 'en', to: 'it' }
@@ -151,6 +152,15 @@ export const translate = (state = DEFAULT_TRANSATE, action) => {
 export const text = (state = '', action) => {
     switch (action.type) {
         case SET_TEXT:
+            return action.payload
+        default:
+            return state
+    }
+}
+
+export const loading = (state = false, action) => {
+    switch (action.type) {
+        case SET_LOADING:
             return action.payload
         default:
             return state

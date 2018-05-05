@@ -6,7 +6,8 @@ import {
     SET_ERROR,
     RESET_TRANSLATE,
     RESET_HINTS,
-    SET_AUTOCOMPLETE
+    SET_AUTOCOMPLETE,
+    SET_LOADING
 } from './actions'
 import { takeEvery, takeLatest, call, put, all, throttle } from 'redux-saga/effects'
 import { translate, complete, translateComplete, voice } from '../../google-translate/api'
@@ -27,7 +28,7 @@ function* getHints(action) {
         }
     } catch (error) {
         console.log(error)
-        yield put({ type: SET_ERROR, payload: true })
+        // yield put({ type: SET_ERROR, payload: true })
     }
 }
 
@@ -36,13 +37,17 @@ function* getTranslation(action) {
         let text = action.payload.text
         if (!text || /^\s*$/.test(text)) {
             yield put({ type: RESET_TRANSLATE })
+            yield put({ type: SET_LOADING, payload: false })
         } else {
+            yield put({ type: SET_LOADING, payload: true })
             let response = yield call(translate, text, action.payload.langs)
+            yield put({ type: SET_LOADING, payload: false })
             yield put({ type: SET_TRANSLATION, payload: response })
         }
     } catch (error) {
         console.log(error)
         yield put({ type: SET_ERROR, payload: true })
+        yield put({ type: SET_LOADING, payload: false })
     }
 }
 

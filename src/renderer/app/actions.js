@@ -21,6 +21,7 @@ export const SET_TO_3 = 'SET_TO_4'
 export const SET_FROM_1 = 'SET_FROM_1'
 export const SET_FROM_2 = 'SET_FROM_2'
 export const SET_FROM_3 = 'SET_FROM_3'
+export const SET_LOADING = 'SET_LOADING'
 
 export const setFromLang = lang => ({ type: FROM_LANG, payload: lang })
 export const setToLang = lang => ({ type: TO_LANG, payload: lang })

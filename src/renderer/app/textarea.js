@@ -99,7 +99,7 @@ class Textarea extends Component {
                         onChange={e => this.onInputChange(e)}
                     />
                     {
-                        this.props.text && !this.props.translate.data && !this.props.error && (
+                        this.props.loading && (
                             <Loading>
                                 <Spinner />
                             </Loading>
@@ -120,12 +120,12 @@ class Textarea extends Component {
     }
 }
 
-const mapStateToProps = ({ text, langs, translate, speed, error }) => ({
+const mapStateToProps = ({ text, langs, translate, speed, loading }) => ({
     text,
     langs,
     translate,
     speed,
-    error
+    loading
 })
 
 const mapDispatchToProps = dispatch => ({
