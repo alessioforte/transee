@@ -1,11 +1,11 @@
 <div align="center">
 
-![Transee](https://alessioforte.github.io/transee/assets/icon_128x128.png)
+![Transee](https://alessioforte.github.io/transee/static/icon_256x256.png)
 
 # Transee
 Simple and useful tool for quick translation - reference to Google Translate
 
-![screenshot](https://alessioforte.github.io/transee/assets/rainbow.png)
+![screenshot](https://alessioforte.github.io/transee/static/rainbow.png)
 
 </div>
 
