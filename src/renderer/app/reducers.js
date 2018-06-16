@@ -2,7 +2,6 @@ import {
     SET_TEXT,
     SET_AUTOCOMPLETE,
     SET_HINTS,
-    SET_T_HINTS,
     RESET_HINTS,
     RESET_TRANSLATE,
     RESET_SPEED,

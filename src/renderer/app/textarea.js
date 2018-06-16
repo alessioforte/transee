@@ -14,7 +14,7 @@ import {
 } from './actions'
 import { playAudio, setMainWindowSize } from './utils'
 import { Speaker } from '../svg/speaker'
-import Spinner from '../svg/spinner'
+import Loading from './loading'
 
 class Textarea extends Component {
 
@@ -99,11 +99,7 @@ class Textarea extends Component {
                         onChange={e => this.onInputChange(e)}
                     />
                     {
-                        this.props.loading && (
-                            <Loading>
-                                <Spinner />
-                            </Loading>
-                        )
+                        this.props.loading && <Loading />
                     }
                 </Container>
                 {
@@ -174,9 +170,4 @@ const Autocomplete = Input.extend`
 const Icons = styled.div`
     width: 16px;
     margin: 0 18px 3px;
-`
-const Loading = styled.div`
-    position: absolute;
-    right: 18px;
-    top: 12px;
 `

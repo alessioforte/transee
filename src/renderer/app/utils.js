@@ -1,13 +1,9 @@
-import { translate, complete, translateComplete, voice } from '../../google-translate/api'
+import {  voice } from '../../google-translate/api'
 import store from './store'
 import {
     setText,
-    getHints,
-    getTranslationHints,
     getTranslation,
     resetHints,
-    resetTranslate,
-    setError,
     setToLang,
     setFromLang,
     setToBar,
@@ -16,7 +12,6 @@ import {
     setFromActive,
     speedFrom,
     speedTo } from './actions'
-import { addWeeks } from 'date-fns';
 
 const ipc = require('electron').ipcRenderer
 const settings = require('electron-settings')
@@ -83,7 +78,7 @@ export const playAudio = async (text, lang, speed) => {
         let audio = new Audio(response)
         audio.play()
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 

@@ -9,7 +9,7 @@ import {
     SET_AUTOCOMPLETE,
     SET_LOADING
 } from './actions'
-import { takeEvery, takeLatest, call, put, all, throttle } from 'redux-saga/effects'
+import { takeLatest, call, put, all, throttle } from 'redux-saga/effects'
 import { translate, complete, translateComplete, voice } from '../../google-translate/api'
 
 function* getHints(action) {
@@ -27,7 +27,6 @@ function* getHints(action) {
             yield put({ type: SET_HINTS, payload: { hints, t_hints } })
         }
     } catch (error) {
-        console.log(error)
         // yield put({ type: SET_ERROR, payload: true })
     }
 }
@@ -45,7 +44,6 @@ function* getTranslation(action) {
             yield put({ type: SET_TRANSLATION, payload: response })
         }
     } catch (error) {
-        console.log(error)
         yield put({ type: SET_ERROR, payload: true })
         yield put({ type: SET_LOADING, payload: false })
     }
