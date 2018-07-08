@@ -27,7 +27,7 @@ function* getHints(action) {
             yield put({ type: SET_HINTS, payload: { hints, t_hints } })
         }
     } catch (error) {
-        // yield put({ type: SET_ERROR, payload: true })
+        console.error(error)
     }
 }
 
@@ -46,6 +46,7 @@ function* getTranslation(action) {
     } catch (error) {
         yield put({ type: SET_ERROR, payload: true })
         yield put({ type: SET_LOADING, payload: false })
+        console.error(error)
     }
 }
 

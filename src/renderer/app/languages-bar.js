@@ -9,7 +9,8 @@ import {
     setFromActive,
     setToBar,
     setFromBar,
-    setToActive } from './actions'
+    setToActive,
+    resetHints } from './actions'
 import {
     getFromPosition,
     getToPosition,
@@ -93,6 +94,7 @@ class LanguagesBar extends Component {
         }
 
         if (this.props.text) {
+            this.props.resetHints()
             this.props.getTranslation(this.props.text, { from: newFrom, to: newTo })
         }
     }
@@ -145,6 +147,7 @@ class LanguagesBar extends Component {
         }
 
         if (this.props.text) {
+            this.props.resetHints()
             this.props.getTranslation(this.props.text, { from: newFrom, to: newTo })
         }
     }
@@ -250,6 +253,7 @@ class LanguagesBar extends Component {
         document.removeEventListener('click', this.hideDropdownLeft)
 
         if (this.props.text) {
+            this.props.resetHints()
             this.props.getTranslation(this.props.text, { from: newFrom, to: newTo })
         }
     }
@@ -295,6 +299,7 @@ class LanguagesBar extends Component {
         document.removeEventListener('click', this.hideDropdownRight)
 
         if (this.props.text) {
+            this.props.resetHints()
             this.props.getTranslation(this.props.text, { from: newFrom, to: newTo })
         }
     }
@@ -467,7 +472,8 @@ const mapDispatchToProps = dispatch => ({
     setFromActive: active => dispatch(setFromActive(active)),
     setToBar: (to, i) => dispatch(setToBar(to, i)),
     setToActive: active => dispatch(setToActive(active)),
-    getTranslation: (text, langs) => dispatch(getTranslation(text, langs))
+    getTranslation: (text, langs) => dispatch(getTranslation(text, langs)),
+    resetHints: () => dispatch(resetHints())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LanguagesBar)
