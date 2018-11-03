@@ -162,7 +162,7 @@ const Input = styled.textarea`
         outline: none;
     }
 `
-const Autocomplete = Input.extend`
+const Autocomplete = styled(Input)`
     position: absolute;
     color: #555;
     z-index: -1;

@@ -5,8 +5,8 @@
  * Everything between 'BEGIN' and 'END' was copied from the url above.
  */
 
-const settings = require('electron-settings')
-const getContent = require('./get-content')
+import settings from 'electron-settings'
+import axios from 'axios'
 
 /* eslint-disable */
 // BEGIN
@@ -71,15 +71,19 @@ var window = {
     TKK: settings.get('TKK') || '0'
 };
 
-function updateTKK() {
-    return new Promise(function (resolve, reject) {
-        var now = Math.floor(Date.now() / 3600000);
+async function updateTKK() {
+    return new Promise(async function (resolve, reject) {
+        var now = Math.floor(Date.now() / 3600000)
 
         if (Number(window.TKK.split('.')[0]) === now) {
-            resolve();
+            resolve()
         } else {
-            getContent('https://translate.google.com').then(function (res) {
-                var code = res.match(/TKK=(.*?)\(\)\)'\);/g);
+            try {
+                const res = await axios({
+                    method: 'get',
+                    url: 'https://translate.google.com'
+                })
+                var code = res.data.match(/TKK=(.*?)\(\)\)'\);/g);
                 var TKK
                 if (code) {
                     var n = code[0].match(/[-0-9]+/g)
@@ -91,24 +95,16 @@ function updateTKK() {
                     }
                     /* eslint-enable no-undef */
                 }
-
-                /**
-                 * Note: If the regex or the eval fail, there is no need to worry. The server will accept
-                 * relatively old seeds.
-                 */
-
-                resolve();
-            }).catch(function (err) {
-                var e = new Error();
-                e.code = 'BAD_NETWORK';
-                e.message = err.message;
-                reject(e);
-            });
+                resolve()
+            } catch (err) {
+                console.error(`updateTKK:\n${err}`)
+                reject(err)
+            }
         }
     });
 }
 
-function get(text) {
+export default function getToken(text) {
     return updateTKK().then(function () {
         var tk = sM(text);
         tk = tk.replace('&tk=', '');
@@ -117,5 +113,3 @@ function get(text) {
         throw err;
     });
 }
-
-module.exports.get = get;

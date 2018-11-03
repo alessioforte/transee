@@ -1,6 +1,6 @@
 {
   "name": "transee",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Simple and useful tool for quick translation",
   "author": "Alessio Forte",
   "license": "MIT",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://alessioforte.github.io/transee/",
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
