@@ -83,17 +83,12 @@ async function updateTKK() {
                     method: 'get',
                     url: 'https://translate.google.com'
                 })
-                var code = res.data.match(/TKK=(.*?)\(\)\)'\);/g);
+                var code = res.data.match(/(TKK=').*?(?=;)/g)
                 var TKK
                 if (code) {
-                    var n = code[0].match(/[-0-9]+/g)
-                    TKK = n[4] + '.' + (Number(n[1]) + Number(n[3]))
-                    /* eslint-disable no-undef */
-                    if (!isNaN(Number(TKK))) {
-                        window.TKK = TKK;
-                        settings.set('TKK', TKK)
-                    }
-                    /* eslint-enable no-undef */
+                    TKK = code[0].slice(5, -1)
+                    window.TKK = TKK;
+                    settings.set('TKK', TKK)
                 }
                 resolve()
             } catch (err) {
@@ -108,7 +103,7 @@ export default function getToken(text) {
     return updateTKK().then(function () {
         var tk = sM(text);
         tk = tk.replace('&tk=', '');
-        return {name: 'tk', value: tk};
+        return { name: 'tk', value: tk };
     }).catch(function (err) {
         throw err;
     });
