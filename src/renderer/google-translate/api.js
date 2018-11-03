@@ -14,12 +14,12 @@ export async function translate(text, opts) {
             dt: ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
             ie: 'UTF-8',
             oe: 'UTF-8',
-            otf: 1,
-            ssel: 0,
-            tsel: 0,
-            kc: 1,
+            // otf: 1,
+            // ssel: 0,
+            // tsel: 0,
+            // kc: 1,
+            tk: tk.value,
             q: text,
-            tk: tk.value
         }
 
         const res = await axios({

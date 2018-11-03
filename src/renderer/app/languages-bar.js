@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { langsFrom, langsTo } from '../../google-translate/langs'
+import { langsFrom, langsTo } from '../google-translate/langs'
 import { connect } from 'react-redux'
 import {
     getTranslation,

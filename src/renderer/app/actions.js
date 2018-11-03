@@ -67,3 +67,4 @@ export const resetSpeed = () => ({ type: RESET_SPEED })
 
 export const setText = payload => ({ type: SET_TEXT, payload })
 export const setAutocomplete = payload => ({ type: SET_AUTOCOMPLETE, payload })
+export const setLoading = payload => ({ type: SET_LOADING, payload })

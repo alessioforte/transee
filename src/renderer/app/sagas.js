@@ -10,44 +10,53 @@ import {
     SET_LOADING
 } from './actions'
 import { takeLatest, call, put, all, throttle } from 'redux-saga/effects'
-import { translate, complete, translateComplete, voice } from '../../google-translate/api'
+import { translate, complete, translateComplete } from '../google-translate/api'
+
+var requestsCount = 0
 
 function* getHints(action) {
+    let text = action.payload.text
+
+    if (!text || /^\s*$/.test(text) || text.length > 50 || text.indexOf('\n') !== -1) {
+        return yield put({ type: RESET_HINTS })
+    }
+
     try {
-        let text = action.payload.text
-        if (!text || /^\s*$/.test(text) || text.length > 50 || text.indexOf('\n') !== -1) {
-            yield put({ type: RESET_HINTS })
-        } else {
-            let hints = yield call(complete, text, action.payload.langs.from)
-            let t_hints = yield call(translateComplete, hints, action.payload.langs)
-            t_hints = Array.isArray(t_hints) ? t_hints : [t_hints]
-            
-            yield put({ type: SET_ERROR, payload: false })
-            yield put({ type: SET_AUTOCOMPLETE, payload: hints[0] })
-            yield put({ type: SET_HINTS, payload: { hints, t_hints } })
-        }
+        let hints = yield call(complete, text, action.payload.langs.from)
+        let t_hints = yield call(translateComplete, hints, action.payload.langs)
+        t_hints = Array.isArray(t_hints) ? t_hints : [t_hints]
+        
+        yield put({ type: SET_ERROR, payload: false })
+        yield put({ type: SET_AUTOCOMPLETE, payload: hints[0] })
+        yield put({ type: SET_HINTS, payload: { hints, t_hints } })
+
     } catch (error) {
         console.error(error)
     }
 }
 
 function* getTranslation(action) {
-    try {
-        let text = action.payload.text
-        if (!text || /^\s*$/.test(text)) {
-            yield put({ type: RESET_TRANSLATE })
-            yield put({ type: SET_LOADING, payload: false })
-        } else {
-            yield put({ type: SET_LOADING, payload: true })
-            let response = yield call(translate, text, action.payload.langs)
-            yield put({ type: SET_LOADING, payload: false })
-            yield put({ type: SET_TRANSLATION, payload: response })
-        }
+    let text = action.payload.text
+    requestsCount++
+
+    yield put({ type: SET_LOADING, payload: true })
+
+    try {    
+        let response = yield call(translate, text, action.payload.langs)
+        yield put({ type: SET_TRANSLATION, payload: response })
+        requestsCount--
     } catch (error) {
+        requestsCount = 0
         yield put({ type: SET_ERROR, payload: true })
-        yield put({ type: SET_LOADING, payload: false })
         console.error(error)
     }
+
+    if (!text || /^\s*$/.test(text)) {
+        requestsCount = 0
+        yield put({ type: RESET_TRANSLATE })
+    }
+
+    if (requestsCount === 0) yield put({ type: SET_LOADING, payload: false })
 }
 
 /**

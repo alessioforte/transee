@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { langsFrom } from '../../google-translate/langs'
+import { langsFrom } from '../google-translate/langs'
 import {
     setText,
     resetTranslate,

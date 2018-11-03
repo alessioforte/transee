@@ -1,5 +1,5 @@
 import React from 'react'
-import { langsFrom, langsTo } from '../../google-translate/langs'
+import { langsFrom, langsTo } from '../google-translate/langs'
 
 export default ({ lang1, lang2, lang3, active, setLang, side }) => {
 

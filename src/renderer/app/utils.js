@@ -1,4 +1,4 @@
-import {  voice } from '../../google-translate/api'
+import {  voice } from '../google-translate/api'
 import store from './store'
 import {
     setText,
