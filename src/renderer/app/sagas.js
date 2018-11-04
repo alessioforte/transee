@@ -41,6 +41,12 @@ function* getTranslation(action) {
 
     yield put({ type: SET_LOADING, payload: true })
 
+    if (!text || /^\s*$/.test(text)) {
+        requestsCount = 0
+        yield put({ type: SET_LOADING, payload: false })
+        return yield put({ type: RESET_TRANSLATE })
+    }
+
     try {    
         let response = yield call(translate, text, action.payload.langs)
         yield put({ type: SET_TRANSLATION, payload: response })
@@ -49,11 +55,6 @@ function* getTranslation(action) {
         requestsCount = 0
         yield put({ type: SET_ERROR, payload: true })
         console.error(error)
-    }
-
-    if (!text || /^\s*$/.test(text)) {
-        requestsCount = 0
-        yield put({ type: RESET_TRANSLATE })
     }
 
     if (requestsCount === 0) yield put({ type: SET_LOADING, payload: false })
@@ -68,7 +69,7 @@ function* watchGetHints() {
 }
 
 function* watchGetTranslation() {
-    yield throttle(600, GET_TRANSLATION, getTranslation)
+    yield throttle(1200, GET_TRANSLATION, getTranslation)
 }
 
 export default function* sagas() {

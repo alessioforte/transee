@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const electron = require('electron')
-const path = require('path')
 const settings = require('electron-settings')
 
 const {
@@ -13,7 +12,6 @@ const preferencesPath = `file://${process.cwd()}/src/renderer/preferences/prefer
 const welcomePath = `file://${process.cwd()}/src/renderer/welcome/welcome.html`
 
 var win = null
-var tray = null
 var preferencesWin = null
 var welcomeWin = null
 var backgroundColor = '#2a2a2a'

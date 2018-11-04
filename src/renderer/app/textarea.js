@@ -21,6 +21,8 @@ class Textarea extends Component {
     constructor() {
         super()
 
+        this.timeout = null
+
         this.state = {
             showAutocomplete: false
         }
@@ -38,6 +40,10 @@ class Textarea extends Component {
     componentDidUpdate() {
         this.input.focus()
         setMainWindowSize()
+    }
+
+    onInputKeyDown(e) {
+        window.clearTimeout(this.timeout)
     }
 
     onInputChange(e) {
@@ -62,7 +68,9 @@ class Textarea extends Component {
             this.setState({ showAutocomplete: true })
         }
 
-        this.props.getTranslation(text, langs)
+        this.timeout = window.setTimeout(() => {
+            this.props.getTranslation(text, langs)
+        }, 600)
     }
 
     onInputPaste(e) {
@@ -97,6 +105,7 @@ class Textarea extends Component {
                         value={this.props.text}
                         onPaste={e => this.onInputPaste(e)}
                         onChange={e => this.onInputChange(e)}
+                        onKeyDown={e => this.onInputKeyDown(e)}
                     />
                     {
                         this.props.loading && <Loading />

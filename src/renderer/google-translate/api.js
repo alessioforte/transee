@@ -173,7 +173,7 @@ function remapTranslate(data) {
 
             for (let j = 0; j < data[1][i][2].length; j++) {
                 var rating = data[1][i][2][j][3]
-                var bar, article
+                var bar
 
                 switch (true) {
                     case (rating > 0.05):
