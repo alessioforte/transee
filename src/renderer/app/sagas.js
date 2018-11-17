@@ -49,11 +49,17 @@ function* getTranslation(action) {
 
     try {    
         let response = yield call(translate, text, action.payload.langs)
-        yield put({ type: SET_TRANSLATION, payload: response })
-        requestsCount--
+
+        if (response) {
+            yield put({ type: SET_TRANSLATION, payload: response })
+            requestsCount--
+        } else {
+            requestsCount = 0
+            yield put({ type: SET_ERROR, payload: true })
+            yield put({ type: RESET_TRANSLATE })
+        }
     } catch (error) {
         requestsCount = 0
-        yield put({ type: SET_ERROR, payload: true })
         console.error(error)
     }
 

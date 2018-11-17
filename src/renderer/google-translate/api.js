@@ -30,6 +30,7 @@ export async function translate(text, opts) {
         return remapTranslate(res.data)
     } catch (err) {
         console.error(err)
+        return null
     }
 }
 
@@ -52,6 +53,7 @@ export async function complete(text, lang) {
         return remapComplete(res.data)
     } catch (err) {
         console.error(err)
+        return null
     }
 }
 
@@ -84,6 +86,7 @@ export async function translateComplete(words, opts) {
 
     } catch (err) {
         console.error(err)
+        return null
     }
 }
 

@@ -5,7 +5,7 @@ import Response from './response'
 import { setMainWindowSize } from './utils'
 import Textarea from './textarea'
 import Suggestions from './suggestions'
-import Error from './error'
+import ErrorMessage from './error-message'
 import DidYouMean from './did-you-mean'
 
 class App extends Component {
@@ -20,7 +20,7 @@ class App extends Component {
                 <LanguagesBar />
                 <div style={{ display: this.props.dropdown ? 'none' : 'block' }}>
                     <Textarea />
-                    <Error />
+                    <ErrorMessage />
                     <DidYouMean />
                     <Suggestions />
                     <Response />
