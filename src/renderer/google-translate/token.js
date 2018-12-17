@@ -83,7 +83,7 @@ async function updateTKK() {
                     method: 'get',
                     url: 'https://translate.google.com'
                 })
-                var code = res.data.match(/(TKK=').*?(?=;)/g)
+                var code = res.data.match(/(tkk:').*?(?=,)/g)
                 var TKK
                 if (code) {
                     TKK = code[0].slice(5, -1)
