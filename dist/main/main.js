@@ -40,9 +40,9 @@ function appReady() {
   // HANDLE APP VERSION
   let versionInSettings = settings.get('version')
   if (appVersion !== versionInSettings) {
-    settings.deleteAll()
+    // settings.deleteAll()
     settings.set('version', appVersion)
-    settings.set('show-welcome', true)
+    // settings.set('show-welcome', true)
   }
 
   //  SET START AT LOGIN
