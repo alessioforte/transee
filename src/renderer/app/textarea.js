@@ -68,6 +68,8 @@ class Textarea extends Component {
             this.setState({ showAutocomplete: true })
         }
 
+        if (!text) return this.props.getTranslation(text, langs)
+
         this.timeout = window.setTimeout(() => {
             this.props.getTranslation(text, langs)
         }, 600)
