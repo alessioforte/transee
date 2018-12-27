@@ -8,7 +8,8 @@ import '../styles.css'
 const settings = require('electron-settings')
 const ipc = require('electron').ipcRenderer
 const { webFrame } = require('electron')
-webFrame.setZoomLevelLimits(1, 1)
+
+webFrame.setLayoutZoomLevelLimits(0, 0)
 
 class Preferences extends Component {
 

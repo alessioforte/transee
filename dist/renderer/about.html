@@ -97,13 +97,13 @@
         <div id="version"></div>
         <div id="site">website: <a id="link" onclick="openInBrowser()">transee</a></div>
         <div id="author">
-          <p>Created with <span>❤</span> by Alessio Forte<br />Copyright © 2018</p>
+          <p>Created with <span>❤</span> by Alessio Forte<br />Copyright © 2019</p>
         </div>
       </div>
     </div>
     <script>
       const { webFrame } = require('electron')
-      webFrame.setZoomLevelLimits(1, 1)
+      webFrame.setLayoutZoomLevelLimits(0, 0)
       const shell = require('electron').shell
       let version = window.location.hash.substring(2)
       document.getElementById('version').innerHTML = 'Version: ' + version

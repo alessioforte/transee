@@ -17,7 +17,8 @@ const ipc = require('electron').ipcRenderer
 const settings = require('electron-settings')
 const { webFrame } = require('electron')
 
-webFrame.setZoomLevelLimits(1, 1)
+webFrame.setLayoutZoomLevelLimits(0, 0)
+
 
 window.eval = global.eval = function() {
     throw new Error("Sorry, Transee does not support eval() for security reasons.");

@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu, globalShortcut, dialog } = require('electron')
 const electron = require('electron')
 const path = require('path')
-const events = require('events')
 const settings = require('electron-settings')
 const updater = require('./updater')
 
@@ -15,15 +14,18 @@ const iconPath = process.platform === 'win32' ?
   path.join(__dirname, '../assets', 'iconTemplate.png')
 const backgroundColor = '#2a2a2a'
 
-var win, aboutWin, tray, preferencesWin, welcomeWin, globalY, accelerator
+var win, aboutWin, tray, preferencesWin, welcomeWin, accelerator
 
-const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
-  showWindow()
-})
+const gotTheLock = app.requestSingleInstanceLock()
 
-if (isSecondInstance) {
+if (!gotTheLock) {
   app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    showWindow()
+  })
 }
+
 
 app.on('ready', appReady)
 

@@ -12,7 +12,7 @@ const barIMG = window.navigator.platform === 'Win32' ? taskbarIMG : menubarIMG
 
 const settings = require('electron-settings')
 const { webFrame } = require('electron')
-webFrame.setZoomLevelLimits(1, 1)
+webFrame.setLayoutZoomLevelLimits(0, 0)
 
 var shortcut = settings.get('shortcut')
 
