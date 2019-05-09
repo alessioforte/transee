@@ -97,7 +97,7 @@
         <div id="version"></div>
         <div id="site">website: <a id="link" onclick="openInBrowser()">transee</a></div>
         <div id="author">
-          <p>Created with <span>❤</span> by Alessio Forte<br />Copyright © 2019</p>
+          <p>Created with <span>❤</span> by Alessio Forte<br id='year'/>Copyright © 2019</p>
         </div>
       </div>
     </div>
@@ -111,6 +111,7 @@
       if (window.navigator.platform !== 'MacIntel') {
         document.getElementById('frame').style.display = 'none'
       }
+      document.getElementById("year").innerHTML = `Copyright © ${new Date().getFullYear()}`;
     </script>
   </body>
 </html>

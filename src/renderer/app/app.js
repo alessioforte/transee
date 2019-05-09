@@ -11,7 +11,7 @@ import DidYouMean from './did-you-mean'
 class App extends Component {
 
     componentDidUpdate() {
-        setMainWindowSize()
+        setTimeout(() => setMainWindowSize(), 300)
     }
 
     render() {

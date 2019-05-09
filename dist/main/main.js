@@ -218,9 +218,11 @@ function getWindowPosition() {
   let point = screen.getCursorScreenPoint()
   let displayBounds = screen.getDisplayNearestPoint(point).bounds
   let windowBounds = win.getBounds()
+  let maxAppHeight = 800
+  if (displayBounds.height < 800) maxAppHeight = 600
 
   const x = Math.round(displayBounds.x + (displayBounds.width - windowBounds.width) / 2)
-  const y = (displayBounds.height - 800) / 2 + displayBounds.y
+  const y = (displayBounds.height - maxAppHeight) / 2 + displayBounds.y
 
   return { x, y }
 }

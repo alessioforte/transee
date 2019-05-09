@@ -4,33 +4,30 @@ import App from './app'
 import { Provider } from 'react-redux'
 import store from './store'
 import sagas from './sagas'
-import { injectGlobal } from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
 import './css/app.css'
+
+const GlobalStyle = createGlobalStyle`
+    * {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 300;
+    }
+
+    *::-webkit-scrollbar {
+        display: ${window.navigator.platform === 'MacIntel' ? '' : 'none'}
+    }
+`
 
 store.runSaga(sagas)
 
 const Transee = () => (
-  <Provider store={store}>
-    <App />
-  </Provider>
+    <Provider store={store}>
+        <GlobalStyle/>
+        <App />
+    </Provider>
 )
 
 render(
-  <Transee />,
-  document.getElementById('root')
+    <Transee />,
+    document.getElementById('root')
 )
-
-/**
- * Global Styles
- */
-
-injectGlobal`
-  * {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 300;
-  }
-  
-  *::-webkit-scrollbar {
-    display: ${window.navigator.platform === 'MacIntel' ? '' : 'none'}
-  }
-`

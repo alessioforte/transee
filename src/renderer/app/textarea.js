@@ -26,19 +26,21 @@ class Textarea extends Component {
         this.state = {
             showAutocomplete: false
         }
+
+        this.input = React.createRef()
     }
 
     resizeTextarea() {
-        this.input.style.height = '60px'
-        this.input.style.height = this.input.scrollHeight + 'px'
+        this.input.current.style.height = '60px'
+        this.input.current.style.height = this.input.current.scrollHeight + 'px'
     }
 
     componentDidMount() {
-        this.input.focus()
+        this.input.current.focus()
     }
 
     componentDidUpdate() {
-        this.input.focus()
+        this.input.current.focus()
         setMainWindowSize()
     }
 
@@ -103,7 +105,7 @@ class Textarea extends Component {
                         type='text'
                         placeholder='Translate'
                         maxLength={5000}
-                        innerRef={input => this.input = input}
+                        ref={this.input}
                         value={this.props.text}
                         onPaste={e => this.onInputPaste(e)}
                         onChange={e => this.onInputChange(e)}
