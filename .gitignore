@@ -2,3 +2,19 @@ node_modules
 dist
 packages
 .env
+
+
+# Don't check auto-generated stuff into git
+coverage
+stats.json
+.vscode
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea
+.env
+
+__snapshots__
+*.snap
+
