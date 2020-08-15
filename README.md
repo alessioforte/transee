@@ -28,22 +28,24 @@ Instead of `npm install` you may also install with [yarn](https://github.com/yar
 
 
 ### Running Transee
+In order to run this project 2 scripts will need to be executed `dev:react` and `dev:electron`, run each one in a different terminal and always run `dev:react` before `dev:electron`, or `dev` to run them in order automatically
 
-To run a development version requires a few steps. The easiest way is just to use two
-terminals. One terminal can be used just to watch for changes to the code:
+```bash
+npm run dev:react
+```
+```bash
+npm run dev:electron
+```
 
-    npm run watch
+or
 
-Now run Transee in another terminal:
+```bash
+npm run dev
+```
 
-    npm run dev
+## Packaging
+To generate a project package run `package`
 
-The main process in src/main/ folder is just for development version. After `npm run dev` the bundles are created in dist/renderer/ folder
-
-To run a distribution version open dist/ directory and install Node dependencies:
-
-    npm install
-
-and run:
-
-    npm start
+```bash
+npm run package
+```
