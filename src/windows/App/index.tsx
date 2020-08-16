@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent, useEffect } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import styled from 'styled-components';
 import { SearchbarData } from '../../containers/Searchbar/interfaces';
 import { Options, Conversion } from '../../containers/LangsBar/interfaces';
@@ -10,7 +10,6 @@ import { langsFrom, langsTo } from '../../services/langs';
 import { getHints, getTranslation } from '../../services';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
-import { useStore } from '../../store';
 
 const options: Options = {
   from: Object.entries(langsFrom).map(([key, value]) => ({
@@ -23,11 +22,15 @@ const options: Options = {
   })),
 };
 
-const App: FunctionComponent = () => {
+type P = {
+  global: any;
+}
+
+const App: FC<P> = ({ global }) => {
+  const { store, actions } = global;
   const [isDropped, setIsDropped] = useState<boolean>(false);
   const [textareaSize, setTextareaSize] = useState<number>(60);
 
-  const [store, actions] = useStore();
   const langs = store.langs.selected;
   const { setSuggestions, setData, setLangs, setInput } = actions;
   const { suggestions, data, input } = store;
@@ -212,33 +215,3 @@ const Tips = styled.div`
     color: #333;
   }
 `;
-
-// const settings = {
-//   version: '1.2.5',
-//   'show-welcome': false,
-//   'start-login': true,
-//   shortcut: 'Ctrl+Alt+T',
-//   settings: {
-//     langs: {
-//       from: 'en',
-//       to: 'it',
-//     },
-//     speed: {
-//       from: false,
-//       to: false,
-//     },
-//     fromActive: [true, false, false],
-//     toActive: [true, false, false],
-//     fromBar: {
-//       from1: 'en',
-//       from2: 'it',
-//       from3: 'es',
-//     },
-//     toBar: {
-//       to1: 'it',
-//       to2: 'en',
-//       to3: 'es',
-//     },
-//   },
-//   TKK: '443297.4016894073',
-// };

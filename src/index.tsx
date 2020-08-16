@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { GlobalStyle } from './theme/GlobalStyle';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { App, About, Welcome, Preferences } from './windows';
 import { Provider } from './store';
 import { reducer, actions } from './store/reducer';
 import Settings, { initialData } from '../settings';
+import { useStore } from './store';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
@@ -25,18 +25,19 @@ const VIEWS = {
   preferences: Preferences,
 };
 
+const Dev = () => <div>Electron <span>❤</span> React</div>;
+
 const ViewManager = () => {
   const name = window.location.search.substr(1);
-  if (!name) {
-    throw new Error('Error');
-  }
+  if (!name) throw new Error('Error');
+
+  const [store, actions] = useStore();
+  const Component = VIEWS[name] || Dev;
 
   return (
     <>
       <GlobalStyle />
-      <Router>
-        <Route path="/" component={VIEWS[name]} />
-      </Router>
+      <Component global={{ store, actions }} />
     </>
   );
 };

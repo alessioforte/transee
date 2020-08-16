@@ -58,3 +58,14 @@ window.onkeydown = (e: KeyboardEvent) => {
 //     'Sorry, Transee does not support eval() for security reasons.'
 //   );
 // };
+
+export const isMacPlatform = () => {
+  return window.navigator.platform === 'MacIntel';
+}
+
+export const isWinPlatform = () => {
+  return window.navigator.platform === 'Win32';
+}
+
+export const isWin = isWinPlatform();
+export const isMac = isMacPlatform();

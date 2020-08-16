@@ -1,76 +1,62 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Checkbox, Toggle, RecordShortcut } from '../../components';
+import { Toggle, RecordShortcut } from '../../components';
 import theme from '../../theme';
-import { ipcRenderer } from 'electron';
-import { useStore } from '../../store';
+import { isMac } from '../../utils';
 
 const { frameColor } = theme.colors;
 
-const Preferences = () => {
-  const [store, actions] = useStore();
-  const { shortcut } = store;
+const Preferences = ({ global }) => {
+  const { store, actions } = global;
+  const { shortcut, startAtLogin, checkUpdates } = store;
   console.log(store);
-  // const startLogin = settings.get('start-login') || false;
-  // const checkAutomaticallyUpdates = settings.has('check-automatically-updates')
-  //   ? settings.get('check-automatically-updates')
-  //   : true;
 
-  // const shortcutInSettings = settings.get('shortcut');
-
-  // const shortcut = shortcutInSettings || 'Click to record new shortcut';
-  // const shortStyle = shortcutInSettings ? successShortStyle : defaultShortStyle;
-  // const showDelete = shortcutInSettings ? true : false;
-
-  const setStartAtLogin = () => {
+  const setStartAtLogin = (data) => {
+    console.log(data);
     // let check = !this.state.startLogin;
     // this.setState({ startLogin: check });
     // settings.set('start-login', check);
     // ipcRenderer.send('set-start-login', check);
   };
 
-  const setCheckAutomaticallyUpdates = () => {
+  const setCheckAutomaticallyUpdates = (data) => {
+    console.log(data);
     // let check = !this.state.checkAutomaticallyUpdates;
     // this.setState({ checkAutomaticallyUpdates: check });
     // settings.set('check-automatically-updates', check);
   };
 
+  const setShortcut = (data) => {
+    console.log(data);
+  }
+
   const restoreSettings = () => {
     // settings.deleteAll();
-    ipcRenderer.send('restore-settings');
+    // ipcRenderer.send('restore-settings');
   };
 
   return (
     <Win>
-      <Frame
-        style={{
-          display: `${
-            window.navigator.platform === 'MacIntel' ? 'block' : 'none'
-          }`,
-        }}
-      >
-        Preferences
-      </Frame>
+      {isMac && <Frame>Preferences</Frame>}
       <div>
         <Option>
           <Label>
             Auto start at login
-            {/* <Checkbox
-              value={true}
-              // value={state.startLogin}
-              onClick={() => setStartAtLogin()}
-            /> */}
-            <Toggle />
+            <Toggle
+              name="login"
+              initialValue={startAtLogin}
+              onChange={setStartAtLogin}
+            />
           </Label>
         </Option>
 
         <Option>
           <Label>
             Check automatically for updates
-            <Checkbox
-              value={true}
-              // value={state.checkAutomaticallyUpdates}
-              onClick={() => setCheckAutomaticallyUpdates()}
+            <Toggle
+              name="update"
+              initialValue={checkUpdates}
+              onChange={setCheckAutomaticallyUpdates}
             />
           </Label>
         </Option>
@@ -80,7 +66,7 @@ const Preferences = () => {
             Define a shortcut
             <RecordShortcut
               initialValue={shortcut}
-              onChange={(data) => console.log(data)}
+              onChange={setShortcut}
             />
           </Label>
           <Comment>
@@ -140,11 +126,15 @@ const Comment = styled.div`
   color: #999;
   padding-top: 9px;
 `;
-const Button = styled.div`
+const Button = styled.button`
+  border: 0;
   background: #2182bd;
   color: #fff;
   padding: 3px 16px;
-  border-radius: 5px;
+  border-radius: 3px;
+  &:focus {
+    outline: none;
+  }
   &:hover {
     background: #238ed1;
   }

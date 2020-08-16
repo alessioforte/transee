@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { shell } from 'electron';
 import icon from '../../../assets/icon_256x256.png';
-import { useStore } from '../../store';
 
-const About = () => {
-  const [store] = useStore();
+const About = ({ global }) => {
+  const { store, actions } = global;
   const { version } = store;
   const isMac = window.navigator.platform === 'MacIntel';
 

@@ -5,18 +5,17 @@ import theme from '../../theme';
 import icon from '../../../assets/icon_256x256.png';
 import menubarIMG from '../../../assets/menubar.png';
 import taskbarIMG from '../../../assets/taskbar.png';
+import { isMac, isWin } from '../../utils';
 
 const { frameColor } = theme.colors;
-const barIMG = window.navigator.platform === 'Win32' ? taskbarIMG : menubarIMG;
+const barIMG = isWin ? taskbarIMG : menubarIMG;
 
 const Welcome: FunctionComponent = () => {
   // const showWelcome = settings.has('show-welcome')
   //   ? settings.get('show-welcome')
   //   : true;
-  const barTitle =
-    window.navigator.platform === 'Win32' ? 'Taskbar' : 'Menu bar';
-  const barName =
-    window.navigator.platform === 'Win32' ? 'taskbar' : 'menu bar';
+  const barTitle = isWin ? 'Taskbar' : 'Menu bar';
+  const barName = isWin ? 'taskbar' : 'menu bar';
 
   const [active, setActive] = useState(0);
   const [left, setLeft] = useState(0);
@@ -45,16 +44,7 @@ const Welcome: FunctionComponent = () => {
 
   return (
     <Win>
-      <Frame
-        style={{
-          display: `${
-            window.navigator.platform === 'MacIntel' ? 'block' : 'none'
-          }`,
-        }}
-      >
-        Welcome Guide
-      </Frame>
-
+      {isMac && <Frame>Welcome Guide</Frame>}
       <Arrow
         onClick={() => leftArrow()}
         style={{
@@ -168,10 +158,7 @@ const Welcome: FunctionComponent = () => {
 
       <Option>
         <Label>
-          <Checkbox
-            value={false}
-            onClick={() => setShowWelcomeGuide()}
-          />
+          <Checkbox value={false} onClick={() => setShowWelcomeGuide()} />
           Show Welcome Guide when opening Transee
         </Label>
       </Option>

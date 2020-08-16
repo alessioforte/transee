@@ -43,5 +43,39 @@ export const initialData = {
   data: null,
   theme: 'dark',
   input: '',
-  shortcut: 'Ctrl+Alt+T'
+  shortcut: 'Ctrl+Alt+T',
+  showWelcome: true,
+  startAtLogin: true,
+  checkUpdates: true,
 };
+
+
+// const settings = {
+//   version: '1.2.5',
+//   'show-welcome': false,
+//   'start-login': true,
+//   shortcut: 'Ctrl+Alt+T',
+//   settings: {
+//     langs: {
+//       from: 'en',
+//       to: 'it',
+//     },
+//     speed: {
+//       from: false,
+//       to: false,
+//     },
+//     fromActive: [true, false, false],
+//     toActive: [true, false, false],
+//     fromBar: {
+//       from1: 'en',
+//       from2: 'it',
+//       from3: 'es',
+//     },
+//     toBar: {
+//       to1: 'it',
+//       to2: 'en',
+//       to3: 'es',
+//     },
+//   },
+//   TKK: '443297.4016894073',
+// };

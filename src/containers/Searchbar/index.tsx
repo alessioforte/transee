@@ -32,6 +32,12 @@ const Searchbar: FunctionComponent<Props> = ({
     setValue(initialValue);
   }, [initialValue]);
 
+  useEffect(() => {
+    if (suggestions.length === 0) {
+      setHover(-1);
+    }
+  }, [suggestions]);
+
   const resizeTextarea = () => {
     if (input.current) {
       let height = 60;
