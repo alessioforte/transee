@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import styled, { css } from 'styled-components';
 import Icon from '../Icon';
 
@@ -9,12 +9,6 @@ type Props = {
 };
 
 const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
-  // const [modifier, setModifier] = useState('');
-  // const [status, setStatus] = useState('success');
-  // const [char, setChar] = useState('');
-  // const [shortcut, setShortcut] = useState(
-  //   initialValue || 'Click to record new shortcut'
-  // );
   const [state, setState] = useState({
     modifier: '',
     status: initialValue ? 'success' : 'initial',
@@ -22,6 +16,12 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
     shortcut: initialValue || 'Click to record new shortcut',
   });
   const [showDelete, setShowDelete] = useState(!!initialValue);
+
+  useEffect(() => {
+    if (state.status === 'success') {
+      onChange({ value: state.shortcut });
+    }
+  }, [state.status])
 
   const clickOnRecord = () => {
     if (!showDelete) {
@@ -76,7 +76,7 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         setShowDelete(true);
-        onChange({ value: prev.shortcut });
+
         return {
           ...prev,
           status: 'success',

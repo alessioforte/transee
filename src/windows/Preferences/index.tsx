@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
-import theme from '../../theme';
-import { isMac } from '../../utils';
-
-const { frameColor } = theme.colors;
+import Layout from '../../containers/Layout';
 
 const Preferences = ({ global }) => {
   const { store, actions } = global;
@@ -28,6 +25,7 @@ const Preferences = ({ global }) => {
 
   const setShortcut = (data) => {
     console.log(data);
+    actions.setShortcut(data.value)
   }
 
   const restoreSettings = () => {
@@ -36,9 +34,7 @@ const Preferences = ({ global }) => {
   };
 
   return (
-    <Win>
-      {isMac && <Frame>Preferences</Frame>}
-      <div>
+      <Layout title="Preferences">
         <Option>
           <Label>
             Auto start at login
@@ -84,29 +80,12 @@ const Preferences = ({ global }) => {
           </Label>
           <Comment>Transee will be restarted.</Comment>
         </Option>
-      </div>
-    </Win>
+      </Layout>
   );
 };
 
 export default Preferences;
 
-const Win = styled.div`
-  display: flex;
-  flex-direction: column;
-  user-select: none;
-  cursor: default;
-`;
-const Frame = styled.div`
-  color: #aaa;
-  background: ${frameColor};
-  padding-top: 5px;
-  height: 18px;
-  font-size: 12px;
-  text-align: center;
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
-`;
 const Option = styled.div`
   height: auto;
   padding: 14px 18px;

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 type Props = {
   title?: string;
   renderHeader?: () => ReactElement;
-  children?: ReactElement;
+  children?: ReactElement | ReactElement[] | string;
 };
 
 const Card: FunctionComponent<Props> = ({ title = '', renderHeader, children }) => {

@@ -1,44 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
 import { shell } from 'electron';
+import Layout from '../../containers/Layout';
 import icon from '../../../assets/icon_256x256.png';
 
 const About = ({ global }) => {
-  const { store, actions } = global;
+  const { store } = global;
   const { version } = store;
-  const isMac = window.navigator.platform === 'MacIntel';
 
   const openInBrowser = () => {
     shell.openExternal('https://alessioforte.github.io/transee/');
   };
 
   return (
-    <Style>
-      {isMac && <div id="frame">About</div>}
-      <div className="container">
-        <img id="icon" src={icon} />
+    <Layout title="About">
+      <Style>
+        <div className="container">
+          <img id="icon" src={icon} />
 
-        <div id="b_d">
-          <div id="title">
-            <b>Transee</b>
-          </div>
-          <div id="version">{version}</div>
-          <div id="site">
-            website:{' '}
-            <a id="link" onClick={openInBrowser}>
-              transee
-            </a>
-          </div>
-          <div id="author">
-            <p>
-              Created with <span>❤</span> by Alessio Forte
-              <br id="year" />
-              {`Copyright © ${new Date().getFullYear()}`}
-            </p>
+          <div id="b_d">
+            <div id="title">
+              <b>Transee</b>
+            </div>
+            <div id="version">{version}</div>
+            <div id="site">
+              website:{' '}
+              <a id="link" onClick={openInBrowser}>
+                transee
+              </a>
+            </div>
+            <div id="author">
+              <p>
+                Created with <span>❤</span> by Alessio Forte
+                <br id="year" />
+                {`Copyright © ${new Date().getFullYear()}`}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </Style>
+      </Style>
+    </Layout>
   );
 };
 
@@ -59,16 +60,6 @@ const Style = styled.div`
     cursor: default;
     overflow: hidden;
     background: rgba(42, 42, 42, 1);
-  }
-  #frame {
-    color: #aaa;
-    background: rgba(26, 26, 26, 1);
-    padding-top: 5px;
-    height: 18px;
-    font-size: 12px;
-    text-align: center;
-    -webkit-app-region: drag;
-    -webkit-user-select: none;
   }
   .container {
     margin: 23px;
