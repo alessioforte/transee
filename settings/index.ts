@@ -41,6 +41,7 @@ export const initialData = {
   },
   suggestions: [],
   data: null,
+  reverso: null,
   theme: 'dark',
   input: '',
   shortcut: 'Ctrl+Alt+T',

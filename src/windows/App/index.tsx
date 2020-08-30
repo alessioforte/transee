@@ -2,12 +2,17 @@ import React, { useState, FC, useEffect } from 'react';
 import styled from 'styled-components';
 import { SearchbarData } from '../../containers/Searchbar/interfaces';
 import { Options, Conversion } from '../../containers/LangsBar/interfaces';
-import { Icon } from '../../components';
+import { Icon, Tooltip } from '../../components';
 import LangsBar from '../../containers/LangsBar';
 import Searchbar from '../../containers/Searchbar';
 import { selectLangs } from '../../containers/LangsBar/actions';
 import { langsFrom, langsTo } from '../../services/langs';
-import { getHints, getTranslation } from '../../services';
+import {
+  getHints,
+  getTranslation,
+  getReversoTranslation,
+  // getReversoSuggest,
+} from '../../services';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 
@@ -24,16 +29,24 @@ const options: Options = {
 
 type P = {
   global: any;
-}
+};
 
 const App: FC<P> = ({ global }) => {
   const { store, actions } = global;
   const [isDropped, setIsDropped] = useState<boolean>(false);
   const [textareaSize, setTextareaSize] = useState<number>(60);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [favorite, setFavorite] = useState<string>('data');
 
   const langs = store.langs.selected;
-  const { setSuggestions, setData, setLangs, setInput } = actions;
-  const { suggestions, data, input } = store;
+  const {
+    setSuggestions,
+    setData,
+    setLangs,
+    setInput,
+    setReversoTranslation,
+  } = actions;
+  const { suggestions, data, input, reverso } = store;
   console.log('store', store);
 
   const handleToggleDropdown = (isVisible: boolean) => {
@@ -45,6 +58,7 @@ const App: FC<P> = ({ global }) => {
   }, [isDropped, textareaSize, suggestions, data]);
 
   const getData = async (text: string, langsSelected) => {
+    setLoading(true);
     const isUppercase = /[A-Z]/.test(text);
     const hasDoubleSpace = /\s\s+/.test(text);
     const hasSpaceAtFirst = text.charAt(0) === ' ';
@@ -59,6 +73,8 @@ const App: FC<P> = ({ global }) => {
       setSuggestions([]);
     } else {
       const hints = await getHints(text, langsSelected);
+      // const reversoHints = await getReversoSuggest(text, langsSelected);
+      // console.log(reversoHints);
       if (hints) {
         setSuggestions(hints);
       }
@@ -67,13 +83,18 @@ const App: FC<P> = ({ global }) => {
     if (!text) {
       setData(null);
     } else {
-      console.log('value', text, langsSelected);
       const translation = await getTranslation(text, langsSelected);
+      const reverso = await getReversoTranslation(text, langsSelected);
+      console.log('reverso', reverso);
       if (translation) {
         setData(translation);
       }
+      if (reverso) {
+        setReversoTranslation(reverso);
+      }
     }
     setInput(text);
+    setLoading(false);
   };
 
   const onInputDebounce = ({ value }: SearchbarData) => {
@@ -136,6 +157,7 @@ const App: FC<P> = ({ global }) => {
             isError={false}
             message="Service Unavailable"
             renderTips={renderTips}
+            loading={loading}
           />
           {data && (
             <>
@@ -144,19 +166,37 @@ const App: FC<P> = ({ global }) => {
                   <Pronunciation>{data.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  <Translation
-                    id="translation"
-                    value={data.translation}
-                    disabled
-                  />
+                  <Translation value={store[favorite].translation} disabled />
                   <Icons>
-                    <span onClick={() => console.log('voice')}>
-                      <Icon name="speaker" size={15} />
-                    </span>
+                    <div className="left">
+                      <span onClick={() => console.log('voice')}>
+                        <Icon name="speaker" size={15} />
+                      </span>
+                    </div>
+                    <div className="right">
+                      <span onClick={() => setFavorite('data')}>
+                        <Tooltip content="Google Translate">
+                          <Icon
+                            name="google"
+                            size={15}
+                            color={favorite === 'data' ? 'white' : '#444'}
+                          />
+                        </Tooltip>
+                      </span>
+                      <span onClick={() => setFavorite('reverso')}>
+                        <Tooltip content="Reverso Context">
+                          <Icon
+                            name="reverso"
+                            size={15}
+                            color={favorite === 'reverso' ? 'white' : '#444'}
+                          />
+                        </Tooltip>
+                      </span>
+                    </div>
                   </Icons>
                 </Box>
               </Block>
-              <StickyCards data={data} />
+              <StickyCards data={data} reverso={reverso} />
             </>
           )}
         </div>
@@ -193,13 +233,23 @@ const Translation = styled.textarea`
   }
 `;
 const Icons = styled.div`
-  width: 16px;
-  margin: 0 18px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 18px;
+  span {
+    cursor: pointer;
+  }
+  .right {
+    span {
+      margin-left: 5px;
+    }
+  }
 `;
 const Tips = styled.div`
   font-size: 14px;
   color: #999;
-  padding: 6px 18px;
+  margin: 6px 18px;
   cursor: default;
   p {
     margin: 0;

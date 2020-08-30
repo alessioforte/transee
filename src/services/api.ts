@@ -2,6 +2,13 @@ import querystring from 'querystring';
 import getToken from './token';
 import axios, { AxiosResponse } from 'axios';
 import { Langs } from './interfaces';
+import { reversoLangsConversion } from './langs';
+
+/**
+ * 
+ * Google Translate APIs
+ * 
+ */
 
 export async function translate(
   text: string,
@@ -10,17 +17,17 @@ export async function translate(
   const tk = await getToken(text);
   const url = 'https://translate.google.com/translate_a/single';
   const data = {
-    client: 't',
+    client: 'webapp',
     sl: opts.from,
     tl: opts.to,
     hl: opts.to,
-    dt: ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
+    dt: ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'sos', 'ss', 't', 'gt'],
     ie: 'UTF-8',
     oe: 'UTF-8',
     otf: 1,
     ssel: 0,
     tsel: 0,
-    kc: 1,
+    kc: 7,
     tk: tk.value,
     q: text,
   };
@@ -98,4 +105,54 @@ export async function voice(
   };
 
   return url + '?' + querystring.stringify(data);
+}
+
+/**
+ * 
+ * Reverso Context APIs
+ * 
+ */
+
+export async function reversoTranslation(
+  input: string,
+  opts: Langs
+): Promise<AxiosResponse> {
+  const from = reversoLangsConversion[opts.from];
+  const to = reversoLangsConversion[opts.to];
+
+  const data = {
+    input,
+    from,
+    to,
+    format: 'text',
+    options: {
+      origin: 'reversodesktop',
+      sentenceSplitter: true,
+      contextResults: true,
+      languageDetection: true,
+    },
+  };
+  return axios({
+    method: 'POST',
+    url: 'https://api.reverso.net/translate/v1/translation',
+    data,
+  });
+}
+
+export async function reversoSuggest(
+  input: string,
+  opts: Langs
+): Promise<AxiosResponse> {
+
+  const data = {
+    search: input,
+    source_lang: opts.from,
+    target_lang: opts.to,
+  }
+
+  return axios({
+    method: 'POST',
+    url: 'https://context.reverso.net/bst-suggest-service',
+    data,
+  })
 }

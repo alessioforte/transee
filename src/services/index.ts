@@ -1,6 +1,13 @@
 /* eslint-disable */
 import { Langs, Hint, TranslationData } from './interfaces';
-import { complete, translateComplete, translate, voice } from './api';
+import {
+  complete,
+  translateComplete,
+  translate,
+  voice,
+  reversoTranslation,
+  reversoSuggest,
+} from './api';
 
 export const getHints = async (
   value: string,
@@ -51,6 +58,30 @@ export const playAudio = async (
   }
 };
 
+export const getReversoTranslation = async (
+  value: string,
+  langs: Langs
+): Promise<any | null> => {
+  try {
+    const { data } = await reversoTranslation(value, langs);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getReversoSuggest = async (
+  value: string,
+  langs: Langs
+): Promise<any | null> => {
+  try {
+    const { data } = await reversoSuggest(value, langs);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 /**
  * Mapping ---------------------------------------------------------------------
  */
@@ -87,6 +118,7 @@ function remapTranslate(data): TranslationData {
     }
   }
 
+  console.log(data);
   if (data[0]) {
     let length = data[0].length;
     let input = [];

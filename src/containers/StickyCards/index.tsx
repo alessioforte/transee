@@ -1,17 +1,55 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { Card } from '../../components';
+import { Card, Icon } from '../../components';
 import { TranslationData } from '../../services/interfaces';
 
 type Props = {
   data?: TranslationData | null;
+  reverso: any | null;
 };
 
-const StickyCards: FunctionComponent<Props> = ({ data }) => {
+const StickyCards: FunctionComponent<Props> = ({ data, reverso }) => {
   return (
     <>
       {data && (
         <Sticky>
+          {reverso &&
+            reverso.contextResults &&
+            Array.isArray(reverso.contextResults.results) && (
+              <Card
+                renderHeader={() => (
+                  <Title>
+                    <span>
+                      <Icon name="reverso" size={15} />
+                    </span>
+                    <span>Examples of</span>
+                    <span className="target">{data.target}</span>
+                  </Title>
+                )}
+              >
+                <Body>
+                  {reverso.contextResults.results.map((item) => (
+                    <Reverso key={item.translation}>
+                      <h3>{item.translation}</h3>
+                      <div className="examples">
+                        {item.sourceExamples.map((sentence, i) => (
+                          <div className="example" key={i}>
+                            <div
+                              dangerouslySetInnerHTML={{ __html: sentence }}
+                            />
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.targetExamples[i],
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </Reverso>
+                  ))}
+                </Body>
+              </Card>
+            )}
           {data.translations && (
             <Card
               renderHeader={() => (
@@ -124,10 +162,17 @@ const Sticky = styled.div`
 `;
 const Body = styled.div`
   font-size: 12px;
+  color: #aaa;
 `;
 const Title = styled.div`
-  & > span {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  .target {
     color: white;
+  }
+  & > span {
+    margin-right: 5px;
   }
 `;
 const Box = styled.div`
@@ -206,9 +251,25 @@ const Examples = styled.div`
     color: #ccc;
     margin: 9px 18px 9px 9px;
   }
-  & > li,
-  b {
+  & > li > b {
     color: white;
     font-weight: 700;
   }
 `;
+const Reverso = styled.div`
+  margin: 5px 0;
+  h3 {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  em {
+    color: white;
+  }
+  .examples {
+    margin-bottom: 15px;
+  }
+  .example {
+    margin-bottom: 5px;
+  }
+`

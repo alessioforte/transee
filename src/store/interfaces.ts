@@ -30,6 +30,6 @@ export type ProviderProps = {
 };
 
 export type Ctx = {
-  store: Settings;
+  store: any;
   dispatch: React.Dispatch<unknown>;
 };

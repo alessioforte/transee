@@ -1,15 +1,19 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { GlobalStyle } from './theme/GlobalStyle';
+import { Tooltip } from './components';
 import { App, About, Welcome, Preferences } from './windows';
 import { Provider } from './store';
 import { reducer, actions } from './store/reducer';
 import Settings, { initialData } from '../settings';
 import { useStore } from './store';
 
+
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
 document.body.appendChild(mainElement);
+
+Tooltip.setRoot(mainElement, 'root-tooltip');
 
 // Settings.delete();
 const settings = Settings.get() || {};

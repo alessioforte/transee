@@ -6,7 +6,7 @@ import React, {
   MutableRefObject,
 } from 'react';
 import styled from 'styled-components';
-import { Icon } from '../../components';
+import { Icon, Spinner } from '../../components';
 import { Props, Tip } from './interfaces';
 
 const Searchbar: FunctionComponent<Props> = ({
@@ -127,7 +127,7 @@ const Searchbar: FunctionComponent<Props> = ({
         />
         {loading && (
           <Loading>
-            <Icon name="spinner" />
+            <Spinner />
           </Loading>
         )}
       </Container>

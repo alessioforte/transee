@@ -2,6 +2,7 @@ const SET_LANGS = 'SET_LANGS';
 const SET_THEME = 'SET_THEME';
 const SET_SUGGESTIONS = 'SET_SUGGESTIONS';
 const SET_DATA = 'SET_DATA';
+const SET_REVERSO_TRANSLATION = 'SET_REVERSO_TRANSLATION';
 const SET_INPUT = 'SET_INPUT';
 const SET_SHORTCUT = 'SET_SHORTCUT';
 
@@ -14,6 +15,9 @@ export const actions = {
   },
   setData(payload: any) {
     return { type: SET_DATA, payload };
+  },
+  setReversoTranslation(payload: any) {
+    return { type: SET_REVERSO_TRANSLATION, payload };
   },
   setInput(payload: string) {
     return { type: SET_INPUT, payload };
@@ -33,6 +37,8 @@ export const reducer = (state, action) => {
       return { ...state, suggestions: action.payload };
     case SET_DATA:
       return { ...state, data: action.payload };
+    case SET_REVERSO_TRANSLATION:
+      return { ...state, reverso: action.payload };
     case SET_INPUT:
       return { ...state, input: action.payload };
     case SET_SHORTCUT:
