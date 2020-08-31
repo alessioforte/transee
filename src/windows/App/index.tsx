@@ -7,14 +7,9 @@ import LangsBar from '../../containers/LangsBar';
 import Searchbar from '../../containers/Searchbar';
 import { selectLangs } from '../../containers/LangsBar/actions';
 import { langsFrom, langsTo } from '../../services/langs';
-import {
-  getHints,
-  getTranslation,
-  getReversoTranslation,
-  // getReversoSuggest,
-} from '../../services';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
+import { useWindowKeyDown } from '../../hooks';
 
 const options: Options = {
   from: Object.entries(langsFrom).map(([key, value]) => ({
@@ -28,83 +23,33 @@ const options: Options = {
 };
 
 type P = {
-  global: any;
+  locals: any;
 };
 
-const App: FC<P> = ({ global }) => {
-  const { store, actions } = global;
+const App: FC<P> = ({ locals }) => {
+  useWindowKeyDown(locals);
+  const { store, actions, queries } = locals;
   const [isDropped, setIsDropped] = useState<boolean>(false);
   const [textareaSize, setTextareaSize] = useState<number>(60);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [favorite, setFavorite] = useState<string>('data');
 
   const langs = store.langs.selected;
-  const {
-    setSuggestions,
-    setData,
-    setLangs,
-    setInput,
-    setReversoTranslation,
-  } = actions;
-  const { suggestions, data, input, reverso } = store;
-  console.log('store', store);
-
-  const handleToggleDropdown = (isVisible: boolean) => {
-    setIsDropped(isVisible);
-  };
+  const { setSuggestions, setLangs, setInput, setEngine } = actions;
+  const { suggestions, google, input, reverso, loading, engine } = store;
+  const { getData } = queries;
+  // console.log('store', store);
 
   useEffect(() => {
     setMainWindowSize();
-  }, [isDropped, textareaSize, suggestions, data]);
-
-  const getData = async (text: string, langsSelected) => {
-    setLoading(true);
-    const isUppercase = /[A-Z]/.test(text);
-    const hasDoubleSpace = /\s\s+/.test(text);
-    const hasSpaceAtFirst = text.charAt(0) === ' ';
-    const isNewLine = /^\s*$/.test(text);
-    if (
-      !text ||
-      isUppercase ||
-      hasDoubleSpace ||
-      hasSpaceAtFirst ||
-      isNewLine
-    ) {
-      setSuggestions([]);
-    } else {
-      const hints = await getHints(text, langsSelected);
-      // const reversoHints = await getReversoSuggest(text, langsSelected);
-      // console.log(reversoHints);
-      if (hints) {
-        setSuggestions(hints);
-      }
-    }
-
-    if (!text) {
-      setData(null);
-    } else {
-      const translation = await getTranslation(text, langsSelected);
-      const reverso = await getReversoTranslation(text, langsSelected);
-      console.log('reverso', reverso);
-      if (translation) {
-        setData(translation);
-      }
-      if (reverso) {
-        setReversoTranslation(reverso);
-      }
-    }
-    setInput(text);
-    setLoading(false);
-  };
+  }, [isDropped, textareaSize, suggestions, google]);
 
   const onInputDebounce = ({ value }: SearchbarData) => {
     getData(value, langs);
   };
 
   const handleClickOnDYM = (text: string) => {
-    console.log('dym', text);
     setSuggestions([]);
     setInput(text);
+    getData(text, langs);
   };
 
   const handleClickOnISO = (lang: string) => {
@@ -115,22 +60,26 @@ const App: FC<P> = ({ global }) => {
     getData(input, data.selected);
   };
 
+  const handleToggleDropdown = (isVisible: boolean) => {
+    setIsDropped(isVisible);
+  };
+
   const renderTips = () =>
-    data && (
+    google && (
       <Tips>
-        {data.correction.text.value && (
+        {google.correction.text.value && (
           <p>
             Did you mean{' '}
-            <i onClick={() => handleClickOnDYM(data.correction.text.value)}>
-              {data.correction.text.value}
+            <i onClick={() => handleClickOnDYM(google.correction.text.value)}>
+              {google.correction.text.value}
             </i>
           </p>
         )}
-        {data.correction.language.iso !== langs.from && (
+        {google.correction.language.iso !== langs.from && (
           <p>
             Translate from{' '}
-            <i onClick={() => handleClickOnISO(data.correction.language.iso)}>
-              {langsFrom[data.correction.language.iso]}
+            <i onClick={() => handleClickOnISO(google.correction.language.iso)}>
+              {langsFrom[google.correction.language.iso]}
             </i>
           </p>
         )}
@@ -153,20 +102,20 @@ const App: FC<P> = ({ global }) => {
             suggestions={suggestions}
             initialValue={input}
             delay={900}
-            showIcons={!!data}
+            showIcons={!!google}
             isError={false}
             message="Service Unavailable"
             renderTips={renderTips}
             loading={loading}
           />
-          {data && (
+          {google && (
             <>
               <Block>
-                {data.pronunciation && (
-                  <Pronunciation>{data.pronunciation}</Pronunciation>
+                {google.pronunciation && (
+                  <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  <Translation value={store[favorite].translation} disabled />
+                  <Translation value={store[engine].translation} disabled />
                   <Icons>
                     <div className="left">
                       <span onClick={() => console.log('voice')}>
@@ -174,29 +123,39 @@ const App: FC<P> = ({ global }) => {
                       </span>
                     </div>
                     <div className="right">
-                      <span onClick={() => setFavorite('data')}>
-                        <Tooltip content="Google Translate">
-                          <Icon
-                            name="google"
-                            size={15}
-                            color={favorite === 'data' ? 'white' : '#444'}
-                          />
-                        </Tooltip>
-                      </span>
-                      <span onClick={() => setFavorite('reverso')}>
-                        <Tooltip content="Reverso Context">
-                          <Icon
-                            name="reverso"
-                            size={15}
-                            color={favorite === 'reverso' ? 'white' : '#444'}
-                          />
-                        </Tooltip>
-                      </span>
+                      {google && (
+                        <span onClick={() => setEngine('google')}>
+                          <Tooltip content="Google Translate">
+                            <Icon
+                              name="google"
+                              size={15}
+                              color={engine === 'google' ? 'white' : '#444'}
+                            />
+                          </Tooltip>
+                        </span>
+                      )}
+                      {reverso && (
+                        <span onClick={() => setEngine('reverso')}>
+                          <Tooltip content="Reverso Context">
+                            <Icon
+                              name="reverso"
+                              size={15}
+                              color={engine === 'reverso' ? 'white' : '#444'}
+                            />
+                          </Tooltip>
+                        </span>
+                      )}
                     </div>
                   </Icons>
                 </Box>
               </Block>
-              <StickyCards data={data} reverso={reverso} />
+              {!(!google && !reverso) && (
+                <StickyCards
+                  google={google}
+                  reverso={reverso}
+                  onClick={(data) => console.log(data)}
+                />
+              )}
             </>
           )}
         </div>

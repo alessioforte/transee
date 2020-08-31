@@ -8,6 +8,7 @@ import {
   reversoTranslation,
   reversoSuggest,
 } from './api';
+import { reversoLangsConversion } from './langs';
 
 export const getHints = async (
   value: string,
@@ -63,7 +64,10 @@ export const getReversoTranslation = async (
   langs: Langs
 ): Promise<any | null> => {
   try {
-    const { data } = await reversoTranslation(value, langs);
+    const from = reversoLangsConversion[langs.from];
+    const to = reversoLangsConversion[langs.to];
+    if (!from || !to) return null;
+    const { data } = await reversoTranslation(value, { from, to });
     return data;
   } catch (error) {
     console.log(error);

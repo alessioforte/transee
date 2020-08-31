@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
 
-const Preferences = ({ global }) => {
-  const { store, actions } = global;
+const Preferences = ({ locals }) => {
+  const { store, actions } = locals;
   const { shortcut, startAtLogin, checkUpdates } = store;
   console.log(store);
 

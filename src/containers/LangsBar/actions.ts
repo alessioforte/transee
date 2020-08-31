@@ -61,7 +61,6 @@ export const selectLangs = (
 };
 
 export const invertLangs = (prev: Values): Values => {
-  console.log('prev', prev);
   const { threesome, selected } = prev;
   const isInToThreesome = threesome.to.some(
     (item: Option) => item.value === selected.from
@@ -85,6 +84,5 @@ export const invertLangs = (prev: Values): Values => {
   }
 
   const newSelected = { from: selected.to, to: selected.from };
-  console.log(newThreesome, newSelected);
   return { threesome: newThreesome, selected: newSelected };
 };

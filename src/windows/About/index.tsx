@@ -4,8 +4,8 @@ import { shell } from 'electron';
 import Layout from '../../containers/Layout';
 import icon from '../../../assets/icon_256x256.png';
 
-const About = ({ global }) => {
-  const { store } = global;
+const About = ({ locals }) => {
+  const { store } = locals;
   const { version } = store;
 
   const openInBrowser = () => {

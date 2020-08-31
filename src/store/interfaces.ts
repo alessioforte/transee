@@ -17,7 +17,7 @@ export type Action = {
 
 export type Actions = {
   setSuggestions: (payload: []) => void;
-  setData: (payload: any) => void;
+  setGoogle: (payload: any) => void;
   setLangs: (payload: Values) => void;
   setInput: (payload: string) => void;
 };

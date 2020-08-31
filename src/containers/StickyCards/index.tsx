@@ -1,101 +1,104 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { Card, Icon } from '../../components';
+import { Card } from '../../components';
 import { TranslationData } from '../../services/interfaces';
 
-type Props = {
-  data?: TranslationData | null;
-  reverso: any | null;
+type Data = {
+  invert: boolean;
+  value: string;
 };
 
-const StickyCards: FunctionComponent<Props> = ({ data, reverso }) => {
+type Props = {
+  google?: TranslationData | null;
+  reverso?: any | null;
+  onClick?: (data: Data) => void;
+};
+
+const StickyCards: FunctionComponent<Props> = ({
+  google,
+  reverso,
+  onClick = () => null,
+}) => {
   return (
-    <>
-      {data && (
-        <Sticky>
-          {reverso &&
-            reverso.contextResults &&
-            Array.isArray(reverso.contextResults.results) && (
-              <Card
-                renderHeader={() => (
-                  <Title>
-                    <span>
-                      <Icon name="reverso" size={15} />
-                    </span>
-                    <span>Examples of</span>
-                    <span className="target">{data.target}</span>
-                  </Title>
-                )}
-              >
-                <Body>
-                  {reverso.contextResults.results.map((item) => (
-                    <Reverso key={item.translation}>
-                      <h3>{item.translation}</h3>
-                      <div className="examples">
-                        {item.sourceExamples.map((sentence, i) => (
-                          <div className="example" key={i}>
-                            <div
-                              dangerouslySetInnerHTML={{ __html: sentence }}
-                            />
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: item.targetExamples[i],
-                              }}
-                            />
-                          </div>
-                        ))}
+    <Sticky>
+      {((google && google.examples) || (reverso && reverso.contextResults)) && (
+        <Card renderHeader={() => <Title>examples</Title>}>
+          <Body>
+            {reverso &&
+              reverso.contextResults &&
+              Array.isArray(reverso.contextResults.results) &&
+              reverso.contextResults.results.map((item) => (
+                <Reverso key={item.translation}>
+                  <h3>{item.translation}</h3>
+                  <div className="examples">
+                    {item.sourceExamples.map((sentence, i: number) => (
+                      <div className="example" key={sentence}>
+                        <div
+                          className="sentence"
+                          dangerouslySetInnerHTML={{ __html: sentence }}
+                        />
+                        <div
+                          className="translation"
+                          dangerouslySetInnerHTML={{
+                            __html: item.targetExamples[i],
+                          }}
+                        />
                       </div>
-                    </Reverso>
-                  ))}
-                </Body>
-              </Card>
+                    ))}
+                  </div>
+                </Reverso>
+              ))}
+            {google && google.examples && Array.isArray(google.examples) && (
+              <Examples>
+                {google.examples.map((example, i) => (
+                  <li key={i} dangerouslySetInnerHTML={{ __html: example }} />
+                ))}
+              </Examples>
             )}
-          {data.translations && (
-            <Card
-              renderHeader={() => (
-                <Title>
-                  Translations of <span>{data.target}</span>
-                </Title>
-              )}
-            >
+          </Body>
+        </Card>
+      )}
+
+      {google && (
+        <>
+          {google.translations && (
+            <Card renderHeader={() => <Title>translations</Title>}>
               <Body>
-                {data.translations.map((translation, i) => (
-                  <div key={`translations${i}`}>
-                    <i>{translation.type}</i>
-                    <>
+                {google.translations.map((translation, i) => (
+                  <table key={`translations${i}`}>
+                    <tbody>
+                      <TrTitle>
+                        <td>{translation.type}</td>
+                      </TrTitle>
                       {translation.content.map((section, j) => (
-                        <Box key={`translations${i}-${j}`}>
-                          <div>
+                        <TrRow key={`translations${i}-${j}`}>
+                          <Word>
+                            <span className="art">{section.article || ''}</span>
+                            <span className="word">{section.word}</span>
+                          </Word>
+                          <td>
                             <Rating>
                               <div className={section.bar}></div>
                             </Rating>
-                            {section.article && (
-                              <Article>{section.article}</Article>
-                            )}
-                            <Word>{section.word}</Word>
-                          </div>
-                          <Values>{section.meaning.join(', ')}</Values>
-                        </Box>
+                          </td>
+                          <td>
+                            <Values>{section.meaning.join(', ')}</Values>
+                          </td>
+                        </TrRow>
                       ))}
-                    </>
-                  </div>
+                    </tbody>
+                  </table>
                 ))}
               </Body>
             </Card>
           )}
 
-          {data.definitions && (
-            <Card
-              renderHeader={() => (
-                <Title>
-                  Definitions of <span className="span">{data.target}</span>
-                </Title>
-              )}
-            >
+          {google.definitions && (
+            <Card renderHeader={() => <Title>definitions</Title>}>
               <Body>
-                {data.definitions.map((definition, i) => (
+                {google.definitions.map((definition, i) => (
                   <div key={`definitions${i}`}>
-                    <i>{definition.type}</i>
+                    <span>{definition.type}</span>
                     <>
                       {definition.content.map((section, j) => (
                         <Section key={`definitions${i}-${j}`}>
@@ -110,15 +113,26 @@ const StickyCards: FunctionComponent<Props> = ({ data, reverso }) => {
             </Card>
           )}
 
-          {data.synonyms && (
-            <Card title="Synonyms">
+          {google.synonyms && (
+            <Card title="synonyms">
               <Body>
-                {data.synonyms.map((synonym, i) => (
+                {google.synonyms.map((synonym, i) => (
                   <Type key={`synonyms-${i}`}>
-                    <i>{synonym.type}</i>
+                    <span>{synonym.type}</span>
                     <List>
                       {synonym.content.map((section, j) => (
-                        <li key={j}>{section.join(', ')}</li>
+                        <div key={j}>
+                          {section.map((word) => (
+                            <Badge
+                              key={word}
+                              onClick={() =>
+                                onClick({ value: word, invert: false })
+                              }
+                            >
+                              {word}
+                            </Badge>
+                          ))}
+                        </div>
                       ))}
                     </List>
                   </Type>
@@ -127,28 +141,24 @@ const StickyCards: FunctionComponent<Props> = ({ data, reverso }) => {
             </Card>
           )}
 
-          {data.examples && (
-            <Card title="Examples">
+          {google && google.seeAlso && (
+            <Card title="see Also">
               <Body>
-                <Examples>
-                  {data.examples.map((example, i) => (
-                    <li key={i} dangerouslySetInnerHTML={{ __html: example }} />
+                <div>
+                  {google.seeAlso.map((word) => (
+                    <Badge
+                      onClick={() => onClick({ value: word, invert: false })}
+                    >
+                      {word}
+                    </Badge>
                   ))}
-                </Examples>
+                </div>
               </Body>
             </Card>
           )}
-
-          {data && data.seeAlso && (
-            <Card title="See Also">
-              <Body>
-                <div>{data.seeAlso.join(', ')}</div>
-              </Body>
-            </Card>
-          )}
-        </Sticky>
+        </>
       )}
-    </>
+    </Sticky>
   );
 };
 
@@ -158,10 +168,10 @@ const Sticky = styled.div`
   position: relative;
   overflow: scroll;
   max-height: 328px;
-  font-size: 14px;
+  font-size: 16px;
 `;
 const Body = styled.div`
-  font-size: 12px;
+  padding: 10px 0;
   color: #aaa;
 `;
 const Title = styled.div`
@@ -175,22 +185,22 @@ const Title = styled.div`
     margin-right: 5px;
   }
 `;
-const Box = styled.div`
-  margin-left: 70px;
-  display: flex;
-  border-bottom: 1px solid rgba(85, 85, 85, 0.3);
-  &:last-child {
-    border-bottom: 0;
-  }
-  & > div {
-    display: flex;
-    width: 210px;
-  }
-`;
+// const Box = styled.div`
+//   margin-left: 70px;
+//   display: flex;
+//   border-bottom: 1px solid rgba(85, 85, 85, 0.3);
+//   &:last-child {
+//     border-bottom: 0;
+//   }
+//   & > div {
+//     display: flex;
+//     width: 210px;
+//   }
+// `;
 const Type = styled.div`
   padding: 9px 18px;
-  color: #aaa;
-  border-bottom: 1px solid #555;
+  color: #fff;
+  /* border-bottom: 1px solid #555; */
 
   &:last-child {
     border-bottom: 0;
@@ -198,7 +208,7 @@ const Type = styled.div`
 `;
 const Rating = styled.div`
   width: 35px;
-  margin-right: 5px;
+  margin: 0 10px;
   & > div {
     margin: 8px 0;
     height: 9px;
@@ -215,19 +225,24 @@ const Rating = styled.div`
     width: 10px;
   }
 `;
-const Word = styled.div`
-  margin: 3px;
-  color: white;
-`;
-const Article = styled.div`
-  margin: 3px;
-  min-width: 10px;
+const Word = styled.td`
+  min-width: 180px;
+  display: flex;
+  justify-content: flex-end;
+  .word {
+    margin: 3px;
+    color: white;
+  }
+  .art {
+    margin: 3px;
+    min-width: 10px;
+  }
 `;
 const Values = styled.div`
   margin: 3px;
   color: #aaa;
-  width: 380px;
 `;
+
 const Section = styled.div`
   margin-left: 70px;
   margin-top: 9px;
@@ -240,13 +255,16 @@ const List = styled.ul`
   padding: 0;
   margin-top: 9px;
   margin-left: 85px;
-  & > li {
-    list-style-position: outside;
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
     margin-bottom: 6px;
     color: white;
   }
 `;
 const Examples = styled.div`
+  border-top: 1px solid #555;
+  padding-top: 20px;
   & > li {
     color: #ccc;
     margin: 9px 18px 9px 9px;
@@ -261,15 +279,40 @@ const Reverso = styled.div`
   h3 {
     color: white;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
   em {
-    color: white;
+    font-weight: bold;
+    color: #fff;
   }
   .examples {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   .example {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
-`
+  .sentence {
+    margin-bottom: 3px;
+    color: #fff;
+  }
+  .translation {
+    font-size: 12px;
+  }
+`;
+const Badge = styled.span`
+  padding: 3px 5px;
+  margin: 2px 3px;
+  border-radius: 5px;
+  background: #212121;
+  color: #fff;
+  cursor: pointer;
+`;
+const TrTitle = styled.tr`
+  height: 30px;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 1px solid #555;
+`;
+const TrRow = styled.tr`
+  font-size: 14px;
+`;

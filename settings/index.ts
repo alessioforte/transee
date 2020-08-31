@@ -40,7 +40,7 @@ export const initialData = {
     selected: { from: 'en', to: 'it' },
   },
   suggestions: [],
-  data: null,
+  google: null,
   reverso: null,
   theme: 'dark',
   input: '',
@@ -48,8 +48,8 @@ export const initialData = {
   showWelcome: true,
   startAtLogin: true,
   checkUpdates: true,
+  engine: 'google',
 };
-
 
 // const settings = {
 //   version: '1.2.5',
