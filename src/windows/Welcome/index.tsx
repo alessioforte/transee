@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from 'react';
+import React, { useState, FC } from 'react';
 import { Checkbox, Icon } from '../../components';
 import styled from 'styled-components';
 import theme from '../../theme';
@@ -10,10 +10,14 @@ import { isMac, isWin } from '../../utils';
 const { frameColor } = theme.colors;
 const barIMG = isWin ? taskbarIMG : menubarIMG;
 
-const Welcome: FunctionComponent = () => {
-  // const showWelcome = settings.has('show-welcome')
-  //   ? settings.get('show-welcome')
-  //   : true;
+type P = {
+  locals: any;
+};
+
+const Welcome: FC<P> = ({ locals }) => {
+  const { store, actions } = locals;
+  const { shortcut, showWelcome } = store;
+  const { setShowWelcome } = actions;
   const barTitle = isWin ? 'Taskbar' : 'Menu bar';
   const barName = isWin ? 'taskbar' : 'menu bar';
 
@@ -33,13 +37,6 @@ const Welcome: FunctionComponent = () => {
   const rightArrow = () => {
     setActive((prev) => prev + 1);
     setLeft((prev) => prev - 414);
-  };
-
-  const setShowWelcomeGuide = () => {
-    console.log('check');
-    // const check = !this.state.showWelcome;
-    // this.setState({ showWelcome: check });
-    // settings.set('show-welcome', check);
   };
 
   return (
@@ -75,35 +72,33 @@ const Welcome: FunctionComponent = () => {
       </Header>
 
       <Cards style={{ marginLeft: left }}>
-        {/* {shortcut ? (
-          <Card>
-            <h2>Start</h2>
-            Transee is always at your fingertips.
-            <br />
-            Press <Short>{shortcut}</Short> and start.
-            <br />
-            Click anywhere on your desktop
-            <br />
-            to hide the translation bar
-            <br />
-            or press the <Short>Esc</Short> key.
-            <Note>You can change the shortcut in preferences window.</Note>
-          </Card>
-        ) : (
-          <Card>
-            <h2>Start</h2>
-            Transee is always at your fingertips.
-            <br />
-            Register a shortcut
-            <br />
-            for a better user experience
-            <br />
-            or open translation bar from menu.
-            <br />
-            <br />
-            <Note>You can set the shortcut in preferences window.</Note>
-          </Card>
-        )} */}
+        <Card>
+          <h2>Start</h2>
+          Transee is always at your fingertips.
+          <br />
+          {shortcut ? (
+            <>
+              Press <Short>{shortcut}</Short> and start.
+              <br />
+              Click anywhere on your desktop
+              <br />
+              to hide the translation bar
+              <br />
+              or press the <Short>Esc</Short> key.
+            </>
+          ) : (
+            <>
+              Register a shortcut
+              <br />
+              for a better user experience
+              <br />
+              or open translation bar from menu.
+              <br />
+              <br />
+            </>
+          )}
+          <Note>You can change the shortcut in preferences window.</Note>
+        </Card>
 
         <Card>
           <h2>{barTitle}</h2>
@@ -150,15 +145,18 @@ const Welcome: FunctionComponent = () => {
         </Card>
       </Cards>
 
-      {/* <Navigator
-        items={3}
+      <Navigator
+        items={[0, 0, 0]}
         active={active}
         onClick={(i) => returnIndex(i)}
-      /> */}
+      />
 
       <Option>
         <Label>
-          <Checkbox value={false} onClick={() => setShowWelcomeGuide()} />
+          <Checkbox
+            value={showWelcome}
+            onChange={(data) => setShowWelcome(data.value)}
+          />
           Show Welcome Guide when opening Transee
         </Label>
       </Option>

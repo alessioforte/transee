@@ -33,14 +33,14 @@ const App: FC<P> = ({ locals }) => {
   const [textareaSize, setTextareaSize] = useState<number>(60);
 
   const langs = store.langs.selected;
-  const { setSuggestions, setLangs, setInput, setEngine } = actions;
-  const { suggestions, google, input, reverso, loading, engine } = store;
+  const { setSuggestions, setLangs, setSearch, setEngine } = actions;
+  const { suggestions, google, input, search, reverso, loading, engine } = store;
   const { getData } = queries;
-  // console.log('store', store);
+  console.log('store', store);
 
   useEffect(() => {
     setMainWindowSize();
-  }, [isDropped, textareaSize, suggestions, google]);
+  }, [isDropped, textareaSize, store]);
 
   const onInputDebounce = ({ value }: SearchbarData) => {
     getData(value, langs);
@@ -48,7 +48,7 @@ const App: FC<P> = ({ locals }) => {
 
   const handleClickOnDYM = (text: string) => {
     setSuggestions([]);
-    setInput(text);
+    setSearch(text);
     getData(text, langs);
   };
 
@@ -100,7 +100,7 @@ const App: FC<P> = ({ locals }) => {
             onResize={(size) => setTextareaSize(size)}
             onDebounce={onInputDebounce}
             suggestions={suggestions}
-            initialValue={input}
+            initialValue={search}
             delay={900}
             showIcons={!!google}
             isError={false}

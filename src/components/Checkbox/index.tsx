@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import Icon from '../Icon';
 
 type Props = {
-  label: string;
-  name: string;
-  value: boolean;
-  onChange: (data) => void;
+  label?: string;
+  name?: string;
+  value?: boolean;
+  onChange?: (data) => void;
 };
 
 const Checkbox: FunctionComponent<Props> = ({
   label,
   name,
   value,
-  onChange,
+  onChange = () => null,
 }) => {
   const [state, setState] = useState(value || false);
 

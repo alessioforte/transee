@@ -6,9 +6,14 @@ const SET_SUGGESTIONS = 'SET_SUGGESTIONS';
 const SET_GOOGLE = 'SET_GOOGLE';
 const SET_REVERSO_TRANSLATION = 'SET_REVERSO_TRANSLATION';
 const SET_INPUT = 'SET_INPUT';
+const SET_SEARCH = 'SET_SEARCH';
 const SET_SHORTCUT = 'SET_SHORTCUT';
 const SET_LOADING = 'SET_LOADING';
 const SET_ENGINE = 'SET_ENGINE';
+const SET_SHOW_WELCOME = 'SET_SHOW_WELCOME';
+const SET_START_AT_LOGIN = 'SET_START_AT_LOGIN';
+const SET_CHECK_UPDATES = 'SET_CHECK_UPDATES';
+const RESTORE_SETTINGS = 'RESTORE_SETTINGS';
 
 export const actions = {
   setLangs(payload: any) {
@@ -34,10 +39,26 @@ export const actions = {
   },
   setEngine(payload: string) {
     return { type: SET_ENGINE, payload };
+  },
+  setSearch(payload: string) {
+    return { type: SET_SEARCH, payload };
+  },
+  setShowWelcome(payload: boolean) {
+    return { type: SET_SHOW_WELCOME, payload };
+  },
+  setStartAtLogin(payload: boolean) {
+    return { type: SET_START_AT_LOGIN, payload };
+  },
+  setCheckUpdates(payload: boolean) {
+    return { type: SET_CHECK_UPDATES, payload };
+  },
+  restoreSettings() {
+    return { type: RESTORE_SETTINGS }
   }
 };
 
 export const reducer = (state, action) => {
+  console.log('reducer', action.type)
   switch (action.type) {
     case SET_LANGS:
       return { ...state, langs: action.payload };
@@ -57,12 +78,23 @@ export const reducer = (state, action) => {
       return { ...state, shortcut: action.payload };
     case SET_LOADING:
       return { ...state, loading: action.payload };
+    case SET_SEARCH:
+      return { ...state, search: action.payload };
+    case SET_SHOW_WELCOME:
+      return { ...state, showWelcome: action.payload };
+    case SET_START_AT_LOGIN:
+      return { ...state, startAtLogin: action.payload };
+    case SET_CHECK_UPDATES:
+      return { ...state, checkUpdates: action.payload };
+    case RESTORE_SETTINGS:
+      //   // ipcRenderer.send('restore-settings');
+      return initialData;
     default:
       return state;
   }
 };
 
-export const buildQueries = ({ actions, store }) => {
+export const buildQueries = ({ actions }) => {
   const {
     setSuggestions,
     setGoogle,
@@ -110,3 +142,63 @@ export const buildQueries = ({ actions, store }) => {
     },
   };
 };
+
+
+export const initialData = {
+  langs: {
+    threesome: {
+      from: [
+        { value: 'en', label: 'English' },
+        { value: 'it', label: 'Italian' },
+        { value: 'es', label: 'Spanish' },
+      ],
+      to: [
+        { value: 'it', label: 'Italian' },
+        { value: 'en', label: 'English' },
+        { value: 'es', label: 'Spanish' },
+      ],
+    },
+    selected: { from: 'en', to: 'it' },
+  },
+  suggestions: [],
+  google: null,
+  reverso: null,
+  theme: 'dark',
+  input: '',
+  search: '',
+  shortcut: 'Ctrl+Alt+T',
+  showWelcome: true,
+  startAtLogin: true,
+  checkUpdates: true,
+  engine: 'google',
+};
+
+// const settings = {
+//   version: '1.2.5',
+//   'show-welcome': false,
+//   'start-login': true,
+//   shortcut: 'Ctrl+Alt+T',
+//   settings: {
+//     langs: {
+//       from: 'en',
+//       to: 'it',
+//     },
+//     speed: {
+//       from: false,
+//       to: false,
+//     },
+//     fromActive: [true, false, false],
+//     toActive: [true, false, false],
+//     fromBar: {
+//       from1: 'en',
+//       from2: 'it',
+//       from3: 'es',
+//     },
+//     toBar: {
+//       to1: 'it',
+//       to2: 'en',
+//       to3: 'es',
+//     },
+//   },
+//   TKK: '443297.4016894073',
+// };

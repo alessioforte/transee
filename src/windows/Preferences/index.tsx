@@ -6,81 +6,86 @@ import Layout from '../../containers/Layout';
 const Preferences = ({ locals }) => {
   const { store, actions } = locals;
   const { shortcut, startAtLogin, checkUpdates } = store;
+  const {
+    setCheckUpdates,
+    setShortcut,
+    setStartAtLogin,
+  } = actions;
   console.log(store);
 
-  const setStartAtLogin = (data) => {
-    console.log(data);
-    // let check = !this.state.startLogin;
-    // this.setState({ startLogin: check });
-    // settings.set('start-login', check);
-    // ipcRenderer.send('set-start-login', check);
-  };
+  // const setStartAtLogin = (data) => {
+  //   console.log(data);
+  //   // let check = !this.state.startLogin;
+  //   // this.setState({ startLogin: check });
+  //   // settings.set('start-login', check);
+  //   // ipcRenderer.send('set-start-login', check);
+  // };
 
-  const setCheckAutomaticallyUpdates = (data) => {
-    console.log(data);
-    // let check = !this.state.checkAutomaticallyUpdates;
-    // this.setState({ checkAutomaticallyUpdates: check });
-    // settings.set('check-automatically-updates', check);
-  };
+  // const setCheckAutomaticallyUpdates = (data) => {
+  //   console.log(data);
+  //   // let check = !this.state.checkAutomaticallyUpdates;
+  //   // this.setState({ checkAutomaticallyUpdates: check });
+  //   // settings.set('check-automatically-updates', check);
+  // };
 
-  const setShortcut = (data) => {
-    console.log(data);
-    actions.setShortcut(data.value)
-  }
+  // const setShortcut = (data) => {
+  //   console.log(data);
+  //   actions.setShortcut(data.value)
+  // }
 
-  const restoreSettings = () => {
-    // settings.deleteAll();
-    // ipcRenderer.send('restore-settings');
-  };
+  // const restoreSettings = () => {
+  //   // settings.deleteAll();
+  //   // ipcRenderer.send('restore-settings');
+  // };
 
   return (
-      <Layout title="Preferences">
-        <Option>
-          <Label>
-            Auto start at login
-            <Toggle
-              name="login"
-              initialValue={startAtLogin}
-              onChange={setStartAtLogin}
-            />
-          </Label>
-        </Option>
+    <Layout title="Preferences">
+      <Option>
+        <Label>
+          Auto start at login
+          <Toggle
+            name="login"
+            initialValue={startAtLogin}
+            onChange={(data) => setStartAtLogin(data.value)}
+          />
+        </Label>
+      </Option>
 
-        <Option>
-          <Label>
-            Check automatically for updates
-            <Toggle
-              name="update"
-              initialValue={checkUpdates}
-              onChange={setCheckAutomaticallyUpdates}
-            />
-          </Label>
-        </Option>
+      <Option>
+        <Label>
+          Check automatically for updates
+          <Toggle
+            name="update"
+            initialValue={checkUpdates}
+            onChange={(data) => setCheckUpdates(data.value)}
+          />
+        </Label>
+      </Option>
 
-        <Option>
-          <Label>
-            Define a shortcut
-            <RecordShortcut
-              initialValue={shortcut}
-              onChange={setShortcut}
-            />
-          </Label>
-          <Comment>
-            The shortcut must contain at least ctrl or cmd, you can add shift or
-            alt if you want, and finally a letter or number. Pay attention to
-            not use a system shortcuts or any other that can interfere with
-            other programs.
-          </Comment>
-        </Option>
+      <Option>
+        <Label>
+          Define a shortcut
+          <RecordShortcut
+            initialValue={shortcut}
+            onChange={(data) => setShortcut(data.value)}
+          />
+        </Label>
+        <Comment>
+          The shortcut must contain at least ctrl or cmd, you can add shift or
+          alt if you want, and finally a letter or number. Pay attention to not
+          use a system shortcuts or any other that can interfere with other
+          programs.
+        </Comment>
+      </Option>
 
-        <Option>
-          <Label>
-            Restore default settings
-            <Button onClick={() => restoreSettings()}>Restore</Button>
-          </Label>
-          <Comment>Transee will be restarted.</Comment>
-        </Option>
-      </Layout>
+      <Option>
+        <Label>
+          Restore default settings
+          <Button onClick={() => console.log('restore')}>Restore</Button>
+        </Label>
+        <Comment>Transee will be restarted.</Comment>
+      </Option>
+    </Layout>
   );
 };
 

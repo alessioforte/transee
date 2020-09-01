@@ -21,7 +21,7 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
     if (state.status === 'success') {
       onChange({ value: state.shortcut });
     }
-  }, [state.status])
+  }, [state.status]);
 
   const clickOnRecord = () => {
     if (!showDelete) {
@@ -99,9 +99,18 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
     document.removeEventListener('keyup', handleKeyUp);
   };
 
+  console.log(state.shortcut.split('+'), state.status)
   return (
     <Record onClick={clickOnRecord}>
-      <Short status={state.status}>{state.shortcut}</Short>
+      {state.status === 'success' ? (
+        <>
+          {state.shortcut.split('+').map((key) => (
+            <Short status={state.status}>{key}</Short>
+          ))}
+        </>
+      ) : (
+        <Short status={state.status}>{state.shortcut}</Short>
+      )}
       {showDelete && (
         <Delete onClick={clickOnDelete}>
           <Icon name="delete" size={14} />
@@ -131,7 +140,7 @@ const Record = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   box-sizing: border-box;
   background: #333;
   width: 230px;
@@ -148,5 +157,6 @@ const Delete = styled.div`
 const Short = styled.div<{ status: string }>`
   padding: 9px;
   border-radius: 5px;
+  margin: 0 3px;
   ${(props) => STATUS[props.status]};
 `;

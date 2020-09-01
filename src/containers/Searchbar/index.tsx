@@ -12,7 +12,7 @@ import { Props, Tip } from './interfaces';
 const Searchbar: FunctionComponent<Props> = ({
   onChange = () => null,
   onResize = () => null,
-  onDebounce,
+  onDebounce = () => null,
   loading = false,
   name = 'textarea',
   delay = 600,
@@ -120,7 +120,6 @@ const Searchbar: FunctionComponent<Props> = ({
           placeholder="Translate"
           maxLength={5000}
           value={value}
-          // onPaste={onInputPaste}
           onChange={onInputChange}
           onKeyDown={onInputKeyDown}
           onKeyUp={onInputKeyup}

@@ -27,12 +27,12 @@ const StickyCards: FunctionComponent<Props> = ({
             {reverso &&
               reverso.contextResults &&
               Array.isArray(reverso.contextResults.results) &&
-              reverso.contextResults.results.map((item) => (
-                <Reverso key={item.translation}>
+              reverso.contextResults.results.map((item, idx) => (
+                <Reverso key={`${item.translation}-${idx}`}>
                   <h3>{item.translation}</h3>
                   <div className="examples">
                     {item.sourceExamples.map((sentence, i: number) => (
-                      <div className="example" key={sentence}>
+                      <div className="example" key={`${sentence}-${i}`}>
                         <div
                           className="sentence"
                           dangerouslySetInnerHTML={{ __html: sentence }}
@@ -51,7 +51,7 @@ const StickyCards: FunctionComponent<Props> = ({
             {google && google.examples && Array.isArray(google.examples) && (
               <Examples>
                 {google.examples.map((example, i) => (
-                  <li key={i} dangerouslySetInnerHTML={{ __html: example }} />
+                  <li key={`examples-${i}`} dangerouslySetInnerHTML={{ __html: example }} />
                 ))}
               </Examples>
             )}
@@ -65,7 +65,7 @@ const StickyCards: FunctionComponent<Props> = ({
             <Card renderHeader={() => <Title>translations</Title>}>
               <Body>
                 {google.translations.map((translation, i) => (
-                  <table key={`translations${i}`}>
+                  <table key={`translations-${i}`}>
                     <tbody>
                       <TrTitle>
                         <td>{translation.type}</td>
@@ -97,7 +97,7 @@ const StickyCards: FunctionComponent<Props> = ({
             <Card renderHeader={() => <Title>definitions</Title>}>
               <Body>
                 {google.definitions.map((definition, i) => (
-                  <div key={`definitions${i}`}>
+                  <div key={`definitions-${i}`}>
                     <span>{definition.type}</span>
                     <>
                       {definition.content.map((section, j) => (
@@ -122,9 +122,9 @@ const StickyCards: FunctionComponent<Props> = ({
                     <List>
                       {synonym.content.map((section, j) => (
                         <div key={j}>
-                          {section.map((word) => (
+                          {section.map((word, idx) => (
                             <Badge
-                              key={word}
+                              key={`${word}-${idx}`}
                               onClick={() =>
                                 onClick({ value: word, invert: false })
                               }
@@ -145,8 +145,9 @@ const StickyCards: FunctionComponent<Props> = ({
             <Card title="see Also">
               <Body>
                 <div>
-                  {google.seeAlso.map((word) => (
+                  {google.seeAlso.map((word, idx) => (
                     <Badge
+                      key={`${word}-${idx}`}
                       onClick={() => onClick({ value: word, invert: false })}
                     >
                       {word}

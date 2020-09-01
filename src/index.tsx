@@ -4,8 +4,8 @@ import { GlobalStyle } from './theme/GlobalStyle';
 import { Tooltip } from './components';
 import { App, About, Welcome, Preferences } from './windows';
 import { Provider } from './store';
-import { reducer, actions, buildQueries } from './controller';
-import Settings, { initialData } from '../settings';
+import { reducer, actions, buildQueries, initialData } from './controllers';
+import Settings from '../settings';
 import { useStore } from './store';
 
 const mainElement = document.createElement('div');
