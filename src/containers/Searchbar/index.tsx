@@ -6,7 +6,7 @@ import React, {
   MutableRefObject,
 } from 'react';
 import styled from 'styled-components';
-import { Icon, Spinner } from '../../components';
+import { Spinner } from '../../components';
 import { Props, Tip } from './interfaces';
 
 const Searchbar: FunctionComponent<Props> = ({
@@ -19,7 +19,7 @@ const Searchbar: FunctionComponent<Props> = ({
   suggestions = [],
   initialValue = '',
   renderTips,
-  showIcons = false,
+  renderIcons,
   isError = false,
   message = 'error',
 }) => {
@@ -44,7 +44,7 @@ const Searchbar: FunctionComponent<Props> = ({
       input.current.style.height = `${height}px`;
       height = input.current.scrollHeight;
       input.current.style.height = `${height}px`;
-      onResize(height);
+      onResize();
     }
   };
 
@@ -61,25 +61,11 @@ const Searchbar: FunctionComponent<Props> = ({
   const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text: string = e.target.value;
     setValue(text);
-
-    if (onDebounce) {
-      window.clearTimeout(timeout.current);
-      timeout.current = window.setTimeout(() => {
-        onDebounce({ name, value: text });
-      }, delay);
-    }
-
     handleOnChange(text);
   };
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (suggestions?.length > 0) {
-      if (e.key === 'Enter') {
-        const text: string = suggestions[hover] ? suggestions[hover].value : '';
-        setValue(text);
-        handleOnChange(text);
-      }
-
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         const { length } = suggestions;
         let i = -1;
@@ -97,10 +83,6 @@ const Searchbar: FunctionComponent<Props> = ({
         handleOnChange(hint);
       }
     }
-  };
-
-  const onInputKeyup = () => {
-    resizeTextarea();
   };
 
   const onSelect = (tip: Tip) => {
@@ -122,7 +104,8 @@ const Searchbar: FunctionComponent<Props> = ({
           value={value}
           onChange={onInputChange}
           onKeyDown={onInputKeyDown}
-          onKeyUp={onInputKeyup}
+          onKeyUp={resizeTextarea}
+          onScrollCapture={resizeTextarea}
         />
         {loading && (
           <Loading>
@@ -130,13 +113,7 @@ const Searchbar: FunctionComponent<Props> = ({
           </Loading>
         )}
       </Container>
-      {showIcons && (
-        <Icons>
-          <span onClick={() => console.log('voice')}>
-            <Icon name="speaker" size={15} />
-          </span>
-        </Icons>
-      )}
+      {renderIcons && renderIcons()}
       {isError && <Message>{message}</Message>}
       {renderTips && renderTips()}
       {suggestions?.length > 0 && (
@@ -190,10 +167,6 @@ const Autocomplete = styled(Input)`
   position: absolute;
   color: #555;
   z-index: -1;
-`;
-const Icons = styled.div`
-  width: 16px;
-  margin: 0 18px 3px;
 `;
 const Loading = styled.div`
   position: absolute;

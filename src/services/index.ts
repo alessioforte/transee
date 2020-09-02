@@ -48,12 +48,15 @@ export const getTranslation = async (
 export const playAudio = async (
   text: string,
   lang: string,
-  speed: boolean
+  speed: boolean = false
 ): Promise<void> => {
   try {
     const response = await voice(text, lang, speed);
     const audio = new Audio(response);
-    audio.play();
+    audio.setAttribute('crossorigin', 'anonymous');
+    console.log('audio', audio)
+    const play = await audio.play();
+    console.log('play', play)
   } catch (error) {
     console.error(error);
   }
@@ -122,7 +125,6 @@ function remapTranslate(data): TranslationData {
     }
   }
 
-  console.log(data);
   if (data[0]) {
     let length = data[0].length;
     let input = [];

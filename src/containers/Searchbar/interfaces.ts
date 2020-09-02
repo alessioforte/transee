@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 export type SearchbarData = {
   name: string;
@@ -7,7 +7,7 @@ export type SearchbarData = {
 
 export type Props = {
   onChange?: (data: SearchbarData) => void;
-  onResize?: (height: number) => void;
+  onResize?: (height?: number | undefined) => void;
   onDebounce?: (data: SearchbarData) => void;
   loading?: boolean;
   name?: string;
@@ -16,8 +16,8 @@ export type Props = {
   delay?: number;
   isError?: boolean;
   message?: string;
-  showIcons?: boolean;
   renderTips?: () => ReactElement | null;
+  renderIcons?: () => ReactElement | null;
 };
 
 export type Tip = {

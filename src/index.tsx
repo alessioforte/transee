@@ -4,7 +4,7 @@ import { GlobalStyle } from './theme/GlobalStyle';
 import { Tooltip } from './components';
 import { App, About, Welcome, Preferences } from './windows';
 import { Provider } from './store';
-import { reducer, actions, buildQueries, initialData } from './controllers';
+import { reducer, setters, buildActions, initialData } from './controllers';
 import Settings from '../settings';
 import { useStore } from './store';
 
@@ -36,23 +36,23 @@ const Dev = () => (
 
 const ViewManager = () => {
   const name = window.location.search.substr(1);
-  if (!name) throw new Error('Error');
+  if (!name) throw new Error('page not found');
 
-  const [store, actions] = useStore();
+  const [store, setters] = useStore();
   const Component = VIEWS[name] || Dev;
 
-  const queries = useMemo(() => buildQueries({ store, actions }), []);
+  const actions = useMemo(() => buildActions({ setters }), []);
 
   return (
     <>
       <GlobalStyle />
-      <Component locals={{ store, actions, queries }} />
+      <Component locals={{ store, actions }} />
     </>
   );
 };
 
 render(
-  <Provider initialState={merged} reducer={reducer} actions={actions}>
+  <Provider init={{ initialState: merged, reducer, setters }}>
     <ViewManager />
   </Provider>,
   mainElement

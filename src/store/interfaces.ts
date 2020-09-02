@@ -24,10 +24,15 @@ export type Actions = {
 
 export type ProviderProps = {
   children?: ReactElement | ReactElement[] | string;
+  init: Init;
+  
+};
+
+type Init = {
   initialState?: any,
   reducer: any,
-  actions: any,
-};
+  setters: any,
+}
 
 export type Ctx = {
   store: any;

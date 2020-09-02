@@ -7,6 +7,9 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+  body {
+    overflow: hidden;
+  }
 
   *::-webkit-scrollbar {
     display: ${window.navigator.platform === 'MacIntel' ? '' : 'none'}

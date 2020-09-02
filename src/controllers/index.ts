@@ -1,4 +1,6 @@
-import { getHints, getTranslation, getReversoTranslation } from '../services';
+import { ipcRenderer } from 'electron';
+import { getHints, getTranslation, getReversoTranslation, playAudio } from '../services';
+import Settings from '../../settings';
 
 const SET_LANGS = 'SET_LANGS';
 const SET_THEME = 'SET_THEME';
@@ -15,7 +17,7 @@ const SET_START_AT_LOGIN = 'SET_START_AT_LOGIN';
 const SET_CHECK_UPDATES = 'SET_CHECK_UPDATES';
 const RESTORE_SETTINGS = 'RESTORE_SETTINGS';
 
-export const actions = {
+export const setters = {
   setLangs(payload: any) {
     return { type: SET_LANGS, payload };
   },
@@ -25,7 +27,7 @@ export const actions = {
   setGoogle(payload: any) {
     return { type: SET_GOOGLE, payload };
   },
-  setReversoTranslation(payload: any) {
+  SetReverso(payload: any) {
     return { type: SET_REVERSO_TRANSLATION, payload };
   },
   setInput(payload: string) {
@@ -52,13 +54,15 @@ export const actions = {
   setCheckUpdates(payload: boolean) {
     return { type: SET_CHECK_UPDATES, payload };
   },
+  setTheme(payload: string) {
+    return { type: SET_THEME, payload };
+  },
   restoreSettings() {
-    return { type: RESTORE_SETTINGS }
-  }
+    return { type: RESTORE_SETTINGS };
+  },
 };
 
 export const reducer = (state, action) => {
-  console.log('reducer', action.type)
   switch (action.type) {
     case SET_LANGS:
       return { ...state, langs: action.payload };
@@ -87,24 +91,33 @@ export const reducer = (state, action) => {
     case SET_CHECK_UPDATES:
       return { ...state, checkUpdates: action.payload };
     case RESTORE_SETTINGS:
-      //   // ipcRenderer.send('restore-settings');
       return initialData;
     default:
       return state;
   }
 };
 
-export const buildQueries = ({ actions }) => {
+export const buildActions = ({ setters }) => {
   const {
     setSuggestions,
     setGoogle,
     setInput,
     setLoading,
-    setReversoTranslation,
-  } = actions;
+    setTheme,
+    SetReverso,
+    setLangs,
+    setShortcut,
+    setEngine,
+    setSearch,
+    setShowWelcome,
+    setStartAtLogin,
+    setCheckUpdates,
+    restoreSettings,
+  } = setters;
 
   return {
     getData: async (text: string, langsSelected) => {
+      text.trim();
       setLoading(true);
       const isUppercase = /[A-Z]/.test(text);
       const hasDoubleSpace = /\s\s+/.test(text);
@@ -125,7 +138,7 @@ export const buildQueries = ({ actions }) => {
         }
       }
 
-      if (!text) {
+      if (!text || isNewLine) {
         setGoogle(null);
       } else {
         const translation = await getTranslation(text, langsSelected);
@@ -134,15 +147,63 @@ export const buildQueries = ({ actions }) => {
           setGoogle(translation);
         }
         if (reverso) {
-          setReversoTranslation(reverso);
+          SetReverso(reverso);
         }
       }
       setInput(text);
       setLoading(false);
     },
+    clearData: () => {
+      setInput('');
+      setSearch('');
+      setGoogle(null);
+      SetReverso(null)
+      setSuggestions([]);
+    },
+    setLangs: (payload) => {
+      setLangs(payload);
+      Settings.set('langs', payload);
+    },
+    setTheme: (payload) => {
+      setTheme(payload);
+      Settings.set('theme', payload);
+    },
+    setShortcut: (payload) => {
+      setShortcut(payload);
+      Settings.set('shortcut', payload);
+      ipcRenderer.send('change-shortcut', payload)
+    },
+    setEngine: (payload) => {
+      setEngine(payload);
+      Settings.set('engine', payload);
+    },
+    setShowWelcome: (payload) => {
+      setShowWelcome(payload);
+      Settings.set('showWelcome', payload);
+    },
+    setStartAtLogin: (payload) => {
+      setStartAtLogin(payload);
+      Settings.set('startAtLogin', payload);
+      ipcRenderer.send('set-start-login', payload);
+    },
+    setCheckUpdates: (payload) => {
+      setCheckUpdates(payload);
+      Settings.set('checkUpdates', payload);
+    },
+    restoreSettings: (payload) => {
+      restoreSettings(payload);
+      Settings.delete();
+      ipcRenderer.send('restore-settings');
+    },
+    setSuggestions,
+    setGoogle,
+    SetReverso,
+    setInput,
+    setLoading,
+    setSearch,
+    playAudio,
   };
 };
-
 
 export const initialData = {
   langs: {
@@ -172,33 +233,3 @@ export const initialData = {
   checkUpdates: true,
   engine: 'google',
 };
-
-// const settings = {
-//   version: '1.2.5',
-//   'show-welcome': false,
-//   'start-login': true,
-//   shortcut: 'Ctrl+Alt+T',
-//   settings: {
-//     langs: {
-//       from: 'en',
-//       to: 'it',
-//     },
-//     speed: {
-//       from: false,
-//       to: false,
-//     },
-//     fromActive: [true, false, false],
-//     toActive: [true, false, false],
-//     fromBar: {
-//       from1: 'en',
-//       from2: 'it',
-//       from3: 'es',
-//     },
-//     toBar: {
-//       to1: 'it',
-//       to2: 'en',
-//       to3: 'es',
-//     },
-//   },
-//   TKK: '443297.4016894073',
-// };

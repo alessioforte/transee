@@ -6,8 +6,8 @@ class Settings {
     return settings.getSync();
   }
 
-  static set(key: string, value: any): any {
-    return settings.setSync(key, value);
+  static set(key: string, value: any): void {
+    settings.set(key, value);
   }
 
   static delete(key?: string): void {

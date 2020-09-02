@@ -310,7 +310,11 @@ ipcMain.on('window-height', (event, height) => {
 });
 
 ipcMain.on('hide-window', (event, msg) => {
-  hideWindow();
+  if (!isDev) {
+    hideWindow();
+  } else {
+    console.log('hide');
+  }
 });
 
 ipcMain.on('set-start-login', (event, check) => {
@@ -326,10 +330,10 @@ ipcMain.on('change-shortcut', (event, shortcut) => {
   });
 });
 
-ipcMain.on('delete-shortcut', (event) => {
-  globalShortcut.unregisterAll();
-  Settings.set('shortcut', '');
-});
+// ipcMain.on('delete-shortcut', (event) => {
+//   globalShortcut.unregisterAll();
+//   Settings.set('shortcut', '');
+// });
 
 ipcMain.on('devtools', (event) => {
   mainWindow.webContents.openDevTools();

@@ -10,33 +10,8 @@ const Preferences = ({ locals }) => {
     setCheckUpdates,
     setShortcut,
     setStartAtLogin,
+    restoreSettings,
   } = actions;
-  console.log(store);
-
-  // const setStartAtLogin = (data) => {
-  //   console.log(data);
-  //   // let check = !this.state.startLogin;
-  //   // this.setState({ startLogin: check });
-  //   // settings.set('start-login', check);
-  //   // ipcRenderer.send('set-start-login', check);
-  // };
-
-  // const setCheckAutomaticallyUpdates = (data) => {
-  //   console.log(data);
-  //   // let check = !this.state.checkAutomaticallyUpdates;
-  //   // this.setState({ checkAutomaticallyUpdates: check });
-  //   // settings.set('check-automatically-updates', check);
-  // };
-
-  // const setShortcut = (data) => {
-  //   console.log(data);
-  //   actions.setShortcut(data.value)
-  // }
-
-  // const restoreSettings = () => {
-  //   // settings.deleteAll();
-  //   // ipcRenderer.send('restore-settings');
-  // };
 
   return (
     <Layout title="Preferences">
@@ -81,7 +56,7 @@ const Preferences = ({ locals }) => {
       <Option>
         <Label>
           Restore default settings
-          <Button onClick={() => console.log('restore')}>Restore</Button>
+          <Button onClick={restoreSettings}>Restore</Button>
         </Label>
         <Comment>Transee will be restarted.</Comment>
       </Option>

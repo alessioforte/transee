@@ -1,23 +1,32 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
+import { ipcRenderer } from 'electron';
 import { invertLangs } from '../containers/LangsBar/actions';
 
-const useWindowKeyDown = ({ store, actions, queries }) => {
-  const { setLangs } = actions;
-  useEffect(() => {
-    window.onkeydown = (e: KeyboardEvent) => {
+const useWindowKeyDown = ({ store, actions }) => {
+  const { suggestions, google } = store;
+  const { setLangs, getData, setSuggestions } = actions;
+
+  window.onkeydown = useCallback(
+    (e: KeyboardEvent) => {
       // esc
       if (e.keyCode === 27) {
         e.preventDefault();
-        // ipcRenderer.send('hide-window', 'hide');
+
+        if (suggestions.length > 0) {
+          e.stopPropagation();
+          setSuggestions([]);
+        } else {
+          ipcRenderer.send('hide-window', 'hide');
+        }
       }
 
       // alt shify
       if (e.altKey && e.keyCode === 16) {
         const langs = invertLangs(store.langs);
         setLangs(langs);
-        const translation = store.google.translation;
+        const translation = google.translation;
         if (translation) {
-          queries.getData(translation, langs.selected);
+          getData(translation, langs.selected);
         }
       }
 
@@ -48,11 +57,12 @@ const useWindowKeyDown = ({ store, actions, queries }) => {
         // }
       }
 
-      // if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {
-      //   ipcRenderer.send('devtools', null);
-      // }
-    };
-  }, [store]);
+      if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {
+        ipcRenderer.send('devtools', null);
+      }
+    },
+    [store]
+  );
 };
 
 export default useWindowKeyDown;

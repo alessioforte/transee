@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react';
 import Context from './Context';
 
-const useStore = (): [any, () => void] => {
+const useStore = (): [any, any] => {
   const context = useContext(Context);
   if (!context) {
     throw Error(
@@ -9,17 +9,17 @@ const useStore = (): [any, () => void] => {
     );
   }
 
-  const { store, dispatch, actions } = context;
+  const { store, dispatch, setters } = context;
 
-  const callbacks = useMemo(() => {
+  const actions = useMemo(() => {
     const obj = {};
-    Object.keys(actions).forEach((key) => {
-      obj[key] = (payload) => dispatch(actions[key](payload));
+    Object.keys(setters).forEach((key) => {
+      obj[key] = (payload) => dispatch(setters[key](payload));
     });
     return obj;
   }, []);
 
-  return [store, callbacks];
+  return [store, actions];
 };
 
 export default useStore;

@@ -111,10 +111,12 @@ export async function voice(
     idx: 0,
     textlen: textlen,
     tk: tk.value,
-    client: 't',
+    client: 'webapp',
     prev: 'input',
-    ttsspeed: speed && 0.24,
   };
+  if (speed) {
+    data['ttsspeed'] = 0.24;
+  }
 
   return url + '?' + querystring.stringify(data);
 }

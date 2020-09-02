@@ -1,4 +1,4 @@
-import React, { useState, FC, useEffect } from 'react';
+import React, { useState, FC, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { SearchbarData } from '../../containers/Searchbar/interfaces';
 import { Options, Conversion } from '../../containers/LangsBar/interfaces';
@@ -28,34 +28,54 @@ type P = {
 
 const App: FC<P> = ({ locals }) => {
   useWindowKeyDown(locals);
-  const { store, actions, queries } = locals;
+  const { store, actions } = locals;
   const [isDropped, setIsDropped] = useState<boolean>(false);
-  const [textareaSize, setTextareaSize] = useState<number>(60);
-
-  const langs = store.langs.selected;
-  const { setSuggestions, setLangs, setSearch, setEngine } = actions;
-  const { suggestions, google, input, search, reverso, loading, engine } = store;
-  const { getData } = queries;
   console.log('store', store);
+  const {
+    setSuggestions,
+    setLangs,
+    setSearch,
+    setEngine,
+    getData,
+    playAudio,
+    clearData,
+  } = actions;
+  const {
+    suggestions,
+    google,
+    input,
+    search,
+    reverso,
+    loading,
+    engine,
+    langs,
+  } = store;
+  const { selected } = langs;
+
+  const translation = store[engine] ? store[engine].translation : '';
 
   useEffect(() => {
     setMainWindowSize();
-  }, [isDropped, textareaSize, store]);
+  }, [isDropped, store]);
 
   const onInputDebounce = ({ value }: SearchbarData) => {
-    getData(value, langs);
+    getData(value, selected);
+  };
+
+  const onInputChange = ({ value }: SearchbarData) => {
+    clearData();
   };
 
   const handleClickOnDYM = (text: string) => {
     setSuggestions([]);
     setSearch(text);
-    getData(text, langs);
+    getData(text, selected);
   };
 
   const handleClickOnISO = (lang: string) => {
     const label = langsFrom[lang];
     const opt = { label, value: lang };
-    const data = selectLangs(store.langs, Conversion.from, opt);
+    const data = selectLangs(langs, Conversion.from, opt);
     setLangs(data);
     getData(input, data.selected);
   };
@@ -75,7 +95,7 @@ const App: FC<P> = ({ locals }) => {
             </i>
           </p>
         )}
-        {google.correction.language.iso !== langs.from && (
+        {google.correction.language.iso !== selected.from && (
           <p>
             Translate from{' '}
             <i onClick={() => handleClickOnISO(google.correction.language.iso)}>
@@ -86,26 +106,39 @@ const App: FC<P> = ({ locals }) => {
       </Tips>
     );
 
+  const renderIcons = () =>
+    google && (
+      <Icons>
+        <div className="left">
+          <span onClick={() => console.log('voice')}>
+            <Icon name="speaker" size={15} />
+          </span>
+        </div>
+        <div />
+      </Icons>
+    );
+
   return (
-    <>
+    <Wrapper>
       <LangsBar
         options={options}
         onChange={setLangs}
         onToggleDropdown={handleToggleDropdown}
-        values={store.langs}
+        values={langs}
       />
       {!isDropped && (
         <div>
           <Searchbar
-            onResize={(size) => setTextareaSize(size)}
+            onResize={setMainWindowSize}
             onDebounce={onInputDebounce}
+            onChange={onInputChange}
             suggestions={suggestions}
             initialValue={search}
             delay={900}
-            showIcons={!!google}
             isError={false}
             message="Service Unavailable"
             renderTips={renderTips}
+            renderIcons={renderIcons}
             loading={loading}
           />
           {google && (
@@ -115,10 +148,10 @@ const App: FC<P> = ({ locals }) => {
                   <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  <Translation value={store[engine].translation} disabled />
+                  <Translation value={translation} disabled />
                   <Icons>
                     <div className="left">
-                      <span onClick={() => console.log('voice')}>
+                      <span onClick={() => playAudio(translation, selected.to)}>
                         <Icon name="speaker" size={15} />
                       </span>
                     </div>
@@ -160,12 +193,15 @@ const App: FC<P> = ({ locals }) => {
           )}
         </div>
       )}
-    </>
+    </Wrapper>
   );
 };
 
 export default App;
 
+const Wrapper = styled.div`
+  overflow: hidden;
+`
 const Block = styled.div``;
 const Box = styled.div`
   border-top: 1px solid #999;
