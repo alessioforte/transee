@@ -73,7 +73,7 @@ const iconPath =
     ? path.join(__dirname, '../assets', 'icon_16x16.ico')
     : path.join(__dirname, '../assets', 'iconTemplate.png');
 
-// app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
 app.on('ready', appReady);
 
@@ -167,9 +167,11 @@ async function appReady() {
 function createWindow() {
   mainWindow = new BrowserWindow(winConfig);
   mainWindow.loadURL(`${indexPath}?main`);
-  mainWindow.on('blur', () => {
-    hideWindow();
-  });
+  if (!isDev) {
+    mainWindow.on('blur', () => {
+      hideWindow();
+    });
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;

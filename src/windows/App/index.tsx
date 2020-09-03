@@ -34,7 +34,7 @@ const App: FC<P> = ({ locals }) => {
   const {
     setSuggestions,
     setLangs,
-    setSearch,
+    setInput,
     setEngine,
     getData,
     playAudio,
@@ -44,7 +44,6 @@ const App: FC<P> = ({ locals }) => {
     suggestions,
     google,
     input,
-    search,
     reverso,
     loading,
     engine,
@@ -52,7 +51,16 @@ const App: FC<P> = ({ locals }) => {
   } = store;
   const { selected } = langs;
 
-  const translation = store[engine] ? store[engine].translation : '';
+  let translation = store[engine] ? store[engine].translation : '';
+
+  if (engine === 'google' && !google) {
+    translation = store.reverso ? store.reverso.translation : '';
+  }
+  if (engine === 'reverso' && !reverso) {
+    translation = store.google ? store.google.translation : '';
+  }
+
+  console.log(translation);
 
   useEffect(() => {
     setMainWindowSize();
@@ -63,12 +71,14 @@ const App: FC<P> = ({ locals }) => {
   };
 
   const onInputChange = ({ value }: SearchbarData) => {
-    clearData();
+    if (value === '') {
+      clearData();
+    }
   };
 
   const handleClickOnDYM = (text: string) => {
     setSuggestions([]);
-    setSearch(text);
+    setInput(text);
     getData(text, selected);
   };
 
@@ -133,7 +143,7 @@ const App: FC<P> = ({ locals }) => {
             onDebounce={onInputDebounce}
             onChange={onInputChange}
             suggestions={suggestions}
-            initialValue={search}
+            initialValue={input}
             delay={900}
             isError={false}
             message="Service Unavailable"
@@ -141,10 +151,10 @@ const App: FC<P> = ({ locals }) => {
             renderIcons={renderIcons}
             loading={loading}
           />
-          {google && (
+          {(google || reverso) && (
             <>
               <Block>
-                {google.pronunciation && (
+                {google && google.pronunciation && (
                   <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
@@ -201,7 +211,7 @@ export default App;
 
 const Wrapper = styled.div`
   overflow: hidden;
-`
+`;
 const Block = styled.div``;
 const Box = styled.div`
   border-top: 1px solid #999;

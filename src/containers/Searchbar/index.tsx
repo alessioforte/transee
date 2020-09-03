@@ -26,6 +26,7 @@ const Searchbar: FunctionComponent<Props> = ({
   const timeout: MutableRefObject<number | undefined> = useRef();
   const input: React.MutableRefObject<HTMLElement | undefined> = useRef();
   const [value, setValue] = useState(initialValue);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [hover, setHover] = useState(-1);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const Searchbar: FunctionComponent<Props> = ({
     if (onDebounce) {
       window.clearTimeout(timeout.current);
       timeout.current = window.setTimeout(() => {
+        setIsTyping(false);
         onDebounce({ name, value: text });
       }, delay);
     }
@@ -61,6 +63,7 @@ const Searchbar: FunctionComponent<Props> = ({
   const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text: string = e.target.value;
     setValue(text);
+    setIsTyping(true);
     handleOnChange(text);
   };
 
@@ -89,11 +92,12 @@ const Searchbar: FunctionComponent<Props> = ({
     setValue(tip.value);
     handleOnChange(tip.value);
   };
+  console.log('isTyping', isTyping);
 
   return (
     <React.Fragment>
       <Container>
-        {suggestions?.length > 0 && hover === -1 && value !== '' && (
+        {!isTyping && suggestions?.length > 0 && hover === -1 && value !== '' && (
           <Autocomplete disabled value={suggestions[0].value} />
         )}
         <Input

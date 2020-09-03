@@ -1,10 +1,17 @@
 import { ipcRenderer } from 'electron';
-import { getHints, getTranslation, getReversoTranslation, playAudio } from '../services';
+import {
+  getHints,
+  getReversoSuggest,
+  getTranslation,
+  getReversoTranslation,
+  playAudio,
+} from '../services';
 import Settings from '../../settings';
 
 const SET_LANGS = 'SET_LANGS';
 const SET_THEME = 'SET_THEME';
 const SET_SUGGESTIONS = 'SET_SUGGESTIONS';
+const SET_REVERSO_SUGGESTIONS = 'SET_REVERSO_SUGGESTIONS';
 const SET_GOOGLE = 'SET_GOOGLE';
 const SET_REVERSO_TRANSLATION = 'SET_REVERSO_TRANSLATION';
 const SET_INPUT = 'SET_INPUT';
@@ -16,6 +23,7 @@ const SET_SHOW_WELCOME = 'SET_SHOW_WELCOME';
 const SET_START_AT_LOGIN = 'SET_START_AT_LOGIN';
 const SET_CHECK_UPDATES = 'SET_CHECK_UPDATES';
 const RESTORE_SETTINGS = 'RESTORE_SETTINGS';
+const CLEAR_DATA = 'CLEAR_DATA';
 
 export const setters = {
   setLangs(payload: any) {
@@ -23,6 +31,9 @@ export const setters = {
   },
   setSuggestions(payload: []) {
     return { type: SET_SUGGESTIONS, payload };
+  },
+  setReversoSuggestions(payload: []) {
+    return { type: SET_REVERSO_SUGGESTIONS, payload };
   },
   setGoogle(payload: any) {
     return { type: SET_GOOGLE, payload };
@@ -60,6 +71,9 @@ export const setters = {
   restoreSettings() {
     return { type: RESTORE_SETTINGS };
   },
+  clearData() {
+    return { type: CLEAR_DATA };
+  },
 };
 
 export const reducer = (state, action) => {
@@ -70,6 +84,8 @@ export const reducer = (state, action) => {
       return { ...state, theme: action.payload };
     case SET_SUGGESTIONS:
       return { ...state, suggestions: action.payload };
+    case SET_SUGGESTIONS:
+      return { ...state, reversoSuggestions: action.payload };
     case SET_GOOGLE:
       return { ...state, google: action.payload };
     case SET_ENGINE:
@@ -90,6 +106,15 @@ export const reducer = (state, action) => {
       return { ...state, startAtLogin: action.payload };
     case SET_CHECK_UPDATES:
       return { ...state, checkUpdates: action.payload };
+    case CLEAR_DATA:
+      return {
+        ...state,
+        input: '',
+        search: '',
+        google: null,
+        reverso: null,
+        suggestions: [],
+      };
     case RESTORE_SETTINGS:
       return initialData;
     default:
@@ -100,6 +125,7 @@ export const reducer = (state, action) => {
 export const buildActions = ({ setters }) => {
   const {
     setSuggestions,
+    setReversoSuggestions,
     setGoogle,
     setInput,
     setLoading,
@@ -113,16 +139,17 @@ export const buildActions = ({ setters }) => {
     setStartAtLogin,
     setCheckUpdates,
     restoreSettings,
+    clearData,
   } = setters;
 
   return {
     getData: async (text: string, langsSelected) => {
-      text.trim();
       setLoading(true);
       const isUppercase = /[A-Z]/.test(text);
       const hasDoubleSpace = /\s\s+/.test(text);
       const hasSpaceAtFirst = text.charAt(0) === ' ';
-      const isNewLine = /^\s*$/.test(text);
+      const isNewLine = /\n/g.test(text);
+
       if (
         !text ||
         isUppercase ||
@@ -133,32 +160,31 @@ export const buildActions = ({ setters }) => {
         setSuggestions([]);
       } else {
         const hints: [] = (await getHints(text, langsSelected)) as [];
+        const reversoHints = await getReversoSuggest(text, langsSelected);
+        console.log(reversoHints);
         if (hints) {
           setSuggestions(hints);
         }
+        // if (reversoHints) {
+        //   setReversoSuggestions(reversoHints);
+        // }
       }
 
-      if (!text || isNewLine) {
+      if (!text) {
         setGoogle(null);
+        SetReverso(null);
       } else {
-        const translation = await getTranslation(text, langsSelected);
+        const google = await getTranslation(text, langsSelected);
         const reverso = await getReversoTranslation(text, langsSelected);
-        if (translation) {
-          setGoogle(translation);
+        if (google) {
+          setGoogle(google);
         }
         if (reverso) {
           SetReverso(reverso);
         }
       }
-      setInput(text);
+      setSearch(text);
       setLoading(false);
-    },
-    clearData: () => {
-      setInput('');
-      setSearch('');
-      setGoogle(null);
-      SetReverso(null)
-      setSuggestions([]);
     },
     setLangs: (payload) => {
       setLangs(payload);
@@ -171,7 +197,7 @@ export const buildActions = ({ setters }) => {
     setShortcut: (payload) => {
       setShortcut(payload);
       Settings.set('shortcut', payload);
-      ipcRenderer.send('change-shortcut', payload)
+      ipcRenderer.send('change-shortcut', payload);
     },
     setEngine: (payload) => {
       setEngine(payload);
@@ -195,7 +221,9 @@ export const buildActions = ({ setters }) => {
       Settings.delete();
       ipcRenderer.send('restore-settings');
     },
+    clearData,
     setSuggestions,
+    setReversoSuggestions,
     setGoogle,
     SetReverso,
     setInput,
@@ -222,6 +250,7 @@ export const initialData = {
     selected: { from: 'en', to: 'it' },
   },
   suggestions: [],
+  reversoSuggestions: [],
   google: null,
   reverso: null,
   theme: 'dark',
