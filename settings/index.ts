@@ -7,7 +7,7 @@ class Settings {
   }
 
   static set(key: string, value: any): void {
-    settings.set(key, value);
+    settings.setSync(key, value);
   }
 
   static delete(key?: string): void {

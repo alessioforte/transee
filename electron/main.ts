@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {
   app,
   BrowserWindow,
@@ -8,28 +9,24 @@ import {
   Menu,
 } from 'electron';
 import * as path from 'path';
-import * as url from 'url';
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-} from 'electron-devtools-installer';
+// import * as url from 'url';
 import Settings from '../settings';
 // import updater from './updater';
 
-const isDev = process.env.NODE_ENV === 'development';
 const backgroundColor = '#2a2a2a';
+const isDev = process.env.NODE_ENV === 'development';
 
 let mainWindow: Electron.BrowserWindow | null;
 let aboutWin: Electron.BrowserWindow | null;
 let preferencesWin: Electron.BrowserWindow | null;
 let welcomeWin: Electron.BrowserWindow | null;
-
 let accelerator;
 let tray;
 
 const webPreferences = {
   nodeIntegration: true,
   webSecurity: false,
+  enableRemoteModule: true,
 };
 
 const devWinConfig: Electron.BrowserWindowConstructorOptions = {
@@ -53,42 +50,49 @@ const prodWinConfig: Electron.BrowserWindowConstructorOptions = {
   resizable: false,
   backgroundColor: backgroundColor,
   show: false,
+  webPreferences,
 };
 
 const winConfig = isDev ? devWinConfig : prodWinConfig;
 
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => showWindow());
+}
+
 const appVersion = app.getVersion();
-console.log('version', appVersion);
 
 const indexPath = isDev
   ? 'http://localhost:4000'
-  : path.join(__dirname, 'renderer/index.html');
+  : `file://${path.join(__dirname, 'renderer/index.html')}`;
 
 const iconPath =
   process.platform === 'win32'
     ? path.join(__dirname, '../assets', 'icon_16x16.ico')
     : path.join(__dirname, '../assets', 'iconTemplate.png');
 
-app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+// app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
-app
-  .on('ready', appReady)
-  .whenReady()
-  .then(() => {
-    if (isDev) {
-      installExtension(REACT_DEVELOPER_TOOLS);
-      installExtension(REDUX_DEVTOOLS);
-    }
-  });
+app.on('ready', appReady);
 
 app.allowRendererProcessReuse = true;
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
+});
+
+process.on('uncaughtException', () => {
+  console.log('uncaughtException');
+});
 
 // Init ------------------------------------------------------------------------
 async function appReady() {
   // HANDLE APP VERSION
   const versionInSettings = Settings.get('version');
-
   if (appVersion !== versionInSettings) {
+    // Settings.delete();
     Settings.set('version', appVersion);
   }
 
@@ -99,8 +103,8 @@ async function appReady() {
     createPreferencesWindow();
   } else {
     //  SET START AT LOGIN
-    const check = app.getLoginItemSettings().openAtLogin;
-    Settings.set('start-login', check);
+    // const check = app.getLoginItemSettings().openAtLogin;
+    // Settings.set('start-login', check);
 
     // SET GLOBAL SHORTCUT
     if (Settings.has('shortcut')) {
@@ -117,20 +121,20 @@ async function appReady() {
     tray = new Tray(iconPath);
 
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'About Transee', click: () => showAboutWindow() },
-      // { label: 'Check for update', click: () => updater.checkForUpdates(true) },
+      { label: 'About Transee', click: showAboutWindow },
+      // { label: 'Check for update', click: updater.checkForUpdates },
       { type: 'separator' },
-      { label: 'Preferences...', click: () => showPreferencesWindow() },
+      { label: 'Preferences...', click: showPreferencesWindow },
       { type: 'separator' },
       {
         label: 'Show translation bar',
         accelerator: accelerator,
-        click: () => showWindow(),
+        click: showWindow,
       },
       { type: 'separator' },
-      { label: 'Welcome Guide', click: () => showWelcomeWindow() },
+      { label: 'Welcome Guide', click: showWelcomeWindow },
       { type: 'separator' },
-      { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() },
+      { label: 'Quit', accelerator: 'Command+Q', click: app.quit },
     ]);
 
     tray.setContextMenu(contextMenu);
@@ -144,37 +148,28 @@ async function appReady() {
     // }
 
     // SHOW WELCOME GUIDE
-    const showWelcome = Settings.has('show-welcome')
-      ? Settings.get('show-welcome')
+    const showWelcome = Settings.has('showWelcome')
+      ? Settings.get('showWelcome')
       : true;
     if (showWelcome) createWelcomeWindow();
 
+    Settings.set('platform', process.platform);
     // CREATE TRANSEE WINDOW IN BACKGROUND
     createWindow();
 
     // HIDE DOCK ICON IN MACOS
-    if (process.platform === 'darwin' && !showWelcome) app.dock.hide();
+    // if (process.platform === 'darwin' && !showWelcome) app.dock.hide();
+    if (process.platform === 'darwin') app.dock.hide();
   }
 }
 
 // Create Windows --------------------------------------------------------------
 function createWindow() {
   mainWindow = new BrowserWindow(winConfig);
-  if (isDev) {
-    mainWindow.loadURL(`${indexPath}?main`);
-  } else {
-    mainWindow.loadURL(
-      url.format({
-        pathname: `${indexPath}?main`,
-        protocol: 'file:',
-        slashes: true,
-      })
-    );
-
-    mainWindow.on('blur', () => {
-      hideWindow();
-    });
-  }
+  mainWindow.loadURL(`${indexPath}?main`);
+  mainWindow.on('blur', () => {
+    hideWindow();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -190,10 +185,8 @@ const createAboutWindow = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
+    webPreferences,
   };
-  if (isDev) {
-    aboutConfg.webPreferences = webPreferences;
-  }
   aboutWin = new BrowserWindow(aboutConfg);
 
   aboutWin.loadURL(`${indexPath}?about`);
@@ -213,10 +206,8 @@ const createPreferencesWindow = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
+    webPreferences,
   };
-  if (isDev) {
-    preferencesConfig.webPreferences = webPreferences;
-  }
   preferencesWin = new BrowserWindow(preferencesConfig);
 
   preferencesWin.loadURL(`${indexPath}?preferences`);
@@ -236,10 +227,9 @@ const createWelcomeWindow = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
+    webPreferences,
   };
-  if (isDev) {
-    welcomeConfig.webPreferences = webPreferences;
-  }
+
   welcomeWin = new BrowserWindow(welcomeConfig);
 
   welcomeWin.loadURL(`${indexPath}?welcome`);

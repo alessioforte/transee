@@ -60,7 +60,7 @@ autoUpdater.on('update-downloaded', () => {
   );
 });
 
-const checkForUpdates = (isManual: boolean): void => {
+const checkForUpdates = (isManual: boolean | undefined = true): void => {
   if (isManual) manualCheck = true;
 
   internetAvailable()
