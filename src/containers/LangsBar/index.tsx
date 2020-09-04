@@ -68,7 +68,7 @@ const LangsBar: FunctionComponent<Props> = ({
             isOpen={isOpen && side === Conversion.from}
             position="left"
           >
-            <Icon name="caret" size={5} color={colors.idle} />
+            <Icon name="caret" size={5} color={colors.idle} hover />
           </Caret>
           {threesome.from.map((opt: Option) => (
             <Lang
@@ -84,7 +84,7 @@ const LangsBar: FunctionComponent<Props> = ({
         </From>
 
         <Invert onClick={invert}>
-          <Icon name="translate" size={14} color={colors.idle} />
+          <Icon name="translate" size={14} color={colors.idle} hover />
         </Invert>
 
         <To>
@@ -104,7 +104,7 @@ const LangsBar: FunctionComponent<Props> = ({
             isOpen={isOpen && side === Conversion.to}
             position="right"
           >
-            <Icon name="caret" size={5} color={colors.idle} />
+            <Icon name="caret" size={5} color={colors.idle} hover />
           </Caret>
         </To>
       </Bar>

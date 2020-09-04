@@ -36,7 +36,9 @@ const Header = styled.div`
   color: ${colors.text.main};
   margin: 0;
   background: ${colors.frame};
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 9px 18px 1px rgba(26, 26, 26, 0.4);
 `;
 const Body = styled.div`
   padding: 3px 18px;

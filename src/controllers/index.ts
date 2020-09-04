@@ -160,8 +160,7 @@ export const buildActions = ({ setters }) => {
         setSuggestions([]);
       } else {
         const hints: [] = (await getHints(text, langsSelected)) as [];
-        const reversoHints = await getReversoSuggest(text, langsSelected);
-        console.log(reversoHints);
+        // const reversoHints = await getReversoSuggest(text, langsSelected);
         if (hints) {
           setSuggestions(hints);
         }

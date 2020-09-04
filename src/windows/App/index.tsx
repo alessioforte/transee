@@ -5,7 +5,7 @@ import { Options, Conversion } from '../../containers/LangsBar/interfaces';
 import { Icon, Tooltip } from '../../components';
 import LangsBar from '../../containers/LangsBar';
 import Searchbar from '../../containers/Searchbar';
-import { selectLangs } from '../../containers/LangsBar/actions';
+import { selectLangs, invertLangs } from '../../containers/LangsBar/actions';
 import { langsFrom, langsTo } from '../../services/langs';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
@@ -45,6 +45,7 @@ const App: FC<P> = ({ locals }) => {
     suggestions,
     google,
     input,
+    search,
     reverso,
     loading,
     engine,
@@ -61,8 +62,6 @@ const App: FC<P> = ({ locals }) => {
     translation = store.google ? store.google.translation : '';
   }
 
-  console.log(translation);
-
   useEffect(() => {
     setMainWindowSize();
   }, [isDropped, store]);
@@ -77,8 +76,17 @@ const App: FC<P> = ({ locals }) => {
     }
   };
 
+  const handleOnLangsChange = (data) => {
+    setLangs(data);
+    if (translation) {
+      clearData();
+      setInput(translation);
+      getData(translation, data.selected);
+    }
+  };
+
   const handleClickOnDYM = (text: string) => {
-    setSuggestions([]);
+    clearData();
     setInput(text);
     getData(text, selected);
   };
@@ -87,12 +95,27 @@ const App: FC<P> = ({ locals }) => {
     const label = langsFrom[lang];
     const opt = { label, value: lang };
     const data = selectLangs(langs, Conversion.from, opt);
+    clearData();
     setLangs(data);
     getData(input, data.selected);
   };
 
   const handleToggleDropdown = (isVisible: boolean) => {
     setIsDropped(isVisible);
+  };
+
+  const handleActionsInCards = (data) => {
+    const { value, invert } = data;
+    setSuggestions([]);
+    setInput(value);
+    let opts = selected;
+    if (invert) {
+      const data = invertLangs(langs);
+      setLangs(data);
+      opts = data.selected;
+    }
+
+    getData(value, opts);
   };
 
   const renderTips = () =>
@@ -121,7 +144,7 @@ const App: FC<P> = ({ locals }) => {
     google && (
       <Icons>
         <div className="left">
-          <span onClick={() => console.log('voice')}>
+          <span onClick={() => playAudio(search, selected.from)}>
             <Icon name="speaker" size={15} hover />
           </span>
         </div>
@@ -133,7 +156,7 @@ const App: FC<P> = ({ locals }) => {
     <Wrapper>
       <LangsBar
         options={options}
-        onChange={setLangs}
+        onChange={handleOnLangsChange}
         onToggleDropdown={handleToggleDropdown}
         values={langs}
       />
@@ -173,7 +196,12 @@ const App: FC<P> = ({ locals }) => {
                             <Icon
                               name="google"
                               size={15}
-                              color={engine === 'google' ? 'white' : '#444'}
+                              color={
+                                engine === 'google'
+                                  ? colors.text.active
+                                  : colors.text.idle
+                              }
+                              hover
                             />
                           </Tooltip>
                         </span>
@@ -184,7 +212,12 @@ const App: FC<P> = ({ locals }) => {
                             <Icon
                               name="reverso"
                               size={15}
-                              color={engine === 'reverso' ? 'white' : '#444'}
+                              color={
+                                engine === 'reverso'
+                                  ? colors.text.active
+                                  : colors.text.idle
+                              }
+                              hover
                             />
                           </Tooltip>
                         </span>
@@ -197,7 +230,7 @@ const App: FC<P> = ({ locals }) => {
                 <StickyCards
                   google={google}
                   reverso={reverso}
-                  onClick={(data) => console.log(data)}
+                  onClick={handleActionsInCards}
                 />
               )}
             </>

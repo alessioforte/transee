@@ -28,10 +28,10 @@ const theme = {
       soft: '#AAAAAA',
       low: '#999999',
       disabled: '#555555',
-      idle: '#999999',
-      active: '',
-      selected: '',
-      hover: '',
+      idle: '#444444',
+      active: '#FFFFFF',
+      selected: '#0077B5',
+      hover: '#FFFFFF',
       success: '#00FA9A',
       warning: '#FFA500',
       danger: '#B22222',
@@ -42,25 +42,24 @@ const theme = {
   shadow: '0px 1px 5px 1px rgba(0, 0, 0, 0.2)',
 };
 
-export function getColorLuminance(hex, luminance) {
-  const color = validateHex(hex);
-  if (!color) {
-    console.warn(`Something goes wrong getColorLuminance not applied`);
-    return hex;
+export function getColorLuminance(hex: string, luminance: number) {
+  const valid: boolean = validateHex(hex);
+  let color = hex;
+  if (valid) {
+    const rgb = colorHexToRgb(hex);
+    color = '#';
+    luminance = luminance || 0;
+    rgb.forEach(c => {
+      let x = Math.round(Math.min(Math.max(0, c + c * luminance), 255)).toString(
+        16
+      );
+      color += ('00' + x).substr(x.length);
+    });
   }
-  const rgb = colorHexToRgb(color);
-  hex = '#';
-  luminance = luminance || 0;
-  rgb.forEach(c => {
-    let x = Math.round(Math.min(Math.max(0, c + c * luminance), 255)).toString(
-      16
-    );
-    hex += ('00' + x).substr(x.length);
-  });
-  return hex;
+  return color;
 }
 
-function validateHex(color) {
+function validateHex(color: string): boolean {
   if (typeof color !== 'string') {
     console.error(`Validate hex color: ${color} is not a string`);
     return false;
@@ -77,14 +76,13 @@ function validateHex(color) {
   if (color.length === 3) {
     color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
   }
-  return `#${color}`;
+  return true;
 }
 
-function colorHexToRgb(hex) {
-  var r, g, b;
-  r = parseInt(hex[1] + hex[2], 16);
-  g = parseInt(hex[3] + hex[4], 16);
-  b = parseInt(hex[5] + hex[6], 16);
+function colorHexToRgb(hex: string): [number, number, number] {
+  const r: number = parseInt(hex[1] + hex[2], 16);
+  const g: number = parseInt(hex[3] + hex[4], 16);
+  const b: number = parseInt(hex[5] + hex[6], 16);
   return [r, g, b];
 }
 

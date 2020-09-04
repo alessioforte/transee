@@ -13,7 +13,7 @@ type Props = {
 
 const Icon: FunctionComponent<Props> = ({
   name = 'default',
-  color = '#444',
+  color = colors.text.idle,
   size = 30,
   className,
   hover = false,
@@ -47,7 +47,7 @@ const Svg = styled.svg<{ color: string; size: number, hover: boolean }>`
       fill: ${getColorLuminance(props.color || colors.text.soft, 0.3)};
     }
     &:active path {
-      fill: ${colors.idle};
+      fill: ${colors.text.main};
     }
   `}
 `;
