@@ -1,5 +1,6 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import styled from 'styled-components';
+import theme from '../../theme';
 
 type Props = {
   title?: string;
@@ -21,6 +22,8 @@ const Card: FunctionComponent<Props> = ({ title = '', renderHeader, children }) 
 
 export default Card;
 
+const { colors } = theme;
+
 const Box = styled.div`
   box-sizing: border-box;
   width: 100%;
@@ -30,9 +33,10 @@ const Header = styled.div`
   position: sticky;
   top: 0;
   padding: 3px 18px;
-  color: #999;
+  color: ${colors.text.main};
   margin: 0;
-  background: rgba(26, 26, 26, 0.9);
+  background: ${colors.frame};
+  font-size: 14px;
 `;
 const Body = styled.div`
   padding: 3px 18px;

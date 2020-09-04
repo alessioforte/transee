@@ -11,9 +11,10 @@ import {
 import * as path from 'path';
 // import * as url from 'url';
 import Settings from '../settings';
+import theme from '../src/theme';
 // import updater from './updater';
 
-const backgroundColor = '#2a2a2a';
+const backgroundColor = theme.colors.background;
 const isDev = process.env.NODE_ENV === 'development';
 
 let mainWindow: Electron.BrowserWindow | null;

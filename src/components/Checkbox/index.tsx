@@ -1,6 +1,7 @@
 import React, { useState, FunctionComponent } from 'react';
 import styled from 'styled-components';
 import Icon from '../Icon';
+import theme from '../../theme';
 
 type Props = {
   label?: string;
@@ -46,6 +47,8 @@ const Checkbox: FunctionComponent<Props> = ({
 
 export default Checkbox;
 
+const { colors } = theme;
+
 const Wrapper = styled.label`
   display: inline-flex;
   width: fit-content;
@@ -62,7 +65,7 @@ const Check = styled.span<{ value: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 3px;
-  background: ${(props) => (props.value ? '#2182BD' : '#888')};
+  background: ${(props) => (props.value ? colors.primary : colors.groundzero)};
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;

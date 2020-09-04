@@ -2,16 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
+import theme, { getColorLuminance } from '../../theme';
 
 const Preferences = ({ locals }) => {
   const { store, actions } = locals;
-  const { shortcut, startAtLogin, checkUpdates } = store;
+  const { shortcut, startAtLogin, checkUpdates, theme } = store;
   const {
     setCheckUpdates,
     setShortcut,
     setStartAtLogin,
     restoreSettings,
+    setTheme,
   } = actions;
+
+  const handleSetTheme = ({ value }) => {
+    let mode = 'light';
+    if (value) {
+      mode = 'dark';
+    }
+    setTheme(mode);
+  };
 
   return (
     <Layout title="Preferences">
@@ -33,6 +43,17 @@ const Preferences = ({ locals }) => {
             name="update"
             initialValue={checkUpdates}
             onChange={(data) => setCheckUpdates(data.value)}
+          />
+        </Label>
+      </Option>
+
+      <Option>
+        <Label>
+          Dark mode enabled
+          <Toggle
+            name="theme"
+            initialValue={theme === 'dark'}
+            onChange={handleSetTheme}
           />
         </Label>
       </Option>
@@ -66,38 +87,40 @@ const Preferences = ({ locals }) => {
 
 export default Preferences;
 
+const { colors } = theme;
+
 const Option = styled.div`
   height: auto;
   padding: 14px 18px;
-  color: #ccc;
-  border-bottom: 1px solid rgba(85, 85, 85, 0.3);
+  border-bottom: 1px solid ${colors.flatground};
 `;
 const Label = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: ${colors.text.main};
   width: 100%;
   padding: 0;
   font-size: 14px;
 `;
 const Comment = styled.div`
   font-size: 12px;
-  color: #999;
+  color: ${colors.text.soft};
   padding-top: 9px;
 `;
 const Button = styled.button`
   border: 0;
-  background: #2182bd;
-  color: #fff;
+  background: ${colors.primary};
+  color: ${colors.text.main};
   padding: 3px 16px;
   border-radius: 3px;
   &:focus {
     outline: none;
   }
   &:hover {
-    background: #238ed1;
+    background: ${getColorLuminance(colors.primary, 0.1)};
   }
   &:active {
-    box-shadow: inset 0 0 10px 1px #0464a0;
+    background: ${getColorLuminance(colors.primary, 0.3)};
   }
 `;

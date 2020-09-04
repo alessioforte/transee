@@ -1,13 +1,13 @@
 import React, { useState, FC } from 'react';
 import { Checkbox, Icon } from '../../components';
 import styled from 'styled-components';
-import theme from '../../theme';
 import icon from '../../../assets/icon_256x256.png';
 import menubarIMG from '../../../assets/menubar.png';
 import taskbarIMG from '../../../assets/taskbar.png';
-import { isMac, isWin } from '../../utils';
+import Layout from '../../containers/Layout';
+import { isWin } from '../../utils';
+import theme, { getColorLuminance } from '../../theme';
 
-const { frameColor } = theme.colors;
 const barIMG = isWin ? taskbarIMG : menubarIMG;
 
 type P = {
@@ -40,8 +40,7 @@ const Welcome: FC<P> = ({ locals }) => {
   };
 
   return (
-    <Win>
-      {isMac && <Frame>Welcome Guide</Frame>}
+    <Layout title="Welcome Guide">
       <Arrow
         onClick={() => leftArrow()}
         style={{
@@ -160,7 +159,7 @@ const Welcome: FC<P> = ({ locals }) => {
           Show Welcome Guide when opening Transee
         </Label>
       </Option>
-    </Win>
+    </Layout>
   );
 };
 
@@ -174,7 +173,7 @@ const Navigator = ({ onClick, items, active }) => {
       {items.map((item, i: number) => (
         <Dot
           key={i}
-          style={{ background: i === active ? 'white' : 'gray' }}
+          active={i === active}
           onClick={(e) => returnIndex(e, i)}
         ></Dot>
       ))}
@@ -184,27 +183,15 @@ const Navigator = ({ onClick, items, active }) => {
 
 export default Welcome;
 
-const Win = styled.div`
-  color: #fff;
-  user-select: none;
-  cursor: default;
-`;
-const Frame = styled.div`
-  color: #aaa;
-  background: ${frameColor};
-  padding-top: 5px;
-  height: 18px;
-  font-size: 12px;
-  text-align: center;
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
-`;
+const { colors } = theme;
+
 const Header = styled.div`
   margin: 0 18px;
   display: flex;
   justify-content: space-between;
   padding: 3px;
-  border-bottom: 1px solid rgba(85, 85, 85, 0.5);
+  border-bottom: 1px solid ${colors.flatground};
+  color: ${colors.text.main};
 `;
 const Title = styled.div`
   text-align: right;
@@ -212,7 +199,7 @@ const Title = styled.div`
   font-size: 26px;
 `;
 const Details = styled.div`
-  color: #999;
+  color: ${colors.text.soft};
   font-size: 16px;
 `;
 const Row = styled.div`
@@ -222,7 +209,7 @@ const Row = styled.div`
 const Short = styled.div`
   display: inline;
   padding: 1px 9px;
-  background: #2182bd;
+  background: ${colors.info};
   border-radius: 3px;
   font-size: 14px;
   font-weight: lighter;
@@ -234,8 +221,8 @@ const Option = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding: 0 18px;
-  color: #aaa;
-  border-top: 1px solid rgba(85, 85, 85, 0.3);
+  color: ${colors.text.soft};
+  border-top: 1px solid ${colors.flatground};
 `;
 const Label = styled.div`
   display: flex;
@@ -266,12 +253,12 @@ const Cards = styled.div`
   overflow: hidden;
   transition: 0.3s ease;
   padding-left: 53px;
+  color: ${colors.text.main};
 `;
 const Card = styled.div`
   box-sizing: border-box;
   text-align: center;
   font-size: 18px;
-  background: none;
   width: 350px;
   border-radius: 5px;
   margin: 0 32px;
@@ -280,18 +267,18 @@ const Card = styled.div`
   h2 {
     font-size: 24px;
     margin-bottom: 9px;
-    color: #2182bd;
+    color: ${colors.text.info};
   }
 `;
 const Note = styled.div`
   margin-top: 9px;
   font-size: 12px;
-  color: #999;
+  color: ${colors.text.low};
 `;
 
-const Dot = styled.div`
+const Dot = styled.div<{ active: boolean }>`
   box-sizing: border-box;
-  background: gray;
+  background: ${props => props.active ? colors.light : colors.flatground};
   width: 8px;
   height: 8px;
   border-radius: 50%;

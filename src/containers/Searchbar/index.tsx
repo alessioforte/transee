@@ -8,6 +8,7 @@ import React, {
 import styled from 'styled-components';
 import { Spinner } from '../../components';
 import { Props, Tip } from './interfaces';
+import theme from '../../theme';
 
 const Searchbar: FunctionComponent<Props> = ({
   onChange = () => null,
@@ -22,6 +23,7 @@ const Searchbar: FunctionComponent<Props> = ({
   renderIcons,
   isError = false,
   message = 'error',
+  disabled = false,
 }) => {
   const timeout: MutableRefObject<number | undefined> = useRef();
   const input: React.MutableRefObject<HTMLElement | undefined> = useRef();
@@ -31,6 +33,7 @@ const Searchbar: FunctionComponent<Props> = ({
 
   useEffect(() => {
     setValue(initialValue);
+    resizeTextarea();
   }, [initialValue]);
 
   useEffect(() => {
@@ -92,7 +95,6 @@ const Searchbar: FunctionComponent<Props> = ({
     setValue(tip.value);
     handleOnChange(tip.value);
   };
-  console.log('isTyping', isTyping);
 
   return (
     <React.Fragment>
@@ -110,6 +112,8 @@ const Searchbar: FunctionComponent<Props> = ({
           onKeyDown={onInputKeyDown}
           onKeyUp={resizeTextarea}
           onScrollCapture={resizeTextarea}
+          disabled={disabled}
+          autoFocus
         />
         {loading && (
           <Loading>
@@ -143,6 +147,7 @@ const Searchbar: FunctionComponent<Props> = ({
 
 export default Searchbar;
 
+const { colors } = theme;
 /**
  * STYLES
  */
@@ -162,14 +167,14 @@ const Input = styled.textarea`
   border: 0;
   background: none;
   resize: none;
-  color: white;
+  color: ${colors.text.main};
   &:focus {
     outline: none;
   }
 `;
 const Autocomplete = styled(Input)`
   position: absolute;
-  color: #555;
+  color: ${colors.text.disabled};
   z-index: -1;
 `;
 const Loading = styled.div`
@@ -179,18 +184,18 @@ const Loading = styled.div`
 `;
 const Hint = styled.div<{ hover: boolean }>`
   padding: 3px 18px;
-  border-top: 1px solid rgba(85, 85, 85, 0.3);
-  color: #aaa;
+  border-top: 1px solid ${colors.flatground};
+  color: ${colors.text.soft};
   font-size: 11px;
   cursor: default;
   line-height: 1.2em;
   background: ${(props) =>
-    props.hover ? 'rgba(26, 26, 26, 0.9)' : 'transparent'};
+    props.hover ? colors.active : 'transparent'};
   & > div:first-child {
-    color: #ffffff;
+    color: ${colors.text.main};
   }
 `;
 const Message = styled.div`
   padding: 18px;
-  color: palevioletred;
+  color: ${colors.text.error};
 `;

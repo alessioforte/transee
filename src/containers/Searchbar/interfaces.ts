@@ -18,6 +18,7 @@ export type Props = {
   message?: string;
   renderTips?: () => ReactElement | null;
   renderIcons?: () => ReactElement | null;
+  disabled?: boolean;
 };
 
 export type Tip = {

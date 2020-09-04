@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { Card } from '../../components';
 import { TranslationData } from '../../services/interfaces';
+import theme from '../../theme';
 
 type Data = {
   invert: boolean;
@@ -165,6 +166,8 @@ const StickyCards: FunctionComponent<Props> = ({
 
 export default StickyCards;
 
+const { colors } = theme;
+
 const Sticky = styled.div`
   position: relative;
   overflow: scroll;
@@ -200,8 +203,7 @@ const Title = styled.div`
 // `;
 const Type = styled.div`
   padding: 9px 18px;
-  color: #fff;
-  /* border-bottom: 1px solid #555; */
+  color: ${colors.text.main};
 
   &:last-child {
     border-bottom: 0;
@@ -213,7 +215,7 @@ const Rating = styled.div`
   & > div {
     margin: 8px 0;
     height: 9px;
-    background: rgba(26, 26, 26, 0.9);
+    background: ${colors.groundzero};
     float: right;
   }
   .common {
@@ -232,7 +234,7 @@ const Word = styled.td`
   justify-content: flex-end;
   .word {
     margin: 3px;
-    color: white;
+    color: ${colors.text.main};
   }
   .art {
     margin: 3px;
@@ -241,7 +243,7 @@ const Word = styled.td`
 `;
 const Values = styled.div`
   margin: 3px;
-  color: #aaa;
+  color: ${colors.text.soft};
 `;
 
 const Section = styled.div`
@@ -260,41 +262,41 @@ const List = styled.ul`
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 6px;
-    color: white;
+    color: ${colors.text.main};
   }
 `;
 const Examples = styled.div`
-  border-top: 1px solid #555;
+  border-top: 1px solid ${colors.foreground};
   padding-top: 20px;
   & > li {
-    color: #ccc;
+    color: ${colors.text.low};
     margin: 9px 18px 9px 9px;
   }
   & > li > b {
-    color: white;
+    color: ${colors.text.main};
     font-weight: 700;
   }
 `;
 const Reverso = styled.div`
   margin: 5px 0;
   h3 {
-    color: white;
+    color: ${colors.text.main};
     font-weight: bold;
     margin-bottom: 10px;
   }
   em {
     font-weight: bold;
-    color: #fff;
+    color: ${colors.text.main};
   }
   .examples {
     margin-bottom: 20px;
   }
   .example {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
   }
   .sentence {
     margin-bottom: 3px;
-    color: #fff;
+    color: ${colors.text.main};
   }
   .translation {
     font-size: 12px;
@@ -304,15 +306,15 @@ const Badge = styled.span`
   padding: 3px 5px;
   margin: 2px 3px;
   border-radius: 5px;
-  background: #212121;
-  color: #fff;
+  background: ${colors.groundzero};
+  color: ${colors.text.main};
   cursor: pointer;
 `;
 const TrTitle = styled.tr`
   height: 30px;
-  color: #fff;
+  color: ${colors.text.main};
   font-weight: bold;
-  border-bottom: 1px solid #555;
+  border-bottom: 1px solid ${colors.foreground};
 `;
 const TrRow = styled.tr`
   font-size: 14px;

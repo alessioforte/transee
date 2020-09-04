@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
+import theme from '../../theme';
 
 export type Data = {
   checked: boolean;
@@ -60,6 +61,8 @@ const Toggle: FC<Props> = ({
 
 export default Toggle;
 
+const { colors } = theme;
+
 export const Block = styled.div`
   display: inline-block;
 `;
@@ -70,7 +73,7 @@ export const Knob = styled.div<KnobProps>`
   width: 40px;
   border-radius: 20px;
   position: relative;
-  background: #1e1e1e;
+  background: ${colors.groundzero};
   cursor: pointer;
   transition: all 0.3s ease;
   &:hover {
@@ -83,7 +86,7 @@ export const Knob = styled.div<KnobProps>`
     content: '';
     height: 16px;
     width: 16px;
-    background: ${(props) => (props.active ? '#2182BD' : '#888')};
+    background: ${(props) => (props.active ? colors.primary : colors.foreground)};
     left: ${(props) => (props.active ? '20px' : '0')};
     border-radius: 50%;
     position: absolute;

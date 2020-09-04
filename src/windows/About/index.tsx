@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { shell } from 'electron';
 import Layout from '../../containers/Layout';
 import icon from '../../../assets/icon_256x256.png';
+import theme, { getColorLuminance } from '../../theme';
 
 const About = ({ locals }) => {
   const { store } = locals;
@@ -31,7 +32,7 @@ const About = ({ locals }) => {
             </div>
             <div id="author">
               <p>
-                Created with <span>❤</span> by Alessio Forte
+                Created with <span>❤</span> by <b>Alessio Forte</b>
                 <br id="year" />
                 {`Copyright © ${new Date().getFullYear()}`}
               </p>
@@ -45,13 +46,16 @@ const About = ({ locals }) => {
 
 export default About;
 
+
+const { colors } = theme;
+
 const Style = styled.div`
   * {
     padding: 0;
     margin: 0;
     font-family: 'Nunito', sans-serif;
     font-weight: 300;
-    color: #fff;
+    color: ${colors.text.main};
     max-height: 250px;
     overflow: hidden;
   }
@@ -59,14 +63,13 @@ const Style = styled.div`
     -webkit-user-select: none;
     cursor: default;
     overflow: hidden;
-    background: rgba(42, 42, 42, 1);
   }
   .container {
     margin: 23px;
   }
   #icon {
     width: 180px;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid ${colors.foreground};
     padding-right: 20px;
   }
   #b_d {
@@ -78,7 +81,7 @@ const Style = styled.div`
   }
   #title {
     font-size: 28px;
-    color: white;
+    color: ${colors.text.main};
   }
   #version {
     opacity: 0.8;
@@ -94,11 +97,11 @@ const Style = styled.div`
   }
   #link {
     transition: 0.3s;
-    color: #0077b5;
+    color: ${colors.text.info};
     cursor: pointer;
   }
   #link:hover {
-    color: #00aff0;
+    color: ${getColorLuminance(colors.text.info, 0.9)};
   }
   #author {
     font-size: 12px;
@@ -112,6 +115,11 @@ const Style = styled.div`
     opacity: 1;
   }
   span {
-    color: darkred;
+    color: red;
+    font-size: 16px;
+  }
+  b {
+    font-weight: bold;
+    color: ${colors.text.main};
   }
 `;

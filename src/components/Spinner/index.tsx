@@ -1,6 +1,8 @@
 import React from 'react';
+import theme from '../../theme';
 
-const spinnerColor = '#555';
+const { colors } = theme;
+const spinnerColor = colors.text.low;
 
 export default () => (
   <svg

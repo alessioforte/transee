@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FC } from 'react';
 import styled, { css } from 'styled-components';
 import Icon from '../Icon';
+import theme from '../../theme';
 
 type Data = { value: string | null };
 type Props = {
@@ -71,8 +72,6 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
           status: 'error',
         };
       } else {
-        // settings.set('shortcut', this.state.shortcut);
-        // ipcRenderer.send('change-shortcut', this.state.shortcut);
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         setShowDelete(true);
@@ -86,7 +85,6 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
   };
 
   const clickOnDelete = (e) => {
-    // ipcRenderer.send('delete-shortcut', null);
     e.stopPropagation();
     setShowDelete(false);
     setState((prev) => ({
@@ -99,7 +97,6 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
     document.removeEventListener('keyup', handleKeyUp);
   };
 
-  console.log(state.shortcut.split('+'), state.status)
   return (
     <Record onClick={clickOnRecord}>
       {state.status === 'success' ? (
@@ -113,7 +110,7 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
       )}
       {showDelete && (
         <Delete onClick={clickOnDelete}>
-          <Icon name="delete" size={14} />
+          <Icon name="delete" size={14} hover />
         </Delete>
       )}
     </Record>
@@ -122,17 +119,20 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
 
 export default RecordShortcut;
 
+const { colors } = theme;
+
 const STATUS = {
   initial: css``,
   register: css`
-    color: #2182bd;
+    color: ${colors.text.soft};
   `,
   success: css`
-    background: #2182bd;
-    color: #fff;
+    background: ${colors.info};
+    color: ${colors.text.main};
+    font-weight: bold;
   `,
   error: css`
-    color: palevioletred;
+    color: ${colors.text.error};
   `,
 };
 
@@ -142,14 +142,17 @@ const Record = styled.div`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  background: #333;
+  background: ${colors.flatground};
   width: 230px;
   height: 50px;
   border-radius: 5px;
-  color: #fff;
+  color: ${colors.text.main};
   font-size: 14px;
 `;
 const Delete = styled.div`
+  display: flex;
+  align-content: center; 
+  align-items: center;
   position: absolute;
   top: 16px;
   right: 9px;

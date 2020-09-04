@@ -7,15 +7,10 @@ import React, {
 } from 'react';
 import { Icon } from '../../components';
 import styled from 'styled-components';
-import {
-  Props,
-  Option,
-  Conversion,
-  Target,
-  Values,
-} from './interfaces';
+import { Props, Option, Conversion, Target, Values } from './interfaces';
 import { selectLangs, invertLangs } from './actions';
 import { useDropdown } from '../../hooks';
+import theme, { getColorLuminance } from '../../theme';
 
 const defaultValues: Values = {
   threesome: {
@@ -73,7 +68,7 @@ const LangsBar: FunctionComponent<Props> = ({
             isOpen={isOpen && side === Conversion.from}
             position="left"
           >
-            <Icon name="caret" size={5} />
+            <Icon name="caret" size={5} color={colors.idle} />
           </Caret>
           {threesome.from.map((opt: Option) => (
             <Lang
@@ -89,7 +84,7 @@ const LangsBar: FunctionComponent<Props> = ({
         </From>
 
         <Invert onClick={invert}>
-          <Icon name="translate" size={14} color="#888" />
+          <Icon name="translate" size={14} color={colors.idle} />
         </Invert>
 
         <To>
@@ -109,7 +104,7 @@ const LangsBar: FunctionComponent<Props> = ({
             isOpen={isOpen && side === Conversion.to}
             position="right"
           >
-            <Icon name="caret" size={5} />
+            <Icon name="caret" size={5} color={colors.idle} />
           </Caret>
         </To>
       </Bar>
@@ -137,6 +132,8 @@ const LangsBar: FunctionComponent<Props> = ({
 
 export default LangsBar;
 
+const { colors } = theme;
+
 const Invert = styled.div`
   display: flex;
   justify-content: center;
@@ -152,7 +149,6 @@ const Caret = styled.div<{ isOpen: boolean; position: string }>`
   box-sizing: border-box;
   position: relative;
   width: 40px;
-  color: #999;
   transition: all 0.3s ease-out;
   ${(props) =>
     props.isOpen &&
@@ -168,7 +164,7 @@ const Bar = styled.div`
   display: flex;
   height: 25px;
   justify-content: space-between;
-  background: rgba(26, 26, 26, 0.9);
+  background: ${theme.colors.frame};
   user-select: none;
   -webkit-app-region: drag;
 `;
@@ -192,9 +188,10 @@ const Lang = styled.button<{ active: boolean }>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: ${(props) => (props.active ? '#FFFFFF' : '#999999')};
+  color: ${(props) => (props.active ? colors.text.main : colors.text.low)};
   &:hover {
-    color: ${(props) => (props.active ? '#FFFFFF' : '#CCCCCC')};
+    color: ${(props) =>
+      props.active ? colors.text.main : getColorLuminance(colors.text.low, 0.5)};
   }
   &:focus {
     outline: none;
@@ -214,21 +211,21 @@ const Item = styled.div<{ active: boolean; inBar: boolean }>`
   padding: 3px 0 3px 12px;
   font-size: 12px;
   height: 20px;
-  color: #999;
+  color: ${colors.text.low};
   ${(props) =>
     props.inBar &&
     `
-    background: rgba(26, 26, 26, 0.8);
+    background: ${colors.hover};
   `}
   ${(props) =>
     props.active &&
     `
-    background: 'rgba(26, 26, 26, 0.8)';
-    color: #FFFFFF;
+    background: ${colors.hover};
+    color: ${colors.text.main};
   `}
   cursor: default;
   &:hover {
-    background: rgba(26, 26, 26, 0.9);
-    color: white;
+    background: ${colors.hover};
+    color: ${colors.text.main};
   }
 `;

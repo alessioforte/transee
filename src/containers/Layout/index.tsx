@@ -8,8 +8,6 @@ type P = {
   children?: ReactElement | ReactElement[] | string;
 }
 
-const { frameColor } = theme.colors;
-
 const Layout: FC<P> = ({ title = '', children }) => {
   return (
     <Win>
@@ -21,6 +19,8 @@ const Layout: FC<P> = ({ title = '', children }) => {
 
 export default Layout;
 
+const { colors } = theme;
+
 const Win = styled.div`
   display: flex;
   flex-direction: column;
@@ -28,8 +28,8 @@ const Win = styled.div`
   cursor: default;
 `;
 const Frame = styled.div`
-  color: #aaa;
-  background: ${frameColor};
+  color: ${colors.text.soft};
+  background: ${colors.frame};
   padding-top: 5px;
   height: 18px;
   font-size: 12px;

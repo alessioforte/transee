@@ -1,12 +1,14 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import icons from './icons';
+import theme, { getColorLuminance } from '../../theme';
 
 type Props = {
   name?: string;
   color?: string;
   size?: number;
   className?: string;
+  hover?: boolean;
 };
 
 const Icon: FunctionComponent<Props> = ({
@@ -14,6 +16,7 @@ const Icon: FunctionComponent<Props> = ({
   color = '#444',
   size = 30,
   className,
+  hover = false,
 }) => {
   const { d, width, group } = icons[name] || icons.default;
 
@@ -25,6 +28,7 @@ const Icon: FunctionComponent<Props> = ({
       x="0px"
       y="0px"
       viewBox={`0 0 ${width} 512`}
+      hover={hover}
     >
       {group || <path d={d} />}
     </Svg>
@@ -33,13 +37,17 @@ const Icon: FunctionComponent<Props> = ({
 
 export default Icon;
 
-const Svg = styled.svg<{ color: string; size: number }>`
-  fill: ${(props) => props.color};
+const { colors } = theme;
+
+const Svg = styled.svg<{ color: string; size: number, hover: boolean }>`
+  fill: ${(props) => props.color || colors.text.soft};
   height: ${(props) => props.size + 'px'};
-  &:hover path {
-    fill: #999;
-  }
-  &:active path {
-    fill: #eee;
-  }
+  ${props => props.hover && `
+    &:hover path {
+      fill: ${getColorLuminance(props.color || colors.text.soft, 0.3)};
+    }
+    &:active path {
+      fill: ${colors.idle};
+    }
+  `}
 `;

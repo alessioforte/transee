@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
+import theme from '../../theme';
 
 let ROOT_ID = 'root-tooltip';
 
@@ -105,6 +106,8 @@ Tooltip.setRoot = setRoot;
 
 export default Tooltip;
 
+const { colors } = theme;
+
 export const delay = keyframes`
     0% {
         opacity: 0;
@@ -131,8 +134,8 @@ export const Tip = styled.div`
   max-width: 300px;
   box-sizing: border-box;
   text-align: center;
-  background: #1a1a1a;
-  color: white;
+  background: ${colors.groundzero};
+  color: ${colors.text.main};
   box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 `;

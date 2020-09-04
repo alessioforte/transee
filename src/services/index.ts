@@ -53,10 +53,7 @@ export const playAudio = async (
   try {
     const response = await voice(text, lang, speed);
     const audio = new Audio(response);
-    audio.setAttribute('crossorigin', 'anonymous');
-    console.log('audio', audio)
-    const play = await audio.play();
-    console.log('play', play)
+    audio.play();
   } catch (error) {
     console.error(error);
   }

@@ -1,4 +1,4 @@
-import React, { useState, FC, useEffect, useCallback } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import styled from 'styled-components';
 import { SearchbarData } from '../../containers/Searchbar/interfaces';
 import { Options, Conversion } from '../../containers/LangsBar/interfaces';
@@ -10,6 +10,7 @@ import { langsFrom, langsTo } from '../../services/langs';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 import { useWindowKeyDown } from '../../hooks';
+import theme, { getColorLuminance } from '../../theme';
 
 const options: Options = {
   from: Object.entries(langsFrom).map(([key, value]) => ({
@@ -30,7 +31,7 @@ const App: FC<P> = ({ locals }) => {
   useWindowKeyDown(locals);
   const { store, actions } = locals;
   const [isDropped, setIsDropped] = useState<boolean>(false);
-  console.log('store', store);
+  console.debug('store', store);
   const {
     setSuggestions,
     setLangs,
@@ -121,7 +122,7 @@ const App: FC<P> = ({ locals }) => {
       <Icons>
         <div className="left">
           <span onClick={() => console.log('voice')}>
-            <Icon name="speaker" size={15} />
+            <Icon name="speaker" size={15} hover />
           </span>
         </div>
         <div />
@@ -158,11 +159,11 @@ const App: FC<P> = ({ locals }) => {
                   <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  <Translation value={translation} disabled />
+                  <Searchbar initialValue={translation} disabled />
                   <Icons>
                     <div className="left">
                       <span onClick={() => playAudio(translation, selected.to)}>
-                        <Icon name="speaker" size={15} />
+                        <Icon name="speaker" size={15} hover />
                       </span>
                     </div>
                     <div className="right">
@@ -209,33 +210,21 @@ const App: FC<P> = ({ locals }) => {
 
 export default App;
 
+const { colors } = theme;
+
 const Wrapper = styled.div`
   overflow: hidden;
 `;
 const Block = styled.div``;
 const Box = styled.div`
-  border-top: 1px solid #999;
+  border-top: 1px solid ${colors.idle};
   height: 100%;
 `;
 const Pronunciation = styled.div`
   padding: 3px 18px;
   font-size: 14px;
-  border-top: 1px solid #555;
-  color: #aaa;
-`;
-const Translation = styled.textarea`
-  box-sizing: border-box;
-  padding: 18px 44px 18px 18px;
-  width: 100%;
-  max-height: 300px;
-  font-size: 18px;
-  border: 0;
-  background: none;
-  resize: none;
-  color: white;
-  &::focus {
-    outline: none;
-  }
+  border-top: 1px solid ${colors.foreground};
+  color: ${colors.idle};
 `;
 const Icons = styled.div`
   display: flex;
@@ -253,20 +242,20 @@ const Icons = styled.div`
 `;
 const Tips = styled.div`
   font-size: 14px;
-  color: #999;
+  color: ${colors.idle};
   margin: 6px 18px;
   cursor: default;
   p {
     margin: 0;
   }
   i {
-    color: #0077b5;
+    color: ${colors.text.info};
     transition: all 0.1s ease-out;
   }
   i:hover {
-    color: #00aff0;
+    color: ${getColorLuminance(colors.text.info, 0.5)};
   }
   i:active {
-    color: #333;
+    color: ${getColorLuminance(colors.text.info, 0.9)};
   }
 `;
