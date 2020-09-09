@@ -118,6 +118,11 @@ const App: FC<P> = ({ locals }) => {
     getData(value, opts);
   };
 
+  const handlePlayAudio = (value: string | string[], lang: string) => {
+    const text = value.toString();
+    playAudio(text, lang);
+  };
+
   const renderTips = () =>
     google && (
       <Tips>
@@ -144,7 +149,7 @@ const App: FC<P> = ({ locals }) => {
     google && (
       <Icons>
         <div className="left">
-          <span onClick={() => playAudio(search, selected.from)}>
+          <span onClick={() => handlePlayAudio(search, selected.from)}>
             <Icon name="speaker" size={15} hover />
           </span>
         </div>
@@ -185,7 +190,11 @@ const App: FC<P> = ({ locals }) => {
                   <Searchbar initialValue={translation} disabled />
                   <Icons>
                     <div className="left">
-                      <span onClick={() => playAudio(translation, selected.to)}>
+                      <span
+                        onClick={() =>
+                          handlePlayAudio(translation, selected.to)
+                        }
+                      >
                         <Icon name="speaker" size={15} hover />
                       </span>
                     </div>

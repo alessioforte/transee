@@ -49,7 +49,7 @@ const Preferences = ({ locals }) => {
 
       <Option>
         <Label>
-          Dark mode enabled
+          Dark mode
           <Toggle
             name="theme"
             initialValue={theme === 'dark'}

@@ -9,10 +9,9 @@ import {
   Menu,
 } from 'electron';
 import * as path from 'path';
-// import * as url from 'url';
 import Settings from '../settings';
 import theme from '../src/theme';
-// import updater from './updater';
+import updater from './updater';
 
 const backgroundColor = theme.colors.background;
 const isDev = process.env.NODE_ENV === 'development';
@@ -21,8 +20,8 @@ let mainWindow: Electron.BrowserWindow | null;
 let aboutWin: Electron.BrowserWindow | null;
 let preferencesWin: Electron.BrowserWindow | null;
 let welcomeWin: Electron.BrowserWindow | null;
-let accelerator;
-let tray;
+let tray: Tray | null | undefined;
+let accelerator: string | null | undefined;
 
 const webPreferences = {
   nodeIntegration: true,
@@ -30,31 +29,17 @@ const webPreferences = {
   enableRemoteModule: true,
 };
 
-const devWinConfig: Electron.BrowserWindowConstructorOptions = {
-  frame: false,
-  width: 680,
-  height: 85,
-  y: 100,
-  x: 60,
-  fullscreenable: false,
-  resizable: false,
-  backgroundColor: backgroundColor,
-  // vibrancy: 'ultra-dark',
-  webPreferences,
-};
-
-const prodWinConfig: Electron.BrowserWindowConstructorOptions = {
+const winConfig: Electron.BrowserWindowConstructorOptions = {
   width: 680,
   height: 85,
   frame: false,
   fullscreenable: false,
   resizable: false,
   backgroundColor: backgroundColor,
-  show: false,
+  useContentSize: true,
+  show: isDev,
   webPreferences,
 };
-
-const winConfig = isDev ? devWinConfig : prodWinConfig;
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -93,7 +78,7 @@ async function appReady() {
   // HANDLE APP VERSION
   const versionInSettings = Settings.get('version');
   if (appVersion !== versionInSettings) {
-    // Settings.delete();
+    Settings.delete();
     Settings.set('version', appVersion);
   }
 
@@ -104,8 +89,8 @@ async function appReady() {
     createPreferencesWindow();
   } else {
     //  SET START AT LOGIN
-    // const check = app.getLoginItemSettings().openAtLogin;
-    // Settings.set('start-login', check);
+    const check = app.getLoginItemSettings().openAtLogin;
+    Settings.set('startAtLogin', check);
 
     // SET GLOBAL SHORTCUT
     if (Settings.has('shortcut')) {
@@ -115,7 +100,7 @@ async function appReady() {
       Settings.set('shortcut', accelerator);
     }
     if (accelerator) {
-      globalShortcut.register(accelerator, () => showWindow());
+      globalShortcut.register(accelerator, showWindow);
     }
 
     // CREATE TRAY AND CONTEXT MENU
@@ -123,7 +108,7 @@ async function appReady() {
 
     const contextMenu = Menu.buildFromTemplate([
       { label: 'About Transee', click: showAboutWindow },
-      // { label: 'Check for update', click: updater.checkForUpdates },
+      { label: 'Check for update', click: () => updater.checkForUpdates() },
       { type: 'separator' },
       { label: 'Preferences...', click: showPreferencesWindow },
       { type: 'separator' },
@@ -141,12 +126,12 @@ async function appReady() {
     tray.setContextMenu(contextMenu);
 
     // AUTOMATICALLY UPDATES
-    // const checkAutomaticallyUpdates = settings.has('check-automatically-updates')
-    //   ? settings.get('check-automatically-updates')
-    //   : true;
-    // if (checkAutomaticallyUpdates) {
-    //   setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
-    // }
+    const checkAutomaticallyUpdates = Settings.has('checkUpdates')
+      ? Settings.get('checkUpdates')
+      : true;
+    if (checkAutomaticallyUpdates) {
+      setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
+    }
 
     // SHOW WELCOME GUIDE
     const showWelcome = Settings.has('showWelcome')
@@ -159,8 +144,7 @@ async function appReady() {
     createWindow();
 
     // HIDE DOCK ICON IN MACOS
-    // if (process.platform === 'darwin' && !showWelcome) app.dock.hide();
-    if (process.platform === 'darwin') app.dock.hide();
+    if (process.platform === 'darwin' && !showWelcome) app.dock.hide();
   }
 }
 
@@ -168,11 +152,10 @@ async function appReady() {
 function createWindow() {
   mainWindow = new BrowserWindow(winConfig);
   mainWindow.loadURL(`${indexPath}?main`);
-  if (!isDev) {
-    mainWindow.on('blur', () => {
-      hideWindow();
-    });
-  }
+  mainWindow.visibleOnAllWorkspaces = true;
+  mainWindow.on('blur', () => {
+    if (!isDev) hideWindow();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -261,12 +244,11 @@ function showWindow() {
 }
 
 function getWindowPosition() {
-  // const screen = electron.screen;
   const point = screen.getCursorScreenPoint();
   const displayBounds = screen.getDisplayNearestPoint(point).bounds;
   const windowBounds = mainWindow.getBounds();
   let maxAppHeight = 800;
-  if (displayBounds.height < 800) maxAppHeight = 600;
+  if (displayBounds.height < 768) maxAppHeight = 768;
 
   const x = Math.round(
     displayBounds.x + (displayBounds.width - windowBounds.width) / 2
@@ -303,11 +285,7 @@ ipcMain.on('window-height', (event, height) => {
 });
 
 ipcMain.on('hide-window', (event, msg) => {
-  if (!isDev) {
-    hideWindow();
-  } else {
-    console.log('hide');
-  }
+  hideWindow();
 });
 
 ipcMain.on('set-start-login', (event, check) => {
@@ -322,11 +300,6 @@ ipcMain.on('change-shortcut', (event, shortcut) => {
     showWindow();
   });
 });
-
-// ipcMain.on('delete-shortcut', (event) => {
-//   globalShortcut.unregisterAll();
-//   Settings.set('shortcut', '');
-// });
 
 ipcMain.on('devtools', (event) => {
   mainWindow.webContents.openDevTools();

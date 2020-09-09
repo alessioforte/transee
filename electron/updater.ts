@@ -18,8 +18,8 @@ autoUpdater.on('error', (event, error) => {
 // autoUpdater.on('checking-for-update', () => {});
 
 autoUpdater.on('update-available', () => {
-  dialog.showMessageBox(
-    {
+  console.log('update available');
+  dialog.showMessageBox({
       type: 'info',
       message: 'Found Updates',
       detail: 'New version is available, do you want update now?',
@@ -33,7 +33,8 @@ autoUpdater.on('update-available', () => {
   );
 });
 
-autoUpdater.on('update-not-available', () => {
+autoUpdater.on('update-not-available', (event, error) => {
+  console.log('update not available', event, error);
   if (manualCheck) {
     manualCheck = false;
 
@@ -47,9 +48,9 @@ autoUpdater.on('update-not-available', () => {
 
 // autoUpdater.on('download-progress', () => {});
 
-autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox(
-    {
+autoUpdater.on('update-downloaded', (event, error) => {
+  console.log('update downloaded', event, errors);
+  dialog.showMessageBox({
       type: 'info',
       message: 'Install Updates',
       detail: 'Updates downloaded, application will be quit for update...',
@@ -65,6 +66,7 @@ const checkForUpdates = (isManual: boolean | undefined = true): void => {
 
   internetAvailable()
     .then(() => {
+      console.log('checking for updates...')
       autoUpdater.checkForUpdates();
     })
     .catch(() => {

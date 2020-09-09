@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import {
   getHints,
-  getReversoSuggest,
+  // getReversoSuggest,
   getTranslation,
   getReversoTranslation,
   playAudio,
