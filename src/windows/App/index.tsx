@@ -50,11 +50,11 @@ const App: FC<P> = ({ locals }) => {
     loading,
     engine,
     langs,
+    speed,
   } = store;
   const { selected } = langs;
 
   let translation = store[engine] ? store[engine].translation : '';
-
   if (engine === 'google' && !google) {
     translation = store.reverso ? store.reverso.translation : '';
   }
@@ -118,9 +118,9 @@ const App: FC<P> = ({ locals }) => {
     getData(value, opts);
   };
 
-  const handlePlayAudio = (value: string | string[], lang: string) => {
+  const handlePlayAudio = (value: string | string[], lang: string, conversion: string) => {
     const text = value.toString();
-    playAudio(text, lang);
+    playAudio(text, lang, conversion, speed);
   };
 
   const renderTips = () =>
@@ -149,7 +149,7 @@ const App: FC<P> = ({ locals }) => {
     google && (
       <Icons>
         <div className="left">
-          <span onClick={() => handlePlayAudio(search, selected.from)}>
+          <span onClick={() => handlePlayAudio(search, selected.from, 'from')}>
             <Icon name="speaker" size={15} hover />
           </span>
         </div>
@@ -192,7 +192,7 @@ const App: FC<P> = ({ locals }) => {
                     <div className="left">
                       <span
                         onClick={() =>
-                          handlePlayAudio(translation, selected.to)
+                          handlePlayAudio(translation, selected.to, 'to')
                         }
                       >
                         <Icon name="speaker" size={15} hover />

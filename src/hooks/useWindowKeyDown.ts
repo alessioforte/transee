@@ -3,8 +3,16 @@ import { ipcRenderer } from 'electron';
 import { invertLangs } from '../containers/LangsBar/actions';
 
 const useWindowKeyDown = ({ store, actions }) => {
-  const { suggestions, google } = store;
-  const { setLangs, getData, setSuggestions } = actions;
+  const {
+    suggestions,
+    google,
+    search,
+    engine,
+    reverso,
+    langs,
+    speed,
+  } = store;
+  const { setLangs, getData, setSuggestions, playAudio } = actions;
 
   window.onkeydown = useCallback(
     (e: KeyboardEvent) => {
@@ -33,28 +41,24 @@ const useWindowKeyDown = ({ store, actions }) => {
       // ctrl p - voice
       if (e.ctrlKey && !e.altKey && e.keyCode === 80) {
         e.preventDefault();
-        // let text = store.getState().text;
-        // if (text !== '') {
-        //   let from = store.getState().langs.from;
-        //   let speed = store.getState().speed.from;
-        //   playAudio(text, from, speed);
-        //   store.dispatch(speedFrom(!speed));
-        // }
+        if (search) {
+          playAudio(search, langs.selected.from, 'from', speed);
+        }
       }
 
       // ctrl alt p - voice
       if (e.ctrlKey && e.altKey && e.keyCode === 80) {
         e.preventDefault();
-        // let data = store.getState().translate.data;
-
-        // if (data) {
-        //   let text = data.translation;
-        //   let to = store.getState().langs.to;
-        //   let speed = store.getState().speed.to;
-
-        //   playAudio(text, to, speed);
-        //   store.dispatch(speedTo(!speed));
-        // }
+        let translation = store[engine] ? store[engine].translation : '';
+        if (engine === 'google' && !google) {
+          translation = store.reverso ? store.reverso.translation : '';
+        }
+        if (engine === 'reverso' && !reverso) {
+          translation = store.google ? store.google.translation : '';
+        }
+        if (translation) {
+          playAudio(translation, langs.selected.to, 'to', speed);
+        }
       }
 
       if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {

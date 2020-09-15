@@ -13,12 +13,13 @@ const SET_THEME = 'SET_THEME';
 const SET_SUGGESTIONS = 'SET_SUGGESTIONS';
 const SET_REVERSO_SUGGESTIONS = 'SET_REVERSO_SUGGESTIONS';
 const SET_GOOGLE = 'SET_GOOGLE';
-const SET_REVERSO_TRANSLATION = 'SET_REVERSO_TRANSLATION';
+const SET_REVERSO = 'SET_REVERSO';
 const SET_INPUT = 'SET_INPUT';
 const SET_SEARCH = 'SET_SEARCH';
 const SET_SHORTCUT = 'SET_SHORTCUT';
 const SET_LOADING = 'SET_LOADING';
 const SET_ENGINE = 'SET_ENGINE';
+const SET_VOICE_SPEED = 'SET_VOICE_SPEED';
 const SET_SHOW_WELCOME = 'SET_SHOW_WELCOME';
 const SET_START_AT_LOGIN = 'SET_START_AT_LOGIN';
 const SET_CHECK_UPDATES = 'SET_CHECK_UPDATES';
@@ -39,7 +40,7 @@ export const setters = {
     return { type: SET_GOOGLE, payload };
   },
   SetReverso(payload: any) {
-    return { type: SET_REVERSO_TRANSLATION, payload };
+    return { type: SET_REVERSO, payload };
   },
   setInput(payload: string) {
     return { type: SET_INPUT, payload };
@@ -68,6 +69,9 @@ export const setters = {
   setTheme(payload: string) {
     return { type: SET_THEME, payload };
   },
+  setVoiceSpeed(payload: boolean) {
+    return { type: SET_VOICE_SPEED, payload };
+  },
   restoreSettings() {
     return { type: RESTORE_SETTINGS };
   },
@@ -84,13 +88,13 @@ export const reducer = (state, action) => {
       return { ...state, theme: action.payload };
     case SET_SUGGESTIONS:
       return { ...state, suggestions: action.payload };
-    case SET_SUGGESTIONS:
+    case SET_REVERSO_SUGGESTIONS:
       return { ...state, reversoSuggestions: action.payload };
     case SET_GOOGLE:
       return { ...state, google: action.payload };
     case SET_ENGINE:
       return { ...state, engine: action.payload };
-    case SET_REVERSO_TRANSLATION:
+    case SET_REVERSO:
       return { ...state, reverso: action.payload };
     case SET_INPUT:
       return { ...state, input: action.payload };
@@ -106,6 +110,8 @@ export const reducer = (state, action) => {
       return { ...state, startAtLogin: action.payload };
     case SET_CHECK_UPDATES:
       return { ...state, checkUpdates: action.payload };
+    case SET_VOICE_SPEED:
+      return { ...state, speed: action.payload };
     case CLEAR_DATA:
       return {
         ...state,
@@ -140,6 +146,7 @@ export const buildActions = ({ setters }) => {
     setCheckUpdates,
     restoreSettings,
     clearData,
+    setVoiceSpeed,
   } = setters;
 
   return {
@@ -228,7 +235,12 @@ export const buildActions = ({ setters }) => {
     setInput,
     setLoading,
     setSearch,
-    playAudio,
+    playAudio: (text, lang, conversion, speed) => {
+      const voiceSpeed = !speed[conversion]
+      speed[conversion] = voiceSpeed;
+      setVoiceSpeed(speed);
+      playAudio(text, lang, voiceSpeed);
+    },
   };
 };
 
@@ -260,4 +272,8 @@ export const initialData = {
   startAtLogin: true,
   checkUpdates: true,
   engine: 'google',
+  speed: {
+    from: true,
+    to: true,
+  },
 };

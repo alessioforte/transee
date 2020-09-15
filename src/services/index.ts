@@ -69,8 +69,8 @@ export const getReversoTranslation = async (
     if (!from || !to) return null;
     const { data } = await reversoTranslation(value, { from, to });
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -81,8 +81,8 @@ export const getReversoSuggest = async (
   try {
     const { data } = await reversoSuggest(value, langs);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 }
 
