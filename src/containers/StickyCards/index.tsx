@@ -105,7 +105,7 @@ const StickyCards: FunctionComponent<Props> = ({
                                   key={w}
                                   className="meaning"
                                   onClick={() =>
-                                    onClick({ value: section.word })
+                                    onClick({ value: w })
                                   }
                                 >
                                   {w}

@@ -97,6 +97,7 @@ const App: FC<P> = ({ locals }) => {
     const data = selectLangs(langs, Conversion.from, opt);
     clearData();
     setLangs(data);
+    setInput(input);
     getData(input, data.selected);
   };
 
