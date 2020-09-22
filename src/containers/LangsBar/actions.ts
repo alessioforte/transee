@@ -62,13 +62,16 @@ export const selectLangs = (
 
 export const invertLangs = (prev: Values): Values => {
   const { threesome, selected } = prev;
+
   const isInToThreesome = threesome.to.some(
     (item: Option) => item.value === selected.from
   );
   const isInFromThreesome = threesome.from.some(
     (item: Option) => item.value === selected.to
   );
+
   const newThreesome: Options = { ...threesome };
+
   if (!isInFromThreesome || !isInToThreesome) {
     const activeFromIndex: number = threesome.from.findIndex(
       (item: Option) => item.value === selected.from
@@ -76,10 +79,15 @@ export const invertLangs = (prev: Values): Values => {
     const activeToIndex: number = threesome.to.findIndex(
       (item: Option) => item.value === selected.to
     );
+    const to = newThreesome.from[activeFromIndex];
+    const from = newThreesome.to[activeToIndex];
+
     if (!isInFromThreesome) {
-      newThreesome.from[activeFromIndex] = newThreesome.to[activeToIndex];
-    } else {
-      newThreesome.to[activeToIndex] = newThreesome.from[activeFromIndex];
+      newThreesome.from[activeFromIndex] = from;
+    }
+    if (!isInToThreesome) {
+      console.log()
+      newThreesome.to[activeToIndex] = to;
     }
   }
 
