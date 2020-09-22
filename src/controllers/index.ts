@@ -120,6 +120,10 @@ export const reducer = (state, action) => {
         google: null,
         reverso: null,
         suggestions: [],
+        speed: {
+          from: true,
+          to: true,
+        },
       };
     case RESTORE_SETTINGS:
       return initialData;
