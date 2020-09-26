@@ -12,7 +12,7 @@ const useWindowKeyDown = ({ store, actions }) => {
     langs,
     speed,
   } = store;
-  const { setLangs, getData, setSuggestions, playAudio } = actions;
+  const { setLangs, getData, setSuggestions, playAudio, setInput } = actions;
 
   window.onkeydown = useCallback(
     (e: KeyboardEvent) => {
@@ -28,12 +28,13 @@ const useWindowKeyDown = ({ store, actions }) => {
         }
       }
 
-      // alt shify
+      // alt shify - invert langs
       if (e.altKey && e.keyCode === 16) {
         const langs = invertLangs(store.langs);
         setLangs(langs);
         const translation = google.translation;
         if (translation) {
+          setInput(translation);
           getData(translation, langs.selected);
         }
       }
