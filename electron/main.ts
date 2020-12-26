@@ -25,8 +25,8 @@ let accelerator: string | null | undefined;
 
 const webPreferences = {
   nodeIntegration: true,
-  webSecurity: false,
-  enableRemoteModule: true,
+  // webSecurity: false,
+  // enableRemoteModule: true,
 };
 
 const winConfig: Electron.BrowserWindowConstructorOptions = {
@@ -40,6 +40,8 @@ const winConfig: Electron.BrowserWindowConstructorOptions = {
   show: isDev,
   webPreferences,
 };
+
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -58,8 +60,6 @@ const iconPath =
   process.platform === 'win32'
     ? path.join(__dirname, '../assets', 'icon_16x16.ico')
     : path.join(__dirname, '../assets', 'iconTemplate.png');
-
-app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
 app.on('ready', appReady);
 

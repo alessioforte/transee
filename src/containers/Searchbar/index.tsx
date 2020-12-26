@@ -11,9 +11,9 @@ import { Props, Tip } from './interfaces';
 import theme from '../../theme';
 
 const Searchbar: FunctionComponent<Props> = ({
-  onChange = () => null,
+  onChange = (data) => null,
   onResize = () => null,
-  onDebounce = () => null,
+  onDebounce = (data) => null,
   loading = false,
   name = 'textarea',
   delay = 600,
@@ -96,11 +96,14 @@ const Searchbar: FunctionComponent<Props> = ({
     handleOnChange(tip.value);
   };
 
+  // TODO: too many renders
+  // console.log('sugg', suggestions);
+
   return (
     <React.Fragment>
       <Container>
         {!isTyping && suggestions?.length > 0 && hover === -1 && value !== '' && (
-          <Autocomplete disabled value={suggestions[0].value} />
+          <Autocomplete disabled value={suggestions[0][0]} />
         )}
         <Input
           ref={input}
@@ -128,15 +131,15 @@ const Searchbar: FunctionComponent<Props> = ({
         <div>
           {suggestions.map((tip: Tip, i: number) => (
             <Hint
-              key={tip.key}
+              key={tip[0]}
               className="sgt"
-              onClick={() => onSelect(tip)}
+              onClick={() => onSelect(tip[0])}
               hover={hover === i}
               onMouseEnter={() => setHover(i)}
               onMouseLeave={() => setHover(-1)}
             >
-              <div>{tip.value}</div>
-              {tip.label && <div>{tip.label}</div>}
+              <div>{tip[0]}</div>
+              {tip[1] && <div>{tip[1]}</div>}
             </Hint>
           ))}
         </div>

@@ -54,13 +54,23 @@ const App: FC<P> = ({ locals }) => {
   } = store;
   const { selected } = langs;
 
-  let translation = store[engine] ? store[engine].translation : '';
+  let translation = '';
+  if (engine === 'google' && store[engine]) {
+    if (store[engine].translation[0][0] || store[engine].translation[0][1]) {
+      translation = store[engine].translation[0][0];
+    } else if (
+      store[engine].translation[0][5] &&
+      store[engine].translation[0][5][0][0]
+    ) {
+      translation = store[engine].translation[0][5][0][0];
+    }
+  }
   if (engine === 'google' && !google) {
     translation = store.reverso ? store.reverso.translation : '';
   }
-  if (engine === 'reverso' && !reverso) {
-    translation = store.google ? store.google.translation : '';
-  }
+  // if (engine === 'reverso' && !reverso) {
+  //   translation = store.google ? store.google.translation : '';
+  // }
 
   useEffect(() => {
     setMainWindowSize();
@@ -119,7 +129,11 @@ const App: FC<P> = ({ locals }) => {
     getData(value, opts);
   };
 
-  const handlePlayAudio = (value: string | string[], lang: string, conversion: string) => {
+  const handlePlayAudio = (
+    value: string | string[],
+    lang: string,
+    conversion: string
+  ) => {
     const text = value.toString();
     playAudio(text, lang, conversion, speed);
   };
@@ -127,19 +141,25 @@ const App: FC<P> = ({ locals }) => {
   const renderTips = () =>
     google && (
       <Tips>
-        {google.correction.text.value && (
+        {google?.correction?.text.value && (
           <p>
             Did you mean{' '}
-            <i onClick={() => handleClickOnDYM(google.correction.text.value)}>
-              {google.correction.text.value}
+            <i
+              onClick={() => handleClickOnDYM(google?.correction?.text?.value)}
+            >
+              {google?.correction?.text?.value}
             </i>
           </p>
         )}
-        {google.correction.language.iso !== selected.from && (
+        {google?.correction?.language?.iso !== selected.from && (
           <p>
             Translate from{' '}
-            <i onClick={() => handleClickOnISO(google.correction.language.iso)}>
-              {langsFrom[google.correction.language.iso]}
+            <i
+              onClick={() =>
+                handleClickOnISO(google?.correction?.language?.iso)
+              }
+            >
+              {langsFrom[google?.correction?.language?.iso]}
             </i>
           </p>
         )}
@@ -177,7 +197,7 @@ const App: FC<P> = ({ locals }) => {
             delay={900}
             isError={false}
             message="Service Unavailable"
-            renderTips={renderTips}
+            // renderTips={renderTips}
             renderIcons={renderIcons}
             loading={loading}
           />

@@ -71,7 +71,7 @@ const StickyCards: FunctionComponent<Props> = ({
 
       {google && (
         <>
-          {google.translations && (
+          {/* {google.translations && (
             <Card title="TRANSLATIONS">
               <Body>
                 {google.translations.map((translation, i) => (
@@ -120,19 +120,31 @@ const StickyCards: FunctionComponent<Props> = ({
                 ))}
               </Body>
             </Card>
-          )}
+          )} */}
 
           {google.definitions && (
             <Card title="DEFINITIONS">
               <Body>
                 {google.definitions.map((definition, i) => (
                   <div key={`definitions-${i}`}>
-                    <span>{definition.type}</span>
+                    <span>{definition[0]}</span>
                     <>
-                      {definition.content.map((section, j) => (
+                      {definition[1].map((item, j) => (
                         <Section key={`definitions${i}-${j}`}>
-                          <div style={{ color: '#fff' }}>{section.phrase}</div>
-                          <div>«{section.instance}»</div>
+                          <div style={{ color: '#fff' }}>{item[0]}</div>
+                          <div>«{item[1]}»</div>
+                          {item[3] && (
+                            <Synonyms>
+                              {item[3].map((word, idx) => (
+                                <Badge
+                                  key={`${word}-${idx}`}
+                                  onClick={() => onClick({ value: word })}
+                                >
+                                  {word}
+                                </Badge>
+                              ))}
+                            </Synonyms>
+                          )}
                         </Section>
                       ))}
                     </>
@@ -147,9 +159,9 @@ const StickyCards: FunctionComponent<Props> = ({
               <Body>
                 {google.synonyms.map((synonym, i) => (
                   <Type key={`synonyms-${i}`}>
-                    <span>{synonym.type}</span>
+                    <span>{synonym[0]}</span>
                     <List>
-                      {synonym.content.map((section, j) => (
+                      {/* {synonym[1].map((section, j) => (
                         <div key={j}>
                           {section.map((word, idx) => (
                             <Badge
@@ -160,7 +172,7 @@ const StickyCards: FunctionComponent<Props> = ({
                             </Badge>
                           ))}
                         </div>
-                      ))}
+                      ))} */}
                     </List>
                   </Type>
                 ))}
@@ -168,7 +180,7 @@ const StickyCards: FunctionComponent<Props> = ({
             </Card>
           )}
 
-          {google && google.seeAlso && (
+          {/* {google && google.seeAlso && (
             <Card title="SEE ALSO">
               <Body>
                 <div>
@@ -183,7 +195,7 @@ const StickyCards: FunctionComponent<Props> = ({
                 </div>
               </Body>
             </Card>
-          )}
+          )} */}
         </>
       )}
     </Sticky>
@@ -257,10 +269,8 @@ const Values = styled.div`
 const Section = styled.div`
   margin-left: 70px;
   margin-top: 9px;
-  & > div {
-    margin: 3px;
-  }
 `;
+
 const List = styled.ul`
   margin: 0;
   padding: 0;
@@ -330,4 +340,9 @@ const TrTitle = styled.tr`
 `;
 const TrRow = styled.tr`
   font-size: 14px;
+`;
+const Synonyms = styled.div`
+  display: flex;
+  margin: 24px 0;
+  flex-wrap: wrap;
 `;

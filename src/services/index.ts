@@ -1,10 +1,9 @@
 /* eslint-disable */
 import { Langs, Hint, TranslationData } from './interfaces';
 import {
-  complete,
-  translateComplete,
-  translate,
-  voice,
+  getGoogleTranslate,
+  getGoogleSuggest,
+  getGoogleVoice,
   reversoTranslation,
   reversoSuggest,
 } from './api';
@@ -15,17 +14,12 @@ export const getHints = async (
   langs: Langs
 ): Promise<Hint[]> => {
   try {
-    const { data } = await complete(value, langs.from);
-    const hints = remapComplete(data);
-    const slice = hints?.slice(0, 4);
-    const tHints = await translateComplete(slice, langs);
-    const tips = Array.isArray(tHints.data) ? tHints.data : [tHints.data];
-
-    return slice?.map((hint, i) => ({
-      key: i,
-      value: hint,
-      label: tips[i],
-    }));
+    const { body } = await getGoogleSuggest(value, langs);
+    // JSON.parse(h.replace(")]}'\n", ""));
+    const decode = JSON.parse(unescape(body.slice(5)));
+    const data = JSON.parse(decode[0][2]);
+    console.log('getGoogleSuggest', data);
+    return data && data[0];
   } catch (err) {
     console.log(err);
     return [];
@@ -37,8 +31,10 @@ export const getTranslation = async (
   langs: Langs
 ): Promise<TranslationData | null> => {
   try {
-    const { data } = await translate(value, langs);
-    return remapTranslate(data);
+    const { body } = await getGoogleTranslate(value, langs);
+    const decode = JSON.parse(unescape(body.slice(5)));
+    const data = JSON.parse(decode[0][2]);
+    return mapping(data);
   } catch (err) {
     console.log(err);
     return null;
@@ -49,13 +45,21 @@ export const playAudio = async (
   text: string,
   lang: string,
   speed: boolean = false
-): Promise<void> => {
+) => {
   try {
-    const response = await voice(text, lang, speed);
-    const audio = new Audio(response);
-    audio.play();
-  } catch (error) {
-    console.error(error);
+    const { body } = await getGoogleVoice(text, lang, speed);
+    const decode = JSON.parse(unescape(body.slice(5)));
+    const data = JSON.parse(decode[0][2]);
+    const voice = unescape(data[0]);
+    const decoded = Uint8Array.from(atob(voice), (e) => e.charCodeAt(0));
+    const context = new AudioContext();
+    const source = context.createBufferSource();
+    const audioBuffer = await context.decodeAudioData(decoded.buffer);
+    source.buffer = audioBuffer;
+    source.connect(context.destination);
+    source.start(0);
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -84,180 +88,30 @@ export const getReversoSuggest = async (
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 /**
  * Mapping ---------------------------------------------------------------------
  */
-function remapTranslate(data): TranslationData {
-  const obj = {
-    correction: {
-      language: {
-        didYouMean: false,
-        iso: '',
-      },
-      text: {
-        autoCorrected: false,
-        value: '',
-        didYouMean: false,
-      },
-    },
+
+function mapping(arr: any[]): any {
+  console.log('original', arr);
+  const data = {
+    pronunciation: arr[0][0],
+    correction: arr[0][1] && arr[0][1][0],
+    translation: arr[1][0],
+    input: arr[1][4],
+    definitions: arr[3] && arr[3][1] && arr[3][1][0], // verb, noun, adjective
+    examples: arr[3] && arr[3][2] && arr[3][2][0].map((item) => item[1]),
+    seeAlso: arr[3] && arr[3][3] && arr[3][3][0],
+    synonyms: arr[3] && arr[3][4] && arr[3][4][0], // verb, noun, adjective
+    translations: arr[3] && arr[3][5] && arr[3][5][0], // verb, noun, adjective
+    //             arr && arr[3][6] ?
+    //             arr && arr[3][7] ?
+    //             arr && arr[3][8] ?
+    //             arr && arr[3][9] ?
   };
 
-  if (data[2] === data[8][0][0]) {
-    obj.correction.language.iso = data[2];
-  } else {
-    obj.correction.language.didYouMean = true;
-    obj.correction.language.iso = data[8][0][0];
-  }
-
-  if (data[7] && data[7][0]) {
-    const youMean = data[7][1];
-    obj.correction.text.value = youMean;
-
-    if (data[7][5] === true) {
-      obj.correction.text.autoCorrected = true;
-    } else {
-      obj.correction.text.didYouMean = true;
-    }
-  }
-
-  if (data[0]) {
-    let length = data[0].length;
-    let input = [];
-    let translation = [];
-    obj.target = data[0][0][1] || null;
-
-    for (let i = 0; i < length; i++) {
-      if (data[0][i][1] !== null) {
-        input.push(data[0][i][1]);
-        translation.push(data[0][i][0]);
-      }
-    }
-    obj.input = input;
-    obj.text = input.join('');
-    obj.translation = translation.join('');
-  }
-
-  if (data[0] && data[0][1]) {
-    obj.pronunciation = data[0][1][3];
-  }
-
-  if (data[1]) {
-    let translations = [];
-
-    for (let i = 0; i < data[1].length; i++) {
-      let type = data[1][i][0];
-      let content = [];
-
-      for (let j = 0; j < data[1][i][2].length; j++) {
-        let rating = data[1][i][2][j][3];
-        let bar;
-
-        switch (true) {
-          case rating > 0.05:
-            bar = 'common';
-            break;
-          case rating < 0.05 && rating > 0.002:
-            bar = 'uncommon';
-            break;
-          case rating < 0.002:
-            bar = 'rare';
-            break;
-          case rating === undefined:
-            bar = 'rare';
-        }
-
-        let obj = {
-          article: data[1][i][2][j][4] || null,
-          word: data[1][i][2][j][0],
-          meaning: data[1][i][2][j][1],
-          rating,
-          bar,
-        };
-
-        content.push(obj);
-      }
-
-      let section = {
-        type,
-        content,
-      };
-
-      translations.push(section);
-    }
-
-    obj.translations = translations;
-  }
-
-  if (data[12]) {
-    let definitions = [];
-
-    for (let i = 0; i < data[12].length; i++) {
-      let type = data[12][i][0];
-      let content = [];
-
-      for (let j = 0; j < data[12][i][1].length; j++) {
-        let obj = {
-          phrase: data[12][i][1][j][0],
-          instance: data[12][i][1][j][2],
-        };
-        content.push(obj);
-      }
-      let section = {
-        type,
-        content,
-      };
-      definitions.push(section);
-    }
-    obj.definitions = definitions;
-  }
-
-  if (data[11]) {
-    let synonyms = [];
-
-    for (let i = 0; i < data[11].length; i++) {
-      let type = data[11][i][0];
-      let content = [];
-
-      for (let j = 0; j < data[11][i][1].length; j++) {
-        let arr = data[11][i][1][j][0];
-        content.push(arr);
-      }
-      let section = {
-        type,
-        content,
-      };
-      synonyms.push(section);
-    }
-    obj.synonyms = synonyms;
-  }
-
-  if (data[13]) {
-    let examples = [];
-    for (let i = 0; i < data[13][0].length; i++) {
-      examples.push(data[13][0][i][0]);
-    }
-    obj.examples = examples;
-  }
-
-  if (data[14]) {
-    obj.seeAlso = data[14][0];
-  }
-
-  return obj;
-}
-
-function remapComplete(data) {
-  data = JSON.parse(data.slice(19, -1));
-  let obj = [];
-
-  if (data[1]) {
-    for (let i = 0; i < data[1].length; i++) {
-      let s = data[1][i][0].replace(/\&#39;/gm, "'");
-      obj.push(s);
-    }
-  }
-
-  return obj;
+  console.log('mapped', data);
+  return data;
 }
