@@ -25,8 +25,8 @@ let accelerator: string | null | undefined;
 
 const webPreferences = {
   nodeIntegration: true,
+  enableRemoteModule: true,
   // webSecurity: false,
-  // enableRemoteModule: true,
 };
 
 const winConfig: Electron.BrowserWindowConstructorOptions = {

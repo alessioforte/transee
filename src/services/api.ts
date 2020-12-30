@@ -10,12 +10,12 @@ const request = util.promisify(nodeRequest);
  * Google Translate APIs
  *
  */
-const googleUrl = 'https://translate.google.com/_/TranslateWebserverUi/data/batchexecute';
+const googleUrl =
+  'https://translate.google.com/_/TranslateWebserverUi/data/batchexecute';
 
 export async function getGoogleTranslate(
   text: string,
   opts: Langs
-  // ): Promise<AxiosResponse> {
 ): Promise<any> {
   console.log(text, opts);
   const { from, to } = opts;
