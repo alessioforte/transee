@@ -17,7 +17,7 @@ const useWindowKeyDown = ({ store, actions }) => {
   window.onkeydown = useCallback(
     (e: KeyboardEvent) => {
       // esc
-      if (e.keyCode === 27) {
+      if (e.key === 'Escape') {
         e.preventDefault();
 
         if (suggestions.length > 0) {
@@ -29,18 +29,21 @@ const useWindowKeyDown = ({ store, actions }) => {
       }
 
       // alt shify - invert langs
-      if (e.altKey && e.keyCode === 16) {
+      if (e.altKey && e.key === 'Shift') {
         const langs = invertLangs(store.langs);
         setLangs(langs);
-        const translation = google.translation;
-        if (translation) {
-          setInput(translation);
-          getData(translation, langs.selected);
-        }
+
+        // TODO: handle masculine and feminine case
+        const translation = store[engine].translation;
+        console.log('translation', translation);
+        // if (translation) {
+        //   setInput(translation);
+        //   getData(translation, langs.selected);
+        // }
       }
 
       // ctrl p - voice
-      if (e.ctrlKey && !e.altKey && e.keyCode === 80) {
+      if (e.ctrlKey && !e.altKey && e.code === 'KeyP') {
         e.preventDefault();
         if (search) {
           playAudio(search, langs.selected.from, 'from', speed);
@@ -48,7 +51,7 @@ const useWindowKeyDown = ({ store, actions }) => {
       }
 
       // ctrl alt p - voice
-      if (e.ctrlKey && e.altKey && e.keyCode === 80) {
+      if (e.ctrlKey && e.altKey && e.code === 'KeyP') {
         e.preventDefault();
         let translation = store[engine] ? store[engine].translation : '';
         if (engine === 'google' && !google) {
@@ -62,7 +65,7 @@ const useWindowKeyDown = ({ store, actions }) => {
         }
       }
 
-      if (e.shiftKey && e.ctrlKey && e.altKey && e.keyCode === 8) {
+      if (e.shiftKey && e.ctrlKey && e.altKey && e.key === 'Backspace') {
         ipcRenderer.send('devtools', null);
       }
     },

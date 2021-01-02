@@ -78,26 +78,23 @@ const Searchbar: FunctionComponent<Props> = ({
         if (e.key === 'ArrowUp') i = (hover + length - 1) % length;
         if (e.key === 'ArrowDown') i = (hover + 1) % length;
         setHover(i);
-        const text: string = suggestions[i].value;
+        const text: string = suggestions[i][0];
         setValue(text);
         handleOnChange(text);
       }
       if (e.key === 'Tab') {
         e.preventDefault();
-        const hint = suggestions[0].value;
+        const hint = suggestions[0][0];
         setValue(hint);
         handleOnChange(hint);
       }
     }
   };
 
-  const onSelect = (tip: Tip) => {
-    setValue(tip.value);
-    handleOnChange(tip.value);
+  const onSelect = (tip: string) => {
+    setValue(tip);
+    handleOnChange(tip);
   };
-
-  // TODO: too many renders
-  // console.log('sugg', suggestions);
 
   return (
     <React.Fragment>
@@ -129,7 +126,7 @@ const Searchbar: FunctionComponent<Props> = ({
       {renderTips && renderTips()}
       {suggestions?.length > 0 && (
         <div>
-          {suggestions.map((tip: Tip, i: number) => (
+          {suggestions.map((tip: [string, string], i: number) => (
             <Hint
               key={tip[0]}
               className="sgt"

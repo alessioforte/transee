@@ -158,7 +158,7 @@ export const buildActions = ({ setters }) => {
       setLoading(true);
       const isUppercase = /[A-Z]/.test(text);
       const hasDoubleSpace = /\s\s+/.test(text);
-      const hasSpaceAtFirst = text.charAt(0) === ' ';
+      const hasSpaceAtFirst = text && text.charAt(0) === ' ';
       const isNewLine = /\n/g.test(text);
 
       if (
@@ -175,9 +175,6 @@ export const buildActions = ({ setters }) => {
         if (hints) {
           setSuggestions(hints);
         }
-        // if (reversoHints) {
-        //   setReversoSuggestions(reversoHints);
-        // }
       }
 
       if (!text) {

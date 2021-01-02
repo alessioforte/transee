@@ -54,6 +54,7 @@ const App: FC<P> = ({ locals }) => {
   } = store;
   const { selected } = langs;
 
+  // TODO: handle masculine and feminine case
   let translation = '';
   if (engine === 'google' && store[engine]) {
     if (store[engine].translation[0][0] || store[engine].translation[0][1]) {
@@ -65,12 +66,6 @@ const App: FC<P> = ({ locals }) => {
       translation = store[engine].translation[0][5][0][0];
     }
   }
-  if (engine === 'google' && !google) {
-    translation = store.reverso ? store.reverso.translation : '';
-  }
-  // if (engine === 'reverso' && !reverso) {
-  //   translation = store.google ? store.google.translation : '';
-  // }
 
   useEffect(() => {
     setMainWindowSize();
@@ -138,33 +133,35 @@ const App: FC<P> = ({ locals }) => {
     playAudio(text, lang, conversion, speed);
   };
 
-  const renderTips = () =>
-    google && (
+  const renderTips = () => {
+    if (!Array.isArray(google?.correction)) return null;
+    const correction: string | undefined =
+      google?.correction[0] &&
+      google?.correction[0][0] &&
+      google?.correction[0][0][1].slice(6, -8);
+
+    const iso =
+      google?.correction[1] && google?.correction[1][0]
+        ? google?.correction[1][0]
+        : null;
+
+    return (
       <Tips>
-        {google?.correction?.text.value && (
+        {correction && (
           <p>
             Did you mean{' '}
-            <i
-              onClick={() => handleClickOnDYM(google?.correction?.text?.value)}
-            >
-              {google?.correction?.text?.value}
-            </i>
+            <i onClick={() => handleClickOnDYM(correction)}>{correction}</i>
           </p>
         )}
-        {google?.correction?.language?.iso !== selected.from && (
+        {iso !== selected.from && (
           <p>
             Translate from{' '}
-            <i
-              onClick={() =>
-                handleClickOnISO(google?.correction?.language?.iso)
-              }
-            >
-              {langsFrom[google?.correction?.language?.iso]}
-            </i>
+            <i onClick={() => handleClickOnISO(iso)}>{langsFrom[iso]}</i>
           </p>
         )}
       </Tips>
     );
+  };
 
   const renderIcons = () =>
     google && (
@@ -197,7 +194,7 @@ const App: FC<P> = ({ locals }) => {
             delay={900}
             isError={false}
             message="Service Unavailable"
-            // renderTips={renderTips}
+            renderTips={renderTips}
             renderIcons={renderIcons}
             loading={loading}
           />
@@ -208,16 +205,26 @@ const App: FC<P> = ({ locals }) => {
                   <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  <Searchbar initialValue={translation} disabled />
+                  {google && engine === 'google' && (
+                    <Searchbar initialValue={translation} disabled />
+                  )}
+                  {engine === 'reverso' && store.reverso?.translation && (
+                    <Searchbar
+                      initialValue={store.reverso?.translation}
+                      disabled
+                    />
+                  )}
                   <Icons>
                     <div className="left">
-                      <span
-                        onClick={() =>
-                          handlePlayAudio(translation, selected.to, 'to')
-                        }
-                      >
-                        <Icon name="speaker" size={15} hover />
-                      </span>
+                      {google && engine === 'google' && (
+                        <span
+                          onClick={() =>
+                            handlePlayAudio(translation, selected.to, 'to')
+                          }
+                        >
+                          <Icon name="speaker" size={15} hover />
+                        </span>
+                      )}
                     </div>
                     <div className="right">
                       {google && (

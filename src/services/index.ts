@@ -98,7 +98,7 @@ function mapping(arr: any[]): any {
   console.log('original', arr);
   const data = {
     pronunciation: arr[0][0],
-    correction: arr[0][1] && arr[0][1][0],
+    correction: arr[0][1] && arr[0][1],
     translation: arr[1][0],
     input: arr[1][4],
     definitions: arr[3] && arr[3][1] && arr[3][1][0], // verb, noun, adjective
@@ -111,7 +111,6 @@ function mapping(arr: any[]): any {
     //             arr && arr[3][8] ?
     //             arr && arr[3][9] ?
   };
-
   console.log('mapped', data);
   return data;
 }

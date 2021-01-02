@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 export type SearchbarData = {
   name: string;
@@ -11,7 +11,7 @@ export type Props = {
   onDebounce?: (data: SearchbarData) => void;
   loading?: boolean;
   name?: string;
-  suggestions?: Tip[];
+  suggestions?: ([string, string])[];
   initialValue?: string,
   delay?: number;
   isError?: boolean;

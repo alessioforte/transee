@@ -25,6 +25,8 @@ const theme = {
     focus: '#61dafb',
     text: {
       main: '#FFFFFF',
+      primary: '#0077B5',
+      secondary: '#86C5E0',
       soft: '#AAAAAA',
       low: '#999999',
       disabled: '#555555',
@@ -42,7 +44,7 @@ const theme = {
   shadow: '0px 1px 5px 1px rgba(0, 0, 0, 0.2)',
 };
 
-export function getColorLuminance(hex: string, luminance: number) {
+export function getColorLuminance(hex: string, luminance: number): string {
   const valid: boolean = validateHex(hex);
   let color = hex;
   if (valid) {

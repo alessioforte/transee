@@ -30,13 +30,13 @@ const StickyCards: FunctionComponent<Props> = ({
               Array.isArray(reverso.contextResults.results) &&
               reverso.contextResults.results.map((item, idx) => (
                 <Reverso key={`${item.translation}-${idx}`}>
-                  <h3
+                  <Title
                     onClick={() =>
                       onClick({ value: item.translation, invert: true })
                     }
                   >
                     {item.translation}
-                  </h3>
+                  </Title>
                   <div className="examples">
                     {item.sourceExamples.map((sentence, i: number) => (
                       <div className="example" key={`${sentence}-${i}`}>
@@ -71,63 +71,62 @@ const StickyCards: FunctionComponent<Props> = ({
 
       {google && (
         <>
-          {/* {google.translations && (
+          {google.translations && (
             <Card title="TRANSLATIONS">
               <Body>
                 {google.translations.map((translation, i) => (
                   <table key={`translations-${i}`}>
                     <tbody>
-                      <TrTitle>
-                        <td>{translation.type}</td>
-                      </TrTitle>
-                      {translation.content.map((section, j) => (
-                        <TrRow key={`translations${i}-${j}`}>
-                          <Word>
-                            <span className="art">{section.article || ''}</span>
-                            <span
-                              onClick={() =>
-                                onClick({ value: section.word, invert: true })
-                              }
-                              className="word"
-                            >
-                              {section.word}
-                            </span>
-                          </Word>
-                          <td>
-                            <Rating>
-                              <div className={section.bar}></div>
-                            </Rating>
-                          </td>
-                          <td>
-                            <Values>
-                              {section.meaning.map((w) => (
-                                <span
-                                  key={w}
-                                  className="meaning"
-                                  onClick={() =>
-                                    onClick({ value: w })
-                                  }
-                                >
-                                  {w}
-                                </span>
-                              ))}
-                            </Values>
-                          </td>
-                        </TrRow>
-                      ))}
+                      <tr>
+                        <td>
+                          <Title>{translation[0] || ''}</Title>
+                        </td>
+                      </tr>
+                      {translation[1] &&
+                        translation[1].map((section, j) => (
+                          <TrRow key={`translations${i}-${j}`}>
+                            <Word>
+                              <span className="art">{section[1] || ''}</span>
+                              <span
+                                onClick={() =>
+                                  onClick({ value: section.word, invert: true })
+                                }
+                                className="word"
+                              >
+                                {section[0]}
+                              </span>
+                            </Word>
+                            <td>
+                              <Frequency value={section[3]} />
+                            </td>
+                            <td>
+                              <Values>
+                                {section[2].map((w) => (
+                                  <span
+                                    key={w}
+                                    className="meaning"
+                                    onClick={() => onClick({ value: w })}
+                                  >
+                                    {w}
+                                  </span>
+                                ))}
+                              </Values>
+                            </td>
+                          </TrRow>
+                        ))}
                     </tbody>
                   </table>
                 ))}
               </Body>
             </Card>
-          )} */}
+          )}
 
           {google.definitions && (
             <Card title="DEFINITIONS">
               <Body>
                 {google.definitions.map((definition, i) => (
                   <div key={`definitions-${i}`}>
-                    <span>{definition[0]}</span>
+                    <Title>{definition[0]}</Title>
                     <>
                       {definition[1].map((item, j) => (
                         <Section key={`definitions${i}-${j}`}>
@@ -158,23 +157,27 @@ const StickyCards: FunctionComponent<Props> = ({
             <Card title="SYNONYMS">
               <Body>
                 {google.synonyms.map((synonym, i) => (
-                  <Type key={`synonyms-${i}`}>
-                    <span>{synonym[0]}</span>
-                    <List>
-                      {/* {synonym[1].map((section, j) => (
-                        <div key={j}>
-                          {section.map((word, idx) => (
-                            <Badge
-                              key={`${word}-${idx}`}
-                              onClick={() => onClick({ value: word })}
-                            >
-                              {word}
-                            </Badge>
+                  <div key={`synonyms-${i}`}>
+                    <Title>{synonym[0]}</Title>
+                    <>
+                      {synonym[1].map((section, j) => (
+                        <Section key={j}>
+                          {section.map((words, ws) => (
+                            <Synonyms key={`${j}-${ws}`}>
+                              {words.map((word, w) => (
+                                <Badge
+                                  key={`${word}-${w}`}
+                                  onClick={() => onClick({ value: word })}
+                                >
+                                  {word}
+                                </Badge>
+                              ))}
+                            </Synonyms>
                           ))}
-                        </div>
-                      ))} */}
-                    </List>
-                  </Type>
+                        </Section>
+                      ))}
+                    </>
+                  </div>
                 ))}
               </Body>
             </Card>
@@ -204,6 +207,21 @@ const StickyCards: FunctionComponent<Props> = ({
 
 export default StickyCards;
 
+const Frequency = ({ value }) => {
+  const bg = colors.primary;
+  return (
+    <Rating>
+      <div style={{ background: bg }}></div>
+      <div style={{ background: value !== 3 ? bg : 'none' }}></div>
+      <div
+        style={{
+          background: value === 1 ? bg : 'none',
+        }}
+      ></div>
+    </Rating>
+  );
+};
+
 const { colors } = theme;
 
 const Sticky = styled.div`
@@ -216,31 +234,21 @@ const Body = styled.div`
   padding: 10px 0;
   color: #aaa;
 `;
-const Type = styled.div`
-  padding: 9px 18px;
-  color: ${colors.text.main};
-
-  &:last-child {
-    border-bottom: 0;
-  }
+const Title = styled.h3`
+  color: ${colors.text.primary};
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
 const Rating = styled.div`
-  width: 35px;
-  margin: 0 10px;
+  width: 40px;
+  height: 6px;
+  margin: 10px 6px 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1px;
   & > div {
-    margin: 8px 0;
-    height: 9px;
-    background: ${colors.groundzero};
-    float: right;
-  }
-  .common {
-    width: 35px;
-  }
-  .uncommon {
-    width: 20px;
-  }
-  .rare {
-    width: 10px;
+    height: 100%;
+    width: 100%;
   }
 `;
 const Word = styled.td`
@@ -265,23 +273,9 @@ const Values = styled.div`
     cursor: pointer;
   }
 `;
-
 const Section = styled.div`
   margin-left: 70px;
   margin-top: 9px;
-`;
-
-const List = styled.ul`
-  margin: 0;
-  padding: 0;
-  margin-top: 9px;
-  margin-left: 85px;
-  & > div {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 6px;
-    color: ${colors.text.main};
-  }
 `;
 const Examples = styled.div`
   border-top: 1px solid ${colors.foreground};
@@ -298,9 +292,6 @@ const Examples = styled.div`
 const Reverso = styled.div`
   margin: 5px 0;
   h3 {
-    color: ${colors.text.main};
-    font-weight: bold;
-    margin-bottom: 10px;
     cursor: pointer;
   }
   em {
@@ -323,20 +314,14 @@ const Reverso = styled.div`
 `;
 const Badge = styled.span`
   padding: 3px 5px;
-  margin: 2px 3px;
+  margin: 2px 3px 2px 0;
   border-radius: 5px;
   background: ${colors.groundzero};
   color: ${colors.text.main};
   cursor: pointer;
   &:hover {
-    background: ${getColorLuminance(colors.groundzero, 2)};
+    background: ${colors.primary};
   }
-`;
-const TrTitle = styled.tr`
-  height: 30px;
-  color: ${colors.text.main};
-  font-weight: bold;
-  border-bottom: 1px solid ${colors.foreground};
 `;
 const TrRow = styled.tr`
   font-size: 14px;
