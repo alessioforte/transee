@@ -6,7 +6,7 @@ import menubarIMG from '../../../assets/menubar.png';
 import taskbarIMG from '../../../assets/taskbar.png';
 import Layout from '../../containers/Layout';
 import { isWin } from '../../utils';
-import theme, { getColorLuminance } from '../../theme';
+import theme from '../../theme';
 
 const barIMG = isWin ? taskbarIMG : menubarIMG;
 

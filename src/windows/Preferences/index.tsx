@@ -1,86 +1,120 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
 import theme, { getColorLuminance } from '../../theme';
 
-const Preferences = ({ locals }) => {
+interface Props {
+  locals: any;
+}
+
+const Preferences: FC<Props> = ({ locals }) => {
   const { store, actions } = locals;
-  const { shortcut, startAtLogin, checkUpdates, theme } = store;
+  const { shortcut, startAtLogin, checkUpdates, googleEnabled, reversoEnabled } = store;
   const {
     setCheckUpdates,
     setShortcut,
     setStartAtLogin,
     restoreSettings,
-    setTheme,
+    enableEngines,
+    // setTheme,
   } = actions;
 
-  const handleSetTheme = ({ value }) => {
-    let mode = 'light';
-    if (value) {
-      mode = 'dark';
-    }
-    setTheme(mode);
-  };
+  // const handleSetTheme = ({ value }) => {
+  //   let mode = 'light';
+  //   if (value) {
+  //     mode = 'dark';
+  //   }
+  //   setTheme(mode);
+  // };
 
   return (
     <Layout title="Preferences">
-      <Option>
-        <Label>
-          Auto start at login
-          <Toggle
-            name="login"
-            initialValue={startAtLogin}
-            onChange={(data) => setStartAtLogin(data.value)}
-          />
-        </Label>
-      </Option>
+      <Section>
+        <Title>Generals</Title>
+        <Option>
+          <Label>
+            Auto start at login
+            <Toggle
+              name="login"
+              initialValue={startAtLogin}
+              onChange={(data) => setStartAtLogin(data.value)}
+            />
+          </Label>
+        </Option>
 
-      <Option>
-        <Label>
-          Check automatically for updates
-          <Toggle
-            name="update"
-            initialValue={checkUpdates}
-            onChange={(data) => setCheckUpdates(data.value)}
-          />
-        </Label>
-      </Option>
+        <Option>
+          <Label>
+            Check automatically for updates
+            <Toggle
+              name="update"
+              initialValue={checkUpdates}
+              onChange={(data) => setCheckUpdates(data.value)}
+            />
+          </Label>
+        </Option>
 
-      <Option>
-        <Label>
-          Dark mode
-          <Toggle
-            name="theme"
-            initialValue={theme === 'dark'}
-            onChange={handleSetTheme}
-          />
-        </Label>
-      </Option>
+        <Option noBorder>
+          <Label>
+            Define a shortcut
+            <RecordShortcut
+              initialValue={shortcut}
+              onChange={(data) => setShortcut(data.value)}
+            />
+          </Label>
+          <Comment>
+            The shortcut must contain at least ctrl or cmd, you can add shift or
+            alt if you want, and finally a letter or number. Pay attention to
+            not use a system shortcuts or any other that can interfere with
+            other programs.
+          </Comment>
+        </Option>
 
-      <Option>
-        <Label>
-          Define a shortcut
-          <RecordShortcut
-            initialValue={shortcut}
-            onChange={(data) => setShortcut(data.value)}
-          />
-        </Label>
-        <Comment>
-          The shortcut must contain at least ctrl or cmd, you can add shift or
-          alt if you want, and finally a letter or number. Pay attention to not
-          use a system shortcuts or any other that can interfere with other
-          programs.
-        </Comment>
-      </Option>
+        {/* <Option>
+          <Label>
+            Dark mode
+            <Toggle
+              name="theme"
+              initialValue={theme === 'dark'}
+              onChange={handleSetTheme}
+            />
+          </Label>
+        </Option> */}
+      </Section>
 
-      <Option>
-        <Label>
-          Restore default settings
-          <Button onClick={restoreSettings}>Restore</Button>
-        </Label>
-        <Comment>Transee will be restarted.</Comment>
-      </Option>
+      {/* <Section>
+        <Title>Engine</Title>
+        <Option>
+          <Label>
+            Google
+            <Toggle
+              name="googleEnabled"
+              initialValue={googleEnabled}
+              onChange={(data) => enableEngines(data)}
+            />
+          </Label>
+        </Option>
+        <Option noBorder>
+          <Label>
+            Reverso
+            <Toggle
+              name="reversoEnabled"
+              initialValue={reversoEnabled}
+              onChange={(data) => enableEngines(data)}
+            />
+          </Label>
+        </Option>
+      </Section> */}
+
+      <Section noBorder>
+        <Option noBorder>
+          <Label>
+            Restore default settings
+            <Button onClick={restoreSettings}>Restore</Button>
+          </Label>
+          <Comment>Transee will be restarted.</Comment>
+        </Option>
+      </Section>
     </Layout>
   );
 };
@@ -89,10 +123,22 @@ export default Preferences;
 
 const { colors } = theme;
 
-const Option = styled.div`
+const Section = styled.div<{ noBorder?: boolean }>`
   height: auto;
   padding: 14px 18px;
-  border-bottom: 1px solid ${colors.flatground};
+  border-bottom: 1px solid
+    ${(props) => (props.noBorder ? 'transparent' : colors.upperground)};
+`;
+const Title = styled.span`
+  font-size: 16px;
+  color: ${colors.text.primary};
+  font-weight: bold;
+`;
+const Option = styled.div<{ noBorder?: boolean }>`
+  height: auto;
+  padding: 14px 0;
+  border-bottom: 1px solid
+    ${(props) => (props.noBorder ? 'transparent' : colors.flatground)};
 `;
 const Label = styled.div`
   display: flex;

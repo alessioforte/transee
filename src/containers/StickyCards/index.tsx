@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { Card } from '../../components';
 import { TranslationData } from '../../services/interfaces';
-import theme, { getColorLuminance } from '../../theme';
+import theme from '../../theme';
 
 type Data = {
   invert?: boolean | undefined;
@@ -22,8 +22,8 @@ const StickyCards: FunctionComponent<Props> = ({
 }) => {
   return (
     <Sticky>
-      {((google && google.examples) || (reverso && reverso.contextResults)) && (
-        <Card title="EXAMPLES">
+      {reverso && reverso.contextResults && (
+        <Card title="REVERSO">
           <Body>
             {reverso &&
               reverso.contextResults &&
@@ -55,16 +55,6 @@ const StickyCards: FunctionComponent<Props> = ({
                   </div>
                 </Reverso>
               ))}
-            {google && google.examples && Array.isArray(google.examples) && (
-              <Examples>
-                {google.examples.map((example, i) => (
-                  <li
-                    key={`examples-${i}`}
-                    dangerouslySetInnerHTML={{ __html: example }}
-                  />
-                ))}
-              </Examples>
-            )}
           </Body>
         </Card>
       )}
@@ -183,7 +173,22 @@ const StickyCards: FunctionComponent<Props> = ({
             </Card>
           )}
 
-          {/* {google && google.seeAlso && (
+          {google.examples && Array.isArray(google.examples) && (
+            <Card title="EXAMPLES">
+              <Body>
+                <Examples>
+                  {google.examples.map((example, i) => (
+                    <li
+                      key={`examples-${i}`}
+                      dangerouslySetInnerHTML={{ __html: example }}
+                    />
+                  ))}
+                </Examples>
+              </Body>
+            </Card>
+          )}
+
+          {google && google.seeAlso && (
             <Card title="SEE ALSO">
               <Body>
                 <div>
@@ -198,7 +203,7 @@ const StickyCards: FunctionComponent<Props> = ({
                 </div>
               </Body>
             </Card>
-          )} */}
+          )}
         </>
       )}
     </Sticky>
@@ -278,7 +283,6 @@ const Section = styled.div`
   margin-top: 9px;
 `;
 const Examples = styled.div`
-  border-top: 1px solid ${colors.foreground};
   padding-top: 20px;
   & > li {
     color: ${colors.text.low};

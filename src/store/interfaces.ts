@@ -10,10 +10,10 @@ export type Store = {
   shortcut: string;
 };
 
-export type Action = {
+export interface Action {
   type: string;
-  payload: any;
-};
+  payload?: any;
+}
 
 export type Actions = {
   setSuggestions: (payload: []) => void;

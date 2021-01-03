@@ -1,4 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
+import theme from './index';
+
+const { colors } = theme;
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -9,6 +12,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   body {
     overflow: hidden;
+    color: ${colors.text.main};
   }
 
   *::-webkit-scrollbar {

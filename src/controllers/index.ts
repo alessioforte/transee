@@ -3,10 +3,11 @@ import {
   getHints,
   // getReversoSuggest,
   getTranslation,
-  getReversoTranslation,
+  // getReversoTranslation,
   playAudio,
 } from '../services';
 import Settings from '../../settings';
+import { Action } from '../store/interfaces';
 
 const SET_LANGS = 'SET_LANGS';
 const SET_THEME = 'SET_THEME';
@@ -25,57 +26,61 @@ const SET_START_AT_LOGIN = 'SET_START_AT_LOGIN';
 const SET_CHECK_UPDATES = 'SET_CHECK_UPDATES';
 const RESTORE_SETTINGS = 'RESTORE_SETTINGS';
 const CLEAR_DATA = 'CLEAR_DATA';
+const ENABLE_ENGINES = 'ENABLE_ENGINES';
 
 export const setters = {
-  setLangs(payload: any) {
+  setLangs(payload: any): Action {
     return { type: SET_LANGS, payload };
   },
-  setSuggestions(payload: []) {
+  setSuggestions(payload: []): Action {
     return { type: SET_SUGGESTIONS, payload };
   },
-  setReversoSuggestions(payload: []) {
+  setReversoSuggestions(payload: []): Action {
     return { type: SET_REVERSO_SUGGESTIONS, payload };
   },
-  setGoogle(payload: any) {
+  setGoogle(payload: any): Action {
     return { type: SET_GOOGLE, payload };
   },
-  SetReverso(payload: any) {
+  enableEngines(payload: boolean): Action {
+    return { type: ENABLE_ENGINES, payload };
+  },
+  setReverso(payload: any): Action {
     return { type: SET_REVERSO, payload };
   },
-  setInput(payload: string) {
+  setInput(payload: string): Action {
     return { type: SET_INPUT, payload };
   },
-  setShortcut(payload: string) {
+  setShortcut(payload: string): Action {
     return { type: SET_SHORTCUT, payload };
   },
-  setLoading(payload: boolean) {
+  setLoading(payload: boolean): Action {
     return { type: SET_LOADING, payload };
   },
-  setEngine(payload: string) {
+  setEngine(payload: string): Action {
     return { type: SET_ENGINE, payload };
   },
-  setSearch(payload: string) {
+  setSearch(payload: string): Action {
     return { type: SET_SEARCH, payload };
   },
-  setShowWelcome(payload: boolean) {
+  setShowWelcome(payload: boolean): Action {
     return { type: SET_SHOW_WELCOME, payload };
   },
-  setStartAtLogin(payload: boolean) {
+  setStartAtLogin(payload: boolean): Action {
     return { type: SET_START_AT_LOGIN, payload };
   },
-  setCheckUpdates(payload: boolean) {
+  setCheckUpdates(payload: boolean): Action {
     return { type: SET_CHECK_UPDATES, payload };
   },
-  setTheme(payload: string) {
+  setTheme(payload: string): Action {
     return { type: SET_THEME, payload };
   },
-  setVoiceSpeed(payload: boolean) {
+  setVoiceSpeed(payload: boolean): Action {
     return { type: SET_VOICE_SPEED, payload };
   },
-  restoreSettings() {
+  restoreSettings(): Action {
     return { type: RESTORE_SETTINGS };
   },
-  clearData() {
+  clearData(): Action {
     return { type: CLEAR_DATA };
   },
 };
@@ -91,7 +96,14 @@ export const reducer = (state, action) => {
     case SET_REVERSO_SUGGESTIONS:
       return { ...state, reversoSuggestions: action.payload };
     case SET_GOOGLE:
-      return { ...state, google: action.payload };
+      return {
+        ...state,
+        google: action.payload.data,
+        suggestions: action.payload.hints,
+      };
+    case ENABLE_ENGINES:
+      state[action.payload.name] = action.payload.value;
+      return { ...state };
     case SET_ENGINE:
       return { ...state, engine: action.payload };
     case SET_REVERSO:
@@ -140,7 +152,7 @@ export const buildActions = ({ setters }) => {
     setInput,
     setLoading,
     setTheme,
-    SetReverso,
+    setReverso,
     setLangs,
     setShortcut,
     setEngine,
@@ -151,6 +163,7 @@ export const buildActions = ({ setters }) => {
     restoreSettings,
     clearData,
     setVoiceSpeed,
+    enableEngines,
   } = setters;
 
   return {
@@ -161,6 +174,7 @@ export const buildActions = ({ setters }) => {
       const hasSpaceAtFirst = text && text.charAt(0) === ' ';
       const isNewLine = /\n/g.test(text);
 
+      let hints: [] = [];
       if (
         !text ||
         isUppercase ||
@@ -170,25 +184,25 @@ export const buildActions = ({ setters }) => {
       ) {
         setSuggestions([]);
       } else {
-        const hints: [] = (await getHints(text, langsSelected)) as [];
+        hints = (await getHints(text, langsSelected)) as [];
         // const reversoHints = await getReversoSuggest(text, langsSelected);
-        if (hints) {
-          setSuggestions(hints);
-        }
+        // if (hints) {
+        //   setSuggestions(hints);
+        // }
       }
 
       if (!text) {
-        setGoogle(null);
-        SetReverso(null);
+        setGoogle({ data: null, hints: [] });
+        // setReverso(null);
       } else {
         const google = await getTranslation(text, langsSelected);
-        const reverso = await getReversoTranslation(text, langsSelected);
         if (google) {
-          setGoogle(google);
+          setGoogle({ data: google, hints: hints || [] });
         }
-        if (reverso) {
-          SetReverso(reverso);
-        }
+        // const reverso = await getReversoTranslation(text, langsSelected);
+        // if (reverso) {
+        //   setReverso(reverso);
+        // }
       }
       setSearch(text);
       setLoading(false);
@@ -209,6 +223,10 @@ export const buildActions = ({ setters }) => {
     setEngine: (payload) => {
       setEngine(payload);
       Settings.set('engine', payload);
+    },
+    enableEngines: (payload) => {
+      enableEngines(payload);
+      Settings.set(payload.name, payload.value);
     },
     setShowWelcome: (payload) => {
       setShowWelcome(payload);
@@ -232,12 +250,12 @@ export const buildActions = ({ setters }) => {
     setSuggestions,
     setReversoSuggestions,
     setGoogle,
-    SetReverso,
+    setReverso,
     setInput,
     setLoading,
     setSearch,
     playAudio: (text, lang, conversion, speed) => {
-      const voiceSpeed = !speed[conversion]
+      const voiceSpeed = !speed[conversion];
       speed[conversion] = voiceSpeed;
       setVoiceSpeed(speed);
       playAudio(text, lang, voiceSpeed);
@@ -265,6 +283,8 @@ export const initialData = {
   reversoSuggestions: [],
   google: null,
   reverso: null,
+  googleEnabled: true,
+  reversoEnabled: false,
   theme: 'dark',
   input: '',
   search: '',

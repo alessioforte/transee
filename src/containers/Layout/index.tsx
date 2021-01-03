@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react'
+import React, { FC, ReactElement } from 'react';
 import styled from 'styled-components';
 import theme from '../../theme';
 import { isMac } from '../../utils';
@@ -6,7 +6,7 @@ import { isMac } from '../../utils';
 type P = {
   title?: string;
   children?: ReactElement | ReactElement[] | string;
-}
+};
 
 const Layout: FC<P> = ({ title = '', children }) => {
   return (
@@ -14,8 +14,8 @@ const Layout: FC<P> = ({ title = '', children }) => {
       {isMac && <Frame>{title}</Frame>}
       <>{children}</>
     </Win>
-  )
-}
+  );
+};
 
 export default Layout;
 
@@ -30,8 +30,11 @@ const Win = styled.div`
 const Frame = styled.div`
   color: ${colors.text.soft};
   background: ${colors.frame};
-  padding-top: 5px;
-  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-weight: bold;
   font-size: 12px;
   text-align: center;
   -webkit-app-region: drag;
