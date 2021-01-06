@@ -76,13 +76,13 @@
     "ts-jest": "^26.1.1",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0",
-    "wait-on": "^5.0.1",
+    "wait-on": "^5.2.1",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "styled-components": "^5.1.1"
