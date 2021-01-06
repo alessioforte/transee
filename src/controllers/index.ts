@@ -100,6 +100,7 @@ export const reducer = (state, action) => {
         ...state,
         google: action.payload.data,
         suggestions: action.payload.hints,
+        payload: action.payload.payload,
       };
     case ENABLE_ENGINES:
       state[action.payload.name] = action.payload.value;
@@ -192,12 +193,22 @@ export const buildActions = ({ setters }) => {
       }
 
       if (!text) {
-        setGoogle({ data: null, hints: [] });
+        setGoogle({ data: null, hints: [], payload: null });
         // setReverso(null);
       } else {
         const google = await getTranslation(text, langsSelected);
         if (google) {
-          setGoogle({ data: google, hints: hints || [] });
+          let payload: null | string = null;
+          if (google.translation[1] && google.translation[1][0]) {
+            payload = google.translation[1][0];
+          } else if (
+            google.translation[0][5] &&
+            google.translation[0][5][0][0]
+          ) {
+            payload = google.translation[0][5][0][0];
+          }
+
+          setGoogle({ data: google, hints: hints || [], payload });
         }
         // const reverso = await getReversoTranslation(text, langsSelected);
         // if (reverso) {
@@ -288,6 +299,7 @@ export const initialData = {
   theme: 'dark',
   input: '',
   search: '',
+  payload: null,
   shortcut: 'Ctrl+Alt+T',
   showWelcome: true,
   startAtLogin: true,

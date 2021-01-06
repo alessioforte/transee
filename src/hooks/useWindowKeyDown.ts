@@ -33,13 +33,10 @@ const useWindowKeyDown = ({ store, actions }) => {
         const langs = invertLangs(store.langs);
         setLangs(langs);
 
-        // TODO: handle masculine and feminine case
-        const translation = store[engine].translation;
-        console.log('translation', translation);
-        // if (translation) {
-        //   setInput(translation);
-        //   getData(translation, langs.selected);
-        // }
+        if (store.payload) {
+          setInput(store.payload);
+          getData(store.payload, langs.selected);
+        }
       }
 
       // ctrl p - voice

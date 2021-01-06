@@ -11,6 +11,7 @@ export type Props = {
   onDebounce?: (data: SearchbarData) => void;
   loading?: boolean;
   name?: string;
+  placeholder?: string;
   suggestions?: ([string, string])[];
   initialValue?: string,
   delay?: number;
@@ -18,6 +19,7 @@ export type Props = {
   message?: string;
   renderTips?: () => ReactElement | null;
   renderIcons?: () => ReactElement | null;
+  renderFooter?: () => ReactElement | null;
   disabled?: boolean;
 };
 

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { Spinner } from '../../components';
-import { Props, Tip } from './interfaces';
+import { Props } from './interfaces';
 import theme from '../../theme';
 
 const Searchbar: FunctionComponent<Props> = ({
@@ -16,11 +16,13 @@ const Searchbar: FunctionComponent<Props> = ({
   onDebounce = (data) => null,
   loading = false,
   name = 'textarea',
+  placeholder = '',
   delay = 600,
   suggestions = [],
   initialValue = '',
   renderTips,
-  renderIcons,
+  renderIcons = () => <div />,
+  renderFooter,
   isError = false,
   message = 'error',
   disabled = false,
@@ -105,7 +107,7 @@ const Searchbar: FunctionComponent<Props> = ({
         <Input
           ref={input}
           type="text"
-          placeholder="Translate"
+          placeholder={placeholder}
           maxLength={5000}
           value={value}
           onChange={onInputChange}
@@ -120,8 +122,9 @@ const Searchbar: FunctionComponent<Props> = ({
             <Spinner />
           </Loading>
         )}
+        {!loading && renderIcons && <Icons>{renderIcons()}</Icons>}
       </Container>
-      {renderIcons && renderIcons()}
+      {renderFooter && renderFooter()}
       {isError && <Message>{message}</Message>}
       {renderTips && renderTips()}
       {suggestions?.length > 0 && (
@@ -181,6 +184,12 @@ const Loading = styled.div`
   position: absolute;
   right: 18px;
   top: 12px;
+`;
+const Icons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 18px;
 `;
 const Hint = styled.div<{ hover: boolean }>`
   padding: 3px 18px;
