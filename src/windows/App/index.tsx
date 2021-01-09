@@ -58,11 +58,12 @@ const App: FC<P> = ({ locals }) => {
   if (engine === 'google' && store.google) {
     if (store.google.translation[0][0] || store.google.translation[0][1]) {
       translation = store.google.translation;
-    } else if (
-      store.google.translation[0][5] &&
-      store.google.translation[0][5][0][0]
-    ) {
-      translation = [store.google.translation[0][5][0]];
+    } else if (Array.isArray(store.google.translation[0][5])) {
+      let sentence = '';
+      store.google.translation[0][5].forEach((t) => {
+        sentence = sentence.concat(t[0], ' ');
+      });
+      translation = [[sentence]];
     }
   }
 
@@ -134,11 +135,13 @@ const App: FC<P> = ({ locals }) => {
 
   const renderTips = () => {
     if (!Array.isArray(google?.correction)) return null;
-    const correction: string | undefined =
-      google?.correction[0] &&
-      google?.correction[0][0] &&
-      google?.correction[0][0][1].slice(6, -8);
+    const parser = new DOMParser();
+    const tag: string | undefined =
+      google?.correction[0] && google?.correction[0][0][1];
 
+    const correction =
+      tag &&
+      parser.parseFromString(tag, 'text/html').documentElement.textContent;
     const iso =
       google?.correction[1] && google?.correction[1][0]
         ? google?.correction[1][0]
@@ -149,55 +152,58 @@ const App: FC<P> = ({ locals }) => {
         {correction && (
           <p>
             Did you mean{' '}
-            <i onClick={() => handleClickOnDYM(correction)}>{correction}</i>
+            <span
+              dangerouslySetInnerHTML={{ __html: correction }}
+              onClick={() => handleClickOnDYM(correction)}
+            />
           </p>
         )}
-        {iso !== selected.from && (
+        {iso && iso !== selected.from && (
           <p>
             Translate from{' '}
-            <i onClick={() => handleClickOnISO(iso)}>{langsFrom[iso]}</i>
+            <span onClick={() => handleClickOnISO(iso)}>{langsFrom[iso]}</span>
           </p>
         )}
       </Tips>
     );
   };
 
-  const renderIcons = () =>
-    google && (
-      <Flex>
-        <div className="left"></div>
-        <div className="right">
-          {google && (
-            <span onClick={() => setEngine('google')}>
-              <Tooltip content="Google Translate">
-                <Icon
-                  name="google"
-                  size={15}
-                  color={
-                    engine === 'google' ? colors.text.active : colors.text.idle
-                  }
-                  hover
-                />
-              </Tooltip>
-            </span>
-          )}
-          {reverso && (
-            <span onClick={() => setEngine('reverso')}>
-              <Tooltip content="Reverso Context">
-                <Icon
-                  name="reverso"
-                  size={15}
-                  color={
-                    engine === 'reverso' ? colors.text.active : colors.text.idle
-                  }
-                  hover
-                />
-              </Tooltip>
-            </span>
-          )}
-        </div>
-      </Flex>
-    );
+  // const renderIcons = () =>
+  //   google && (
+  //     <Flex>
+  //       <div className="left"></div>
+  //       <div className="right">
+  //         {google && (
+  //           <span onClick={() => setEngine('google')}>
+  //             <Tooltip content="Google Translate">
+  //               <Icon
+  //                 name="google"
+  //                 size={15}
+  //                 color={
+  //                   engine === 'google' ? colors.text.active : colors.text.idle
+  //                 }
+  //                 hover
+  //               />
+  //             </Tooltip>
+  //           </span>
+  //         )}
+  //         {reverso && (
+  //           <span onClick={() => setEngine('reverso')}>
+  //             <Tooltip content="Reverso Context">
+  //               <Icon
+  //                 name="reverso"
+  //                 size={15}
+  //                 color={
+  //                   engine === 'reverso' ? colors.text.active : colors.text.idle
+  //                 }
+  //                 hover
+  //               />
+  //             </Tooltip>
+  //           </span>
+  //         )}
+  //       </div>
+  //     </Flex>
+  //   );
 
   return (
     <Wrapper>
@@ -220,15 +226,17 @@ const App: FC<P> = ({ locals }) => {
             isError={false}
             message="Service Unavailable"
             renderTips={renderTips}
-            renderFooter={renderIcons}
+            // renderFooter={renderIcons}
             loading={loading}
-            renderIcons={() => google && (
-              <span
-                onClick={() => handlePlayAudio(search, selected.from, 'from')}
-              >
-                <Icon name="speaker" size={15} hover />
-              </span>
-            )}
+            renderIcons={() =>
+              google && (
+                <span
+                  onClick={() => handlePlayAudio(search, selected.from, 'from')}
+                >
+                  <Icon name="speaker" size={15} hover />
+                </span>
+              )
+            }
           />
           {(google || reverso) && (
             <>
@@ -293,20 +301,20 @@ const Pronunciation = styled.div`
   border-top: 1px solid ${colors.foreground};
   color: ${colors.idle};
 `;
-const Flex = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 3px 18px;
-  span {
-    cursor: pointer;
-  }
-  .right {
-    span {
-      margin-left: 5px;
-    }
-  }
-`;
+// const Flex = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   padding: 3px 18px;
+//   span {
+//     cursor: pointer;
+//   }
+//   .right {
+//     span {
+//       margin-left: 5px;
+//     }
+//   }
+// `;
 const Tips = styled.div`
   font-size: 14px;
   color: ${colors.idle};
@@ -315,14 +323,16 @@ const Tips = styled.div`
   p {
     margin: 0;
   }
-  i {
+  span {
     color: ${colors.text.info};
     transition: all 0.1s ease-out;
+    font-weight: bold;
   }
-  i:hover {
+  span:hover {
     color: ${getColorLuminance(colors.text.info, 0.5)};
+    cursor: pointer;
   }
-  i:active {
+  span:active {
     color: ${getColorLuminance(colors.text.info, 0.9)};
   }
 `;

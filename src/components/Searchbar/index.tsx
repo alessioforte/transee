@@ -34,6 +34,14 @@ const Searchbar: FunctionComponent<Props> = ({
   const [hover, setHover] = useState(-1);
 
   useEffect(() => {
+    document.body.onclick = () => {
+      if (input.current) {
+        input.current?.focus();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     setValue(initialValue);
     resizeTextarea();
   }, [initialValue]);
@@ -101,9 +109,10 @@ const Searchbar: FunctionComponent<Props> = ({
   return (
     <React.Fragment>
       <Container>
-        {!isTyping && suggestions?.length > 0 && hover === -1 && value !== '' && (
-          <Autocomplete disabled value={suggestions[0][0]} />
-        )}
+        {!isTyping &&
+          suggestions?.length > 0 &&
+          hover === -1 &&
+          value !== '' && <Autocomplete disabled value={suggestions[0][0]} />}
         <Input
           ref={input}
           type="text"
@@ -122,7 +131,7 @@ const Searchbar: FunctionComponent<Props> = ({
             <Spinner />
           </Loading>
         )}
-        {!loading && renderIcons && <Icons>{renderIcons()}</Icons>}
+        <Icons>{!loading && renderIcons && renderIcons()}</Icons>
       </Container>
       {renderFooter && renderFooter()}
       {isError && <Message>{message}</Message>}
@@ -162,7 +171,7 @@ const Container = styled.div`
 `;
 const Input = styled.textarea`
   box-sizing: border-box;
-  padding: 18px 44px 18px 18px;
+  padding: 18px;
   height: 60px;
   width: 100%;
   max-height: 300px;
@@ -190,6 +199,8 @@ const Icons = styled.div`
   align-items: center;
   justify-content: center;
   padding-right: 18px;
+  min-width: 38px;
+  box-sizing: border-box;
 `;
 const Hint = styled.div<{ hover: boolean }>`
   padding: 3px 18px;
@@ -198,8 +209,7 @@ const Hint = styled.div<{ hover: boolean }>`
   font-size: 11px;
   cursor: default;
   line-height: 1.2em;
-  background: ${(props) =>
-    props.hover ? colors.active : 'transparent'};
+  background: ${(props) => (props.hover ? colors.active : 'transparent')};
   & > div:first-child {
     color: ${colors.text.main};
   }

@@ -79,7 +79,7 @@ const StickyCards: FunctionComponent<Props> = ({
                               <span className="art">{section[1] || ''}</span>
                               <span
                                 onClick={() =>
-                                  onClick({ value: section.word, invert: true })
+                                  onClick({ value: section[0], invert: true })
                                 }
                                 className="word"
                               >

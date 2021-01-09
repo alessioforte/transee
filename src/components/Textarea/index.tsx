@@ -56,9 +56,9 @@ const Container = styled.div`
 const Text = styled.div`
   box-sizing: border-box;
   padding: 18px;
-  height: 60px;
+  min-height: 60px;
   width: 100%;
-  max-height: 300px;
+  /* max-height: 300px; */
   font-size: 18px;
   border: 0;
   background: none;
@@ -75,6 +75,8 @@ const Icons = styled.div`
   align-items: center;
   justify-content: center;
   padding-right: 18px;
+  min-width: 38px;
+  box-sizing: border-box;
 `;
 const Loading = styled.div`
   position: absolute;
