@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { ipcRenderer } from 'electron';
 import { invertLangs } from '../containers/LangsBar/actions';
 
-const useWindowKeyDown = ({ store, actions }) => {
+const useWindowKeyDown = ({ store, actions }): void => {
   const {
     suggestions,
     google,
     search,
     engine,
-    reverso,
+    // reverso,
     langs,
     speed,
   } = store;
@@ -30,12 +30,12 @@ const useWindowKeyDown = ({ store, actions }) => {
 
       // alt shify - invert langs
       if (e.altKey && e.key === 'Shift') {
-        const langs = invertLangs(store.langs);
-        setLangs(langs);
+        const newLangs = invertLangs(store.langs);
+        setLangs(newLangs);
 
         if (store.payload) {
           setInput(store.payload);
-          getData(store.payload, langs.selected);
+          getData(store.payload, newLangs.selected);
         }
       }
 
@@ -50,15 +50,23 @@ const useWindowKeyDown = ({ store, actions }) => {
       // ctrl alt p - voice
       if (e.ctrlKey && e.altKey && e.code === 'KeyP') {
         e.preventDefault();
-        let translation = store[engine] ? store[engine].translation : '';
+        let translation = store[engine] ? store[engine].translation : null;
         if (engine === 'google' && !google) {
-          translation = store.reverso ? store.reverso.translation : '';
+          translation = store.reverso ? store.reverso.translation : null;
         }
-        if (engine === 'reverso' && !reverso) {
-          translation = store.google ? store.google.translation : '';
-        }
+        // if (engine === 'reverso' && !reverso) {
+        //   translation = store.google ? store.google.translation : null;
+        // }
         if (translation) {
-          playAudio(translation, langs.selected.to, 'to', speed);
+          let voice = '';
+          if (translation[0][5] && translation[0][5][0] && translation[0][5][0][0]) {
+            voice = translation[0][5][0][0];
+          }
+          if (translation[0][0]) {
+            voice = translation[0][0];
+          }
+          console.log('voice', voice);
+          playAudio(voice, langs.selected.to, 'to', speed);
         }
       }
 

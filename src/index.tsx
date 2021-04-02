@@ -3,10 +3,9 @@ import { render } from 'react-dom';
 import { GlobalStyle } from './theme/GlobalStyle';
 import { Tooltip } from './components';
 import { App, About, Welcome, Preferences } from './windows';
-import { Provider } from './store';
-import { reducer, setters, buildActions, initialData } from './controllers';
+import { Provider, useStore } from './store';
+import { reducer, setters, buildActions, initialState } from './controllers';
 import Settings from '../settings';
-import { useStore } from './store';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
@@ -17,7 +16,7 @@ Tooltip.setRoot(mainElement, 'root-tooltip');
 // Settings.delete();
 const settings = Settings.get() || {};
 const merged = {
-  ...initialData,
+  ...initialState,
   ...settings,
 };
 
@@ -38,10 +37,10 @@ const ViewManager = () => {
   const name = window.location.search.substr(1);
   if (!name) throw new Error('page not found');
 
-  const [store, setters] = useStore();
+  const [store, setStore] = useStore();
   const Component = VIEWS[name] || Dev;
 
-  const actions = useMemo(() => buildActions({ setters }), []);
+  const actions = useMemo(() => buildActions({ setters: setStore }), []);
 
   return (
     <>
