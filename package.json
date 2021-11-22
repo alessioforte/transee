@@ -1,7 +1,7 @@
 {
   "name": "transee",
   "productName": "Transee",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Simple and useful tool for quick translation",
   "main": "./dist/main.js",
   "scripts": {

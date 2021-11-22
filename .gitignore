@@ -3,7 +3,6 @@ dist
 packages
 .env
 
-
 # Don't check auto-generated stuff into git
 coverage
 stats.json

@@ -28,8 +28,8 @@ const useWindowKeyDown = ({ store, actions }): void => {
         }
       }
 
-      // alt shify - invert langs
-      if (e.altKey && e.key === 'Shift') {
+      // ctrl i - invert langs
+      if (e.ctrlKey && e.code === 'KeyI') {
         const newLangs = invertLangs(store.langs);
         setLangs(newLangs);
 
@@ -65,7 +65,6 @@ const useWindowKeyDown = ({ store, actions }): void => {
           if (translation[0][0]) {
             voice = translation[0][0];
           }
-          console.log('voice', voice);
           playAudio(voice, langs.selected.to, 'to', speed);
         }
       }

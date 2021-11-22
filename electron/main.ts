@@ -69,9 +69,7 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
-process.on('uncaughtException', () => {
-  console.log('uncaughtException');
-});
+// process.on('uncaughtException', () => {});
 
 // Init ------------------------------------------------------------------------
 async function appReady() {

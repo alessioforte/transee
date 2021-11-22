@@ -17,7 +17,6 @@ export async function getGoogleTranslate(
   text: string,
   opts: Langs
 ): Promise<any> {
-  console.log(text, opts);
   const { from, to } = opts;
   const options = {
     method: 'POST',

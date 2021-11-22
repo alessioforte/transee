@@ -15,10 +15,8 @@ export const getHints = async (
 ): Promise<Hint[]> => {
   try {
     const { body } = await getGoogleSuggest(value, langs);
-    // JSON.parse(h.replace(")]}'\n", ""));
     const decode = JSON.parse(unescape(body.slice(5)));
     const data = JSON.parse(decode[0][2]);
-    console.log('getGoogleSuggest', data);
     return data && data[0];
   } catch (err) {
     console.log(err);
@@ -95,7 +93,6 @@ export const getReversoSuggest = async (
  */
 
 function mapping(arr: any[]): any {
-  console.log('original', arr);
   const data = {
     pronunciation: arr[0][0],
     correction: arr[0][1] && arr[0][1],
@@ -111,6 +108,5 @@ function mapping(arr: any[]): any {
     //             arr && arr[3][8] ?
     //             arr && arr[3][9] ?
   };
-  console.log('mapped', data);
   return data;
 }

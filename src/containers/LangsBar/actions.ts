@@ -86,7 +86,6 @@ export const invertLangs = (prev: Values): Values => {
       newThreesome.from[activeFromIndex] = from;
     }
     if (!isInToThreesome) {
-      console.log()
       newThreesome.to[activeToIndex] = to;
     }
   }
