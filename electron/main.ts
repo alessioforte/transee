@@ -34,7 +34,7 @@ const winConfig: Electron.BrowserWindowConstructorOptions = {
   height: 85,
   frame: false,
   fullscreenable: false,
-  resizable: false,
+  resizable: process.platform !== 'darwin',
   backgroundColor: backgroundColor,
   useContentSize: true,
   show: isDev,

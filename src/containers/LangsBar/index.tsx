@@ -150,6 +150,7 @@ const Caret = styled.div<{ isOpen: boolean; position: string }>`
   position: relative;
   width: 40px;
   transition: all 0.3s ease-out;
+  -webkit-app-region: no-drag;
   ${(props) =>
     props.isOpen &&
     `
