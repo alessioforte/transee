@@ -30,7 +30,6 @@ const App: FC<P> = ({ locals }) => {
   useWindowKeyDown(locals);
   const { store, actions } = locals;
   const [isDropped, setIsDropped] = useState<boolean>(false);
-  console.debug('store', store);
   const {
     setSuggestions,
     setLangs,
@@ -54,11 +53,12 @@ const App: FC<P> = ({ locals }) => {
   const { selected } = langs;
 
   // handle masculine and feminine case
-  let translation: any[] = [];
+  let translation: any = [];
   if (engine === 'google' && store.google) {
     if (store.google.translation[0][0] || store.google.translation[0][1]) {
       translation = store.google.translation;
-    } else if (Array.isArray(store.google.translation[0][5])) {
+    }
+    if (Array.isArray(store.google.translation[0][5])) {
       let sentence = '';
       store.google.translation[0][5].forEach((t) => {
         sentence = sentence.concat(t[0], ' ');
