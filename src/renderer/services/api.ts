@@ -13,20 +13,18 @@ export async function getGoogleTranslate(
   opts: Langs
 ): Promise<any> {
   const { from, to } = opts;
+
+  const arr = [[text, from, to, true], [null]]
+  const data = [[["MkEWBc", JSON.stringify(arr), null, "generic"]]]
+
   const options = {
     method: 'POST',
     url: googleUrl,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    data: `f.req=%5B%5B%5B%22MkEWBc%22%2C%22%5B%5B%5C%22${encodeURI(
-      text
-    )}%5C%22%2C%5C%22${from}%5C%22%2C%5C%22${to}%5C%22%2Ctrue%5D%2C%5Bnull%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D&`,
+    headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
 
   return window.electron.request(options)
-
-
 }
 
 export async function getGoogleSuggest(
@@ -34,13 +32,15 @@ export async function getGoogleSuggest(
   opts: Langs
 ): Promise<any> {
   const { from, to } = opts;
+
+  const arr = [text, from, to]
+  const data = [[["AVdN8", JSON.stringify(arr), null, "generic"]]]
+
   const options = {
     method: 'POST',
     url: googleUrl,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    data: `f.req=%5B%5B%5B%22AVdN8%22%2C%22%5B%5C%22${text}%5C%22%2C%5C%22${from}%5C%22%2C%5C%22${to}%5C%22%5D%22%2Cnull%2C%22generic%22%5D%5D%5D&at=AD08yZlUAjeA4YyDVJDBzlMdrQXB%3A1608905462662&`,
+    headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
 
   return window.electron.request(options)
@@ -51,15 +51,16 @@ export async function getGoogleVoice(
   lang: string,
   speed: boolean
 ): Promise<any> {
+
+  const arr = [text, lang, speed, null]
+  const data = [[["jQ1olc", JSON.stringify(arr), null, "generic"]]]
+
   const options = {
     method: 'POST',
     url: googleUrl,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    data: `f.req=%5B%5B%5B%22jQ1olc%22%2C%22%5B%5C%22${text}%5C%22%2C%5C%22${lang}%5C%22%2C${speed}%2C%5C%22null%5C%22%5D%22%2Cnull%2C%22generic%22%5D%5D%5D&at=AD08yZlUAjeA4YyDVJDBzlMdrQXB%3A1608905462662&`,
+    headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
-
   return window.electron.request(options)
 }
 
