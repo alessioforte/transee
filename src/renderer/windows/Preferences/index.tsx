@@ -3,30 +3,20 @@ import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
 import theme, { getColorLuminance } from '../../theme';
+import { useStore } from 'renderer/store';
 
-interface Props {
-  locals: any;
-}
-
-const Preferences: FC<Props> = ({ locals }) => {
-  const { store, actions } = locals;
-  const { shortcut, startAtLogin, checkUpdates, googleEnabled, reversoEnabled } = store;
+const Preferences: FC = () => {
+  const store = useStore()
   const {
+    shortcut,
+    startAtLogin,
+    checkUpdates,
     setCheckUpdates,
     setShortcut,
     setStartAtLogin,
     restoreSettings,
-    enableEngines,
     // setTheme,
-  } = actions;
-
-  // const handleSetTheme = ({ value }) => {
-  //   let mode = 'light';
-  //   if (value) {
-  //     mode = 'dark';
-  //   }
-  //   setTheme(mode);
-  // };
+  } = store;
 
   return (
     <Layout title="Preferences">

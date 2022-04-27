@@ -1,17 +1,22 @@
 import { useCallback } from 'react';
 import { invertLangs } from '../containers/LangsBar/actions';
+import { useStore } from 'renderer/store';
 
-const useWindowKeyDown = ({ store, actions }): void => {
+const useWindowKeyDown = (): void => {
+  const store = useStore()
   const {
     suggestions,
     google,
     search,
     engine,
-    // reverso,
     langs,
     speed,
+    setLangs,
+    getData,
+    setSuggestions,
+    playAudio,
+    setInput
   } = store;
-  const { setLangs, getData, setSuggestions, playAudio, setInput } = actions;
 
   window.onkeydown = useCallback(
     (e: KeyboardEvent) => {

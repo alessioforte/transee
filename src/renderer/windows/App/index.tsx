@@ -10,6 +10,7 @@ import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 import { useWindowKeyDown } from '../../hooks';
 import theme, { getColorLuminance } from '../../theme';
+import { useStore } from 'renderer/store';
 
 const options: Options = {
   from: Object.entries(langsFrom).map(([key, value]) => ({
@@ -22,40 +23,38 @@ const options: Options = {
   })),
 };
 
-type Props = {
-  locals: any;
-};
-
-const App: FC<Props> = ({ locals }) => {
-  useWindowKeyDown(locals);
-  const { store, actions } = locals;
+const App: FC = () => {
+  useWindowKeyDown();
   const [isDropped, setIsDropped] = useState<boolean>(false);
-  const {
-    setSuggestions,
-    setLangs,
-    setInput,
-    // setEngine,
-    getData,
-    playAudio,
-    clearData,
-  } = actions;
+
+  const store = useStore()
+
   const {
     suggestions,
     google,
     input,
     search,
     reverso,
-    loading,
     engine,
     langs,
     speed,
+
+    loading,
+
+    getData,
+    setSuggestions,
+    setLangs,
+    setInput,
+    playAudio,
+    clearData,
   } = store;
+
   const { selected } = langs;
 
   // handle masculine and feminine case
   let translation: any = [];
   if (engine === 'google' && store.google) {
-    if (store.google.translation[0][0] || store.google.translation[0][1]) {
+    if (store.google?.translation[0][0] || store.google?.translation[0][1]) {
       translation = store.google.translation;
     }
     if (Array.isArray(store.google.translation[0][5])) {

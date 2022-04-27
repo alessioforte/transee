@@ -20,3 +20,11 @@ export const isWinPlatform = () => {
 
 export const isWin = isWinPlatform();
 export const isMac = isMacPlatform();
+
+export const validateInput = (text: string) => {
+  const isUppercase = /[A-Z]/.test(text);
+  const hasDoubleSpace = /\s\s+/.test(text);
+  const hasSpaceAtFirst = text && text.charAt(0) === ' ';
+  const isNewLine = /\n/g.test(text);
+  return !(!text || isUppercase || hasDoubleSpace || hasSpaceAtFirst || isNewLine)
+}

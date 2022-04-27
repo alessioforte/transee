@@ -7,17 +7,14 @@ import taskbarIMG from '../../../../assets/taskbar.png';
 import Layout from '../../containers/Layout';
 import { isWin } from '../../utils';
 import theme from '../../theme';
+import { useStore } from 'renderer/store';
 
 const barIMG = isWin ? taskbarIMG : menubarIMG;
 
-type P = {
-  locals: any;
-};
+const Welcome: FC = () => {
+  const store = useStore()
+  const { shortcut, showWelcome, setShowWelcome } = store;
 
-const Welcome: FC<P> = ({ locals }) => {
-  const { store, actions } = locals;
-  const { shortcut, showWelcome } = store;
-  const { setShowWelcome } = actions;
   const barTitle = isWin ? 'Taskbar' : 'Menu bar';
   const barName = isWin ? 'taskbar' : 'menu bar';
 

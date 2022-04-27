@@ -1,9 +1,10 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
+const validChannels = ['store-get', 'store-set', 'store-delete', 'store-has', 'request', 'response'];
+
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
     on(channel: string, func: (...args: unknown[]) => void) {
-      const validChannels = ['ipc-example'];
       if (validChannels.includes(channel)) {
         const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
           func(...args);
@@ -16,7 +17,6 @@ contextBridge.exposeInMainWorld('electron', {
       return undefined;
     },
     once(channel: string, func: (...args: unknown[]) => void) {
-      const validChannels = ['ipc-example'];
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.once(channel, (_event, ...args) => func(...args));
@@ -36,11 +36,14 @@ contextBridge.exposeInMainWorld('electron', {
     delete(key: string) {
       ipcRenderer.send('store-delete', key);
     },
+    clear() {
+      ipcRenderer.send('store-clear');
+    },
     has(key: string) {
       ipcRenderer.send('store-has', key);
     }
   },
-  request(options: any) {
-    return ipcRenderer.sendSync('request', options);
+  request: async (options: any, operation?: string) => {
+    return ipcRenderer.send('request', options, operation);
   }
 });

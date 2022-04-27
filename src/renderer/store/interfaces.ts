@@ -1,40 +1,57 @@
-import { ReactElement } from 'react';
-import { Values } from '../containers/LangsBar/interfaces';
-
-export type Store = {
-  langs: Values;
-  suggestions: [];
-  data: unknown;
-  theme: string;
-  input: string;
-  shortcut: string;
-};
-
-export interface Action {
-  type: string;
-  payload?: any;
+export interface Option {
+  value: string
+  label: string
 }
 
-export type Actions = {
-  setSuggestions: (payload: []) => void;
-  setGoogle: (payload: any) => void;
-  setLangs: (payload: Values) => void;
-  setInput: (payload: string) => void;
-};
-
-export type ProviderProps = {
-  children?: ReactElement | ReactElement[] | string;
-  init: Init;
-  
-};
-
-type Init = {
-  initialState?: any,
-  reducer: any,
-  setters: any,
+export interface Threesome {
+  from: Option[]
+  to: Option[]
 }
 
-export type Ctx = {
-  store: any;
-  dispatch: React.Dispatch<unknown>;
-};
+export interface Langs {
+  threesome: Threesome
+  selected: {
+    from: string
+    to: string
+  }
+}
+// TODO resolve any
+export interface Store {
+  langs: Langs,
+  loading: boolean
+  suggestions: any
+  reversoSuggestions: any
+  google: any
+  reverso: any
+  googleEnabled: boolean
+  reversoEnabled: boolean
+  theme: string
+  input: string
+  search: string,
+  payload: any
+  shortcut: string
+  showWelcome: boolean
+  startAtLogin: boolean
+  checkUpdates: boolean
+  engine: string // TODO create enum
+  version: string
+  speed: {
+    from: boolean
+    to: boolean
+  },
+
+  getData: (text: string, langsSelected: any) => void
+  setLangs: (langs: Langs) => void
+  setShortcut: (value: string) => void
+  setShowWelcome: (value: boolean) => void
+  setStartAtLogin: (value: boolean) => void
+  setCheckUpdates: (value: boolean) => void
+  restoreSettings: () => void
+  setSuggestions: (data: any) => void
+  setGoogle: (data: any) => void
+  setInput: (text: string) => void
+  setLoading: (loading: boolean) => void
+  clearData: () => void
+  setSearch: (text: string) => void
+  playAudio: (text: string, lang: string, conversion: string, speed: any) => void
+}

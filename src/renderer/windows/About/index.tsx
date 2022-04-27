@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import Layout from '../../containers/Layout';
 import icon from '../../../../assets/icon_256x256.png';
 import theme, { getColorLuminance } from '../../theme';
+import { useStore } from 'renderer/store';
 
-const About = ({ locals }) => {
-  const { store } = locals;
+const About = () => {
+  const store = useStore()
   const { version } = store;
 
   const openInBrowser = () => {

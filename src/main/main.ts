@@ -8,37 +8,13 @@ import {
   Menu,
 } from 'electron';
 import * as path from 'path';
-// import Settings from '../settings';
 import theme from '../renderer/theme';
 import updater from './updater';
 
-// import request from 'electron-request';
-import https from 'https'
-import util from 'util'
 import axios from 'axios'
-
-const request = util.promisify(https.request);
-
 import Store from 'electron-store';
 
 const store = new Store();
-
-// IPC listener
-ipcMain.on('store-get', async (event, val) => {
-  event.returnValue = store.get(val);
-});
-ipcMain.on('store-set', async (event, key, val) => {
-  store.set(key, val);
-});
-
-ipcMain.on('request', async (event, options) => {
-  try {
-    const { data } = await axios(options);
-    event.returnValue = data
-  } catch (err) {
-    return null
-  }
-});
 
 const backgroundColor = theme.colors.background;
 const isDev = process.env.NODE_ENV === 'development';
@@ -48,7 +24,7 @@ let aboutWin: Electron.BrowserWindow | null;
 let preferencesWin: Electron.BrowserWindow | null;
 let welcomeWin: Electron.BrowserWindow | null;
 let tray: Tray | null | undefined;
-let accelerator: string = 'Ctrl+Alt+T';
+let accelerator: string = store.has('shortcut') ? store.get('shortcut') as string : 'Ctrl+Alt+T';
 
 const webPreferences: Electron.WebPreferences = {
   nodeIntegration: true,
@@ -104,11 +80,11 @@ app.on('will-quit', () => {
 // Init ------------------------------------------------------------------------
 async function appReady() {
   // HANDLE APP VERSION
-  // const versionInSettings = Settings.get('version');
-  // if (appVersion !== versionInSettings) {
-  //   Settings.delete();
-  //   Settings.set('version', appVersion);
-  // }
+  const versionInSettings = store.get('version');
+  if (appVersion !== versionInSettings) {
+    store.clear();
+    store.set('version', appVersion);
+  }
 
   if (isDev) {
     createWindow();
@@ -118,18 +94,12 @@ async function appReady() {
   } else {
     //  SET START AT LOGIN
     const check = app.getLoginItemSettings().openAtLogin;
-    // Settings.set('startAtLogin', check);
+    store.set('startAtLogin', check);
 
     // SET GLOBAL SHORTCUT
-    // if (Settings.has('shortcut')) {
-    //   accelerator = Settings.get('shortcut');
-    // } else {
-    //   accelerator = 'Ctrl+Alt+T';
-    //   Settings.set('shortcut', accelerator);
-    // }
-    if (accelerator) {
-      globalShortcut.register(accelerator, showWindow);
-    }
+    store.set('shortcut', accelerator);
+  
+    globalShortcut.register(accelerator, showWindow);
 
     // CREATE TRAY AND CONTEXT MENU
     tray = new Tray(iconPath);
@@ -154,16 +124,16 @@ async function appReady() {
     tray.setContextMenu(contextMenu);
 
     // AUTOMATICALLY UPDATES
-    const checkAutomaticallyUpdates = false // Settings.has('checkUpdates') ? Settings.get('checkUpdates') : true;
+    const checkAutomaticallyUpdates = store.has('checkUpdates') ? store.get('checkUpdates') : true;
     if (checkAutomaticallyUpdates) {
       setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
     }
 
     // SHOW WELCOME GUIDE
-    const showWelcome = false // Settings.has('showWelcome') ? Settings.get('showWelcome') : true;
+    const showWelcome = store.has('showWelcome') ? store.get('showWelcome') : true;
     if (showWelcome) createWelcomeWindow();
 
-    // Settings.set('platform', process.platform);
+    store.set('platform', process.platform);
     // CREATE TRANSEE WINDOW IN BACKGROUND
     createWindow();
 
@@ -300,7 +270,8 @@ function showPreferencesWindow() {
   }
 }
 
-// IPC -------------------------------------------------------------------------
+// IPC listener ----------------------------------------------------------------
+
 ipcMain.on('window-height', (event, height) => {
   if (mainWindow) {
     mainWindow.setSize(680, height);
@@ -326,15 +297,35 @@ ipcMain.on('change-shortcut', (event, shortcut) => {
 });
 
 ipcMain.on('devtools', (event) => {
-  mainWindow.webContents.openDevTools();
+  mainWindow?.webContents.openDevTools();
 });
 
-ipcMain.on('restore-settings', (event, msg) => {
+ipcMain.on('restore-settings', () => {
   const check = app.getLoginItemSettings().openAtLogin;
-  // Settings.set('version', appVersion);
-  // Settings.set('show-welcome', true);
-  // Settings.set('start-login', check);
-  // Settings.set('shortcut', 'Ctrl+Alt+T');
+  store.set('version', appVersion);
+  store.set('show-welcome', true);
+  store.set('start-login', check);
+  store.set('shortcut', 'Ctrl+Alt+T');
   app.relaunch();
   app.exit(0);
+});
+
+ipcMain.on('store-get', async (event, val) => {
+  event.returnValue = store.get(val);
+});
+ipcMain.on('store-set', async (event, key, val) => {
+  store.set(key, val);
+});
+ipcMain.on('store-clear', async () => {
+  store.clear();
+});
+
+ipcMain.on('request', async (event, options, operation) => {
+  try {
+    const { data } = await axios(options);
+    event.reply('response', data, operation)
+  } catch (err) {
+    // TODO create error channel
+    event.reply('response', null, operation)
+  }
 });

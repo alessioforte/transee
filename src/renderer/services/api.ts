@@ -24,7 +24,7 @@ export async function getGoogleTranslate(
     data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
 
-  return window.electron.request(options)
+  return window.electron.request(options, 'translation')
 }
 
 export async function getGoogleSuggest(
@@ -43,7 +43,7 @@ export async function getGoogleSuggest(
     data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
 
-  return window.electron.request(options)
+  return window.electron.request(options, 'hints')
 }
 
 export async function getGoogleVoice(
@@ -61,7 +61,7 @@ export async function getGoogleVoice(
     headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
     data: `f.req=${encodeURI(JSON.stringify(data))}`,
   };
-  return window.electron.request(options)
+  return window.electron.request(options, 'voice')
 }
 
 /**
