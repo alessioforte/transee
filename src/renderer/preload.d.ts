@@ -10,7 +10,7 @@ declare global {
         send(channel: string, payload: any): void;
       };
       store: {
-        get: (key: string) => any;
+        get: (key?: string) => any;
         set: (key: string, val: any) => void;
         clear: () => void;
         delete: (key: string) => void;

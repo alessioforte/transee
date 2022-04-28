@@ -41,7 +41,7 @@ export const initialState = {
   startAtLogin: true,
   checkUpdates: true,
   engine: 'google',
-  version: '2',
+  version: '2.1.0',
   speed: {
     from: true,
     to: true,

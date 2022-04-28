@@ -11,9 +11,10 @@ import * as path from 'path';
 import theme from '../renderer/theme';
 import updater from './updater';
 
-import axios from 'axios'
+import axios from 'axios';
 import Store from 'electron-store';
 
+// TODO improve code structure
 const store = new Store();
 
 const backgroundColor = theme.colors.background;
@@ -24,7 +25,7 @@ let aboutWin: Electron.BrowserWindow | null;
 let preferencesWin: Electron.BrowserWindow | null;
 let welcomeWin: Electron.BrowserWindow | null;
 let tray: Tray | null | undefined;
-let accelerator: string = store.has('shortcut') ? store.get('shortcut') as string : 'Ctrl+Alt+T';
+let accelerator: string = store.has('shortcut') ? (store.get('shortcut') as string) : 'Ctrl+Alt+T';
 
 const webPreferences: Electron.WebPreferences = {
   nodeIntegration: true,
@@ -56,16 +57,11 @@ if (!gotTheLock) {
   app.on('second-instance', () => showWindow());
 }
 
-const appVersion = app.getVersion();
+const appVersion = process.env.VERSION;
 
 const indexPath = isDev
   ? `http://localhost:${process.env.PORT || '1212'}`
-  : `file://${path.join(__dirname, 'renderer/index.html')}`;
-
-const iconPath =
-  process.platform === 'win32'
-    ? path.join(__dirname, '../assets', 'icon_16x16.ico')
-    : path.join(__dirname, '../assets', 'iconTemplate.png');
+  :`file://${path.resolve(__dirname, '../renderer/', 'index.html')}`
 
 app.on('ready', appReady);
 
@@ -75,7 +71,35 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
-// process.on('uncaughtException', () => {});
+
+const createTray = () => {
+  const RESOURCES_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
+  const file = process.platform === 'win32' ? 'icon_16x16.ico' : 'iconTemplate.png';
+  const iconPath = path.resolve(RESOURCES_PATH, file)
+
+  tray = new Tray(iconPath);
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'About Transee', click: showAboutWindow },
+    { label: 'Check for update', click: () => updater.checkForUpdates() },
+    { type: 'separator' },
+    { label: 'Preferences...', click: showPreferencesWindow },
+    { type: 'separator' },
+    {
+      label: 'Show translation bar',
+      accelerator,
+      click: showWindow,
+    },
+    { type: 'separator' },
+    { label: 'Welcome Guide', click: showWelcomeWindow },
+    { type: 'separator' },
+    { label: 'Quit', accelerator: 'Command+Q', click: app.quit },
+  ]);
+
+  tray.setContextMenu(contextMenu);
+}
 
 // Init ------------------------------------------------------------------------
 async function appReady() {
@@ -87,10 +111,12 @@ async function appReady() {
   }
 
   if (isDev) {
+    createTray();
+
     createWindow();
-    // createAboutWindow();
-    // createWelcomeWindow();
-    // createPreferencesWindow();
+    createAboutWindow();
+    createWelcomeWindow();
+    createPreferencesWindow();
   } else {
     //  SET START AT LOGIN
     const check = app.getLoginItemSettings().openAtLogin;
@@ -98,44 +124,28 @@ async function appReady() {
 
     // SET GLOBAL SHORTCUT
     store.set('shortcut', accelerator);
-  
     globalShortcut.register(accelerator, showWindow);
 
     // CREATE TRAY AND CONTEXT MENU
-    tray = new Tray(iconPath);
-
-    const contextMenu = Menu.buildFromTemplate([
-      { label: 'About Transee', click: showAboutWindow },
-      { label: 'Check for update', click: () => updater.checkForUpdates() },
-      { type: 'separator' },
-      { label: 'Preferences...', click: showPreferencesWindow },
-      { type: 'separator' },
-      {
-        label: 'Show translation bar',
-        accelerator,
-        click: showWindow,
-      },
-      { type: 'separator' },
-      { label: 'Welcome Guide', click: showWelcomeWindow },
-      { type: 'separator' },
-      { label: 'Quit', accelerator: 'Command+Q', click: app.quit },
-    ]);
-
-    tray.setContextMenu(contextMenu);
+    createTray()
 
     // AUTOMATICALLY UPDATES
-    const checkAutomaticallyUpdates = store.has('checkUpdates') ? store.get('checkUpdates') : true;
+    const checkAutomaticallyUpdates = store.has('checkUpdates')
+      ? store.get('checkUpdates')
+      : true;
     if (checkAutomaticallyUpdates) {
       setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
     }
 
-    // SHOW WELCOME GUIDE
-    const showWelcome = store.has('showWelcome') ? store.get('showWelcome') : true;
-    if (showWelcome) createWelcomeWindow();
-
     store.set('platform', process.platform);
     // CREATE TRANSEE WINDOW IN BACKGROUND
     createWindow();
+
+    // SHOW WELCOME GUIDE
+    const showWelcome = store.has('showWelcome') ? store.get('showWelcome') : true;
+    if (showWelcome) {
+      createWelcomeWindow();
+    }
 
     // HIDE DOCK ICON IN MACOS
     if (process.platform === 'darwin' && !showWelcome) app.dock.hide();
@@ -230,23 +240,24 @@ function hideWindow() {
 function showWindow() {
   if (!mainWindow) {
     createWindow();
+  } else {
+    const { x, y } = getWindowPosition();
+    mainWindow.setPosition(x, y);
+    mainWindow.show();
   }
-
-  const { x, y } = getWindowPosition();
-  mainWindow.setPosition(x, y);
-  mainWindow.show();
 }
 
 function getWindowPosition() {
   const point = screen.getCursorScreenPoint();
   const displayBounds = screen.getDisplayNearestPoint(point).bounds;
-  const windowBounds = mainWindow.getBounds();
-  let maxAppHeight = 800;
-  if (displayBounds.height < 768) maxAppHeight = 768;
+  const windowBounds = mainWindow ? mainWindow.getBounds() : { width: 680, height: 85 };
 
-  const x = Math.round(
-    displayBounds.x + (displayBounds.width - windowBounds.width) / 2
-  );
+  let maxAppHeight = 800;
+  if (displayBounds.height < 768) {
+    maxAppHeight = 768;
+  }
+
+  const x = Math.round(displayBounds.x + (displayBounds.width - windowBounds.width) / 2);
   const y = (displayBounds.height - maxAppHeight) / 2 + displayBounds.y;
 
   return { x, y };
@@ -303,15 +314,19 @@ ipcMain.on('devtools', (event) => {
 ipcMain.on('restore-settings', () => {
   const check = app.getLoginItemSettings().openAtLogin;
   store.set('version', appVersion);
-  store.set('show-welcome', true);
-  store.set('start-login', check);
+  store.set('showWelcome', true);
+  store.set('startAtLogin', check);
   store.set('shortcut', 'Ctrl+Alt+T');
   app.relaunch();
-  app.exit(0);
+  // TODO verify
 });
 
-ipcMain.on('store-get', async (event, val) => {
-  event.returnValue = store.get(val);
+ipcMain.on('store-get', async (event, key) => {
+  if (key) {
+    event.returnValue = store.get(key);
+  } else {
+    event.returnValue = store.store
+  }
 });
 ipcMain.on('store-set', async (event, key, val) => {
   store.set(key, val);
@@ -323,9 +338,54 @@ ipcMain.on('store-clear', async () => {
 ipcMain.on('request', async (event, options, operation) => {
   try {
     const { data } = await axios(options);
-    event.reply('response', data, operation)
+    event.reply('response', data, operation);
   } catch (err) {
     // TODO create error channel
-    event.reply('response', null, operation)
+    event.reply('response', null, operation);
   }
 });
+
+// TODO handle init store
+// const initialStore = {
+//   version: '2.1.0',
+//   startAtLogin: true,
+//   checkUpdates: true,
+//   showWelcome: true,
+//   shortcut: 'Ctrl+Alt+T',
+//   langs: {
+//     threesome: {
+//       from: [
+//         {
+//           value: 'en',
+//           label: 'English',
+//         },
+//         {
+//           value: 'it',
+//           label: 'Italian',
+//         },
+//         {
+//           value: 'es',
+//           label: 'Spanish',
+//         },
+//       ],
+//       to: [
+//         {
+//           value: 'it',
+//           label: 'Italian',
+//         },
+//         {
+//           value: 'en',
+//           label: 'English',
+//         },
+//         {
+//           value: 'es',
+//           label: 'Spanish',
+//         },
+//       ],
+//     },
+//     selected: {
+//       from: 'en',
+//       to: 'it',
+//     },
+//   },
+// };

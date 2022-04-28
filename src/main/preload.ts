@@ -27,7 +27,7 @@ contextBridge.exposeInMainWorld('electron', {
     }
   },
   store: {
-    get(key: string) {
+    get(key?: string) {
       return ipcRenderer.sendSync('store-get', key);
     },
     set(key: string, value: any) {

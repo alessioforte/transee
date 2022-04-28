@@ -10,7 +10,6 @@ import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 import { useWindowKeyDown } from '../../hooks';
 import theme, { getColorLuminance } from '../../theme';
-import { useStore } from 'renderer/store';
 
 const options: Options = {
   from: Object.entries(langsFrom).map(([key, value]) => ({
@@ -23,11 +22,9 @@ const options: Options = {
   })),
 };
 
-const App: FC = () => {
-  useWindowKeyDown();
+const App: FC = ({ store }) => {
+  useWindowKeyDown({ store });
   const [isDropped, setIsDropped] = useState<boolean>(false);
-
-  const store = useStore()
 
   const {
     suggestions,

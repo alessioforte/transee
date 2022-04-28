@@ -1,6 +1,6 @@
 {
   "name": "Transee",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Simple and useful tool for quick translation",
   "main": "./dist/main/main.js",
   "author": "Alessio Forte <fortealessio@gmail.com>",

@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import { invertLangs } from '../containers/LangsBar/actions';
-import { useStore } from 'renderer/store';
 
-const useWindowKeyDown = (): void => {
-  const store = useStore()
+const useWindowKeyDown = ({ store }): void => {
   const {
     suggestions,
     google,

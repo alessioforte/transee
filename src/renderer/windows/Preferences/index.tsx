@@ -3,10 +3,8 @@ import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
 import theme, { getColorLuminance } from '../../theme';
-import { useStore } from 'renderer/store';
 
-const Preferences: FC = () => {
-  const store = useStore()
+const Preferences: FC = ({ store }) => {
   const {
     shortcut,
     startAtLogin,
@@ -49,7 +47,7 @@ const Preferences: FC = () => {
             Define a shortcut
             <RecordShortcut
               initialValue={shortcut}
-              onChange={(data) => setShortcut(data.value)}
+              onChange={(data) => data.value && setShortcut(data.value)}
             />
           </Label>
           <Comment>
