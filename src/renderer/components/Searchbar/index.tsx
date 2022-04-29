@@ -39,7 +39,7 @@ const Searchbar: FunctionComponent<Props> = ({
         input.current?.focus();
       }
     };
-  }, []);
+  }, [input.current]);
 
   useEffect(() => {
     setValue(initialValue);
