@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-// import { shell } from 'electron';
 import Layout from '../../containers/Layout';
 import icon from '../../../../assets/icon_256x256.png';
 import theme, { getColorLuminance } from '../../theme';
@@ -9,7 +8,7 @@ const About = ({ store }) => {
   const { version } = store;
 
   const openInBrowser = () => {
-    // shell.openExternal('https://alessioforte.github.io/transee/');
+    window.electron.ipcRenderer.send('open-external');
   };
 
   return (
@@ -44,7 +43,6 @@ const About = ({ store }) => {
 };
 
 export default About;
-
 
 const { colors } = theme;
 

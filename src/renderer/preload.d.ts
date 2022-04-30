@@ -7,7 +7,7 @@ declare global {
           func: (...args: unknown[]) => void
         ): (() => void) | undefined;
         once(channel: string, func: (...args: unknown[]) => void): void;
-        send(channel: string, payload: any): void;
+        send(channel: string, payload?: any): void;
       };
       store: {
         get: (key?: string) => any;
@@ -16,7 +16,7 @@ declare global {
         delete: (key: string) => void;
         // any other methods you've defined...
       };
-      request: any
+      request: any;
     };
   }
 }

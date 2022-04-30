@@ -1,13 +1,18 @@
-import { app, ipcMain, globalShortcut } from 'electron';
+import { app, ipcMain, globalShortcut, shell } from 'electron';
 import updater from './updater';
 import axios from 'axios';
 import { isDev, appVersion } from './config';
 import createAboutWindow from './windows/about';
 import createPreferencesWindow from './windows/preferences';
-import createWelcomeWindow from './windows/welcome'
-import createWindow, { hideWindow, showWindow, onSetWindowSizeEvent, onOpenDevToolsEvent } from './windows/bar';
-import store from './store'
-import createTray from './menu'
+import createWelcomeWindow from './windows/welcome';
+import createWindow, {
+  hideWindow,
+  showWindow,
+  onSetWindowSizeEvent,
+  onOpenDevToolsEvent,
+} from './windows/bar';
+import store from './store';
+import createTray from './menu';
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 const gotTheLock = app.requestSingleInstanceLock();
@@ -23,16 +28,8 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
-
 // Init ------------------------------------------------------------------------
 async function appReady() {
-  // HANDLE APP VERSION
-  const versionInSettings = store.get('version');
-  if (appVersion !== versionInSettings) {
-    store.clear();
-    store.set('version', appVersion);
-  }
-
   if (isDev) {
     createTray();
     createWindow();
@@ -42,20 +39,27 @@ async function appReady() {
   } else {
     store.set('platform', process.platform);
 
+    // HANDLE APP VERSION
+    const versionInSettings = store.get('version');
+    if (appVersion !== versionInSettings) {
+      store.clear();
+      store.set('version', appVersion);
+    }
+
     //  SET START AT LOGIN
     const check = app.getLoginItemSettings().openAtLogin;
     store.set('startAtLogin', check);
 
     // SET GLOBAL SHORTCUT
-    const accelerator: string = store.has('shortcut') ? (store.get('shortcut') as string) : 'Ctrl+Alt+T';
+    const accelerator: string = (store.get('shortcut') as string) || 'Ctrl+Alt+T';
     store.set('shortcut', accelerator);
     globalShortcut.register(accelerator, showWindow);
 
     // CREATE TRAY AND CONTEXT MENU
-    createTray()
+    createTray();
 
     // AUTOMATICALLY UPDATES
-    const checkAutomaticallyUpdates = store.has('checkUpdates') ? store.get('checkUpdates') : true;
+    const checkAutomaticallyUpdates = store.get('checkUpdates') || true;
     if (checkAutomaticallyUpdates) {
       setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
     }
@@ -64,7 +68,7 @@ async function appReady() {
     createWindow();
 
     // SHOW WELCOME GUIDE
-    const showWelcome = store.has('showWelcome') ? store.get('showWelcome') : true;
+    const showWelcome = store.get('showWelcome') || true;
     if (showWelcome) {
       createWelcomeWindow();
     }
@@ -124,4 +128,8 @@ ipcMain.on('request', async (event, options, operation) => {
     // TODO create error channel
     event.reply('response', null, operation);
   }
+});
+
+ipcMain.on('open-external', () => {
+  shell.openExternal('https://alessioforte.github.io/transee/');
 });

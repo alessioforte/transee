@@ -1,6 +1,13 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-const validChannels = ['store-get', 'store-set', 'store-delete', 'store-has', 'request', 'response'];
+const validChannels = [
+  'store-get',
+  'store-set',
+  'store-delete',
+  'store-has',
+  'request',
+  'response',
+];
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -22,9 +29,9 @@ contextBridge.exposeInMainWorld('electron', {
         ipcRenderer.once(channel, (_event, ...args) => func(...args));
       }
     },
-    send(channel: string, payload: any) {
-      ipcRenderer.send(channel, payload)
-    }
+    send(channel: string, payload?: any) {
+      ipcRenderer.send(channel, payload);
+    },
   },
   store: {
     get(key?: string) {
@@ -41,9 +48,9 @@ contextBridge.exposeInMainWorld('electron', {
     },
     has(key: string) {
       ipcRenderer.send('store-has', key);
-    }
+    },
   },
   request: async (options: any, operation?: string) => {
     return ipcRenderer.send('request', options, operation);
-  }
+  },
 });
