@@ -1,4 +1,4 @@
-export const langsFrom: any = {
+export const langsFrom = {
   // 'auto': 'Automatic',
   af: 'Afrikaans',
   sq: 'Albanian',
@@ -213,7 +213,7 @@ export const langsTo = {
 };
 
 
-export const reversoLangsConversion: any = {
+export const reversoLangsConversion = {
   ar: 'ara',
   en: 'eng',
   pl: 'pol',

@@ -1,10 +1,14 @@
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Toggle, RecordShortcut } from '../../components';
 import Layout from '../../containers/Layout';
 import theme, { getColorLuminance } from '../../theme';
+import { Store } from '../../interfaces'
+interface Props {
+  store: Store
+}
 
-const Preferences: FC = ({ store }) => {
+const Preferences: React.FC<Props> = ({ store }) => {
   const {
     shortcut,
     startAtLogin,

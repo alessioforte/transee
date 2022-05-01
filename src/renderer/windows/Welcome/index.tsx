@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState } from 'react';
 import { Checkbox, Icon } from '../../components';
 import styled from 'styled-components';
 import icon from '../../../../assets/icon_256x256.png';
@@ -7,10 +7,14 @@ import taskbarIMG from '../../../../assets/taskbar.png';
 import Layout from '../../containers/Layout';
 import { isWin } from '../../utils';
 import theme from '../../theme';
+import { Store } from '../../interfaces'
+interface Props {
+  store: Store
+}
 
 const barIMG = isWin ? taskbarIMG : menubarIMG;
 
-const Welcome: FC = ({ store }) => {
+const Welcome: React.FC<Props> = ({ store }) => {
   const { shortcut, showWelcome, setShowWelcome } = store;
 
   const barTitle = isWin ? 'Taskbar' : 'Menu bar';

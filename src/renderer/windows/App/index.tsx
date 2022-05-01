@@ -1,28 +1,23 @@
-import React, { useState, FC, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { SearchbarData } from '../../components/Searchbar/interfaces';
-import { Options, Conversion } from '../../containers/LangsBar/interfaces';
+import { Conversion } from '../../containers/LangsBar/interfaces';
 import { Icon, Searchbar, Textarea } from '../../components';
 import LangsBar from '../../containers/LangsBar';
 import { selectLangs, invertLangs } from '../../containers/LangsBar/actions';
-import { langsFrom, langsTo } from '../../services/langs';
+import { langsFrom } from '../../services/langs';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 import { useWindowKeyDown } from '../../hooks';
 import theme, { getColorLuminance } from '../../theme';
+import options from './utils';
+import { Store } from '../../interfaces'
 
-const options: Options = {
-  from: Object.entries(langsFrom).map(([key, value]) => ({
-    label: value,
-    value: key,
-  })),
-  to: Object.entries(langsTo).map(([key, value]) => ({
-    label: value,
-    value: key,
-  })),
-};
+interface Props {
+  store: Store
+}
 
-const App: FC = ({ store }) => {
+const App: React.FC<Props> = ({ store }) => {
   useWindowKeyDown({ store });
   const [isDropped, setIsDropped] = useState<boolean>(false);
 

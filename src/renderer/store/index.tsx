@@ -4,7 +4,7 @@ import {
   getGoogleVoice,
 } from '../services/api';
 import create, { StateCreator } from 'zustand'
-import { Langs, Store } from './interfaces'
+import { Langs, Store } from '../interfaces'
 import mapping from 'renderer/utils/mapping';
 import { validateInput } from 'renderer/utils';
 

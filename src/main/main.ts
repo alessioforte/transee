@@ -51,7 +51,7 @@ async function appReady() {
     store.set('startAtLogin', check);
 
     // SET GLOBAL SHORTCUT
-    const accelerator: string = (store.get('shortcut') as string) || 'Ctrl+Alt+T';
+    const accelerator: string =  store.has('shortcut') ? (store.get('shortcut') as string) : 'Ctrl+Alt+T';
     store.set('shortcut', accelerator);
     globalShortcut.register(accelerator, showWindow);
 
@@ -59,7 +59,7 @@ async function appReady() {
     createTray();
 
     // AUTOMATICALLY UPDATES
-    const checkAutomaticallyUpdates = store.get('checkUpdates') || true;
+    const checkAutomaticallyUpdates = store.has('checkUpdates') ? store.get('checkUpdates') : true;
     if (checkAutomaticallyUpdates) {
       setTimeout(() => updater.checkForUpdates(false), 1000 * 60 * 3);
     }
@@ -68,7 +68,7 @@ async function appReady() {
     createWindow();
 
     // SHOW WELCOME GUIDE
-    const showWelcome = store.get('showWelcome') || true;
+    const showWelcome = store.has('showWelcome') ? store.get('showWelcome') : true;
     if (showWelcome) {
       createWelcomeWindow();
     }
