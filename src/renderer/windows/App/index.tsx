@@ -30,9 +30,7 @@ const App: React.FC<Props> = ({ store }) => {
     engine,
     langs,
     speed,
-
     loading,
-
     getData,
     setSuggestions,
     setLangs,
@@ -43,6 +41,7 @@ const App: React.FC<Props> = ({ store }) => {
 
   const { selected } = langs;
 
+  // TODO move this code in mapping
   // handle masculine and feminine case
   let translation: any = [];
   if (engine === 'google' && store.google) {
@@ -127,16 +126,10 @@ const App: React.FC<Props> = ({ store }) => {
   const renderTips = () => {
     if (!Array.isArray(google?.correction)) return null;
     const parser = new DOMParser();
-    const tag: string | undefined =
-      google?.correction[0] && google?.correction[0][0][1];
+    const tag: string | undefined = google?.correction[0] && google?.correction[0][0][1];
 
-    const correction =
-      tag &&
-      parser.parseFromString(tag, 'text/html').documentElement.textContent;
-    const iso =
-      google?.correction[1] && google?.correction[1][0]
-        ? google?.correction[1][0]
-        : null;
+    const correction = tag && parser.parseFromString(tag, 'text/html').documentElement.textContent;
+    const iso = google?.correction[1] && google?.correction[1][0] ? google?.correction[1][0] : null;
 
     return (
       <Tips>
@@ -217,7 +210,6 @@ const App: React.FC<Props> = ({ store }) => {
             isError={false}
             message="Service Unavailable"
             renderTips={renderTips}
-            // renderFooter={renderIcons}
             loading={loading}
             renderIcons={() =>
               google && (
@@ -236,27 +228,22 @@ const App: React.FC<Props> = ({ store }) => {
                   <Pronunciation>{google.pronunciation}</Pronunciation>
                 )}
                 <Box>
-                  {google &&
-                    engine === 'google' &&
-                    translation.map((t) => (
-                      <Textarea
-                        key={t[0]}
-                        value={t[0]}
-                        description={t[2]}
-                        renderIcons={() => (
-                          <span
-                            onClick={() =>
-                              handlePlayAudio(t[0], selected.to, 'to')
-                            }
-                          >
-                            <Icon name="speaker" size={15} hover />
-                          </span>
-                        )}
-                      />
-                    ))}
-                  {/* {engine === 'reverso' && store.reverso?.translation && (
-                    <Textarea value={store.reverso?.translation} />
-                  )} */}
+                  {google && engine === 'google' && translation.map((t) => (
+                    <Textarea
+                      key={t[0]}
+                      value={t[0]}
+                      description={t[2]}
+                      renderIcons={() => (
+                        <span
+                          onClick={() =>
+                            handlePlayAudio(t[0], selected.to, 'to')
+                          }
+                        >
+                          <Icon name="speaker" size={15} hover />
+                        </span>
+                      )}
+                    />
+                  ))}
                 </Box>
               </Block>
               {!(!google && !reverso) && (

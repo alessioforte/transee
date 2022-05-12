@@ -28,3 +28,12 @@ export const validateInput = (text: string) => {
   const isNewLine = /\n/g.test(text);
   return !(!text || isUppercase || hasDoubleSpace || hasSpaceAtFirst || isNewLine)
 }
+
+export const SEARCHBAR_ID = 'searchbar'
+
+export const forceFocusOnInput = () => {
+  const input = document.getElementById('searchbar')
+  if (input?.focus) {
+    input.focus()
+  }
+}

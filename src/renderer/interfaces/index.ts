@@ -35,6 +35,7 @@ export interface Store {
   checkUpdates: boolean
   engine: string // TODO create enum
   version: string
+  error: boolean
   speed: {
     from: boolean
     to: boolean
@@ -49,6 +50,7 @@ export interface Store {
   restoreSettings: () => void
   setSuggestions: (data: any) => void
   setGoogle: (data: any) => void
+  setError: (value: boolean) => void
   setInput: (text: string) => void
   setLoading: (loading: boolean) => void
   clearData: () => void

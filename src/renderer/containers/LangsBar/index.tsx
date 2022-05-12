@@ -11,6 +11,7 @@ import { Props, Option, Conversion, Target, Values } from './interfaces';
 import { selectLangs, invertLangs } from './actions';
 import { useDropdown } from '../../hooks';
 import theme, { getColorLuminance } from '../../theme';
+import { forceFocusOnInput } from 'renderer/utils';
 
 const defaultValues: Values = {
   threesome: {
@@ -47,17 +48,24 @@ const LangsBar: FunctionComponent<Props> = ({
     const data = selectLangs(values, target, opt);
     onChange(data);
     close();
+    forceFocusOnInput();
   };
 
   const invert = () => {
     const data = invertLangs(values);
     onChange(data);
+    forceFocusOnInput();
   };
 
   const showDropdown = (e: Event, conversion: Conversion) => {
     e.stopPropagation()
-    show();
-    setSide(conversion);
+    if (conversion === side && isOpen) {
+      close();
+      forceFocusOnInput();
+    } else {
+      setSide(conversion);
+      show();
+    }
   };
 
   return (

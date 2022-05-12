@@ -58,7 +58,6 @@ const Text = styled.div`
   padding: 18px;
   min-height: 60px;
   width: 100%;
-  /* max-height: 300px; */
   font-size: 18px;
   border: 0;
   background: none;

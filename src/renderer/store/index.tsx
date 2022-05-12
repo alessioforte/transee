@@ -42,6 +42,7 @@ export const initialState = {
   checkUpdates: true,
   engine: 'google',
   version: '2.1.0',
+  error: false,
   speed: {
     from: true,
     to: true,
@@ -62,7 +63,7 @@ const store: StateCreator<Store> = (set) => ({
     }
 
     if (!text) {
-      set({ google: null, suggestions: [], payload: null, loading: false })
+      set({ google: null, suggestions: [], payload: null, loading: false, error: false })
     } else {
       getGoogleTranslate(text, langsSelected);
     }
@@ -116,6 +117,7 @@ const store: StateCreator<Store> = (set) => ({
     google: null,
     reverso: null,
     suggestions: [],
+    error: false,
     speed: {
       from: true,
       to: true,
@@ -125,6 +127,7 @@ const store: StateCreator<Store> = (set) => ({
   // setReversoSuggestions,
   setGoogle: (google: any) => set({ google }),
   // setReverso,
+  setError: (error: boolean) => set({ error }),
   setInput: (text: string) => set({ input: text }),
   setLoading: (loading: boolean) => set({ loading }),
   setSearch: (text: string) => set({ search: text }),
@@ -185,5 +188,10 @@ window.electron.ipcRenderer.on('response', async (response, operation) => {
       break;
   }
 
-  useStore.setState({ loading: false })
+  useStore.setState({ loading: false, error: false })
+})
+
+window.electron.ipcRenderer.on('error', async (response, operation) => {
+  console.error({ operation, response })
+  useStore.setState({ error: true })
 })

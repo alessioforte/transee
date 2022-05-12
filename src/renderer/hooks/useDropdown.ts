@@ -12,14 +12,14 @@ type Returns = {
 };
 
 const useDropdown = ({
-  dropdown,
+  // dropdown,
   onClose = () => null,
 }: Props): Returns => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
-      window.removeEventListener('click', hide);
+      window.removeEventListener('click', close);
       window.removeEventListener('blur', close);
     }
   }, [isOpen])
@@ -27,17 +27,17 @@ const useDropdown = ({
   const show = () => {
     if (!isOpen) {
       setIsOpen(true);
-      window.addEventListener('click', hide);
+      window.addEventListener('click', close);
       window.addEventListener('blur', close);
     }
   };
 
-  const hide = (e: Event) => {
-    const node: Node | null = e.target as Node;
-    if (dropdown.current && !dropdown.current.contains(node)) {
-      close()
-    }
-  }
+  // const hide = (e: Event) => {
+  //   const node: Node | null = e.target as Node;
+  //   if (dropdown.current && !dropdown.current.contains(node)) {
+  //     close()
+  //   }
+  // }
 
   const close = () => {
     setIsOpen(false);

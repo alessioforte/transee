@@ -125,8 +125,7 @@ ipcMain.on('request', async (event, options, operation) => {
     const { data } = await axios(options);
     event.reply('response', data, operation);
   } catch (err) {
-    // TODO create error channel
-    event.reply('response', null, operation);
+    event.reply('error', err, operation);
   }
 });
 

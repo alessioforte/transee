@@ -1,4 +1,4 @@
-export const langsFrom = {
+export const langsFrom: Record<string, string> = {
   // 'auto': 'Automatic',
   af: 'Afrikaans',
   sq: 'Albanian',
@@ -105,7 +105,7 @@ export const langsFrom = {
   zu: 'Zulu'
 };
 
-export const langsTo = {
+export const langsTo: Record<string, string> = {
   af: 'Afrikaans',
   sq: 'Albanian',
   ar: 'Arabic',

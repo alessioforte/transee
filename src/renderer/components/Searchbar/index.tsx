@@ -9,11 +9,12 @@ import styled from 'styled-components';
 import { Spinner } from '..';
 import { Props } from './interfaces';
 import theme from '../../theme';
+import { SEARCHBAR_ID, forceFocusOnInput } from 'renderer/utils';
 
 const Searchbar: FunctionComponent<Props> = ({
-  onChange = (data) => null,
+  onChange = () => null,
   onResize = () => null,
-  onDebounce = (data) => null,
+  onDebounce = () => null,
   loading = false,
   name = 'textarea',
   placeholder = '',
@@ -34,11 +35,7 @@ const Searchbar: FunctionComponent<Props> = ({
   const [hover, setHover] = useState(-1);
 
   useEffect(() => {
-    document.body.onclick = () => {
-      if (input.current) {
-        input.current?.focus();
-      }
-    };
+    document.body.onfocus = forceFocusOnInput;
   }, [input.current]);
 
   useEffect(() => {
@@ -115,6 +112,7 @@ const Searchbar: FunctionComponent<Props> = ({
           value !== '' && <Autocomplete disabled value={suggestions[0][0]} />}
         <Input
           ref={input}
+          id={SEARCHBAR_ID}
           type="text"
           placeholder={placeholder}
           maxLength={5000}
