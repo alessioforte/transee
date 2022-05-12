@@ -18,3 +18,26 @@ __snapshots__
 *.snap
 
 publish.sh
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+.eslintcache
+
+
+release/app/dist
+release/build
+.erb/dll
+
+.idea
+
+
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts

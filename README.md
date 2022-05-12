@@ -28,19 +28,9 @@ Instead of `npm install` you may also install with [yarn](https://github.com/yar
 
 
 ### Running Transee
-In order to run this project 2 scripts will need to be executed `dev:react` and `dev:electron`, run each one in a different terminal and always run `dev:react` before `dev:electron`, or `dev` to run them in order automatically
 
 ```bash
-npm run dev:react
-```
-```bash
-npm run dev:electron
-```
-
-or
-
-```bash
-npm run dev
+npm start
 ```
 
 ## Packaging
