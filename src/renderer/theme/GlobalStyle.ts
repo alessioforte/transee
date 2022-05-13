@@ -1,7 +1,25 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 import theme from './index';
+import { isWinPlatform } from 'renderer/utils';
 
 const { colors } = theme;
+
+const scrollBarStyles = css`
+  *::-webkit-scrollbar {
+    width: 12px;
+    height: 0;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: ${theme.colors.background};
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: ${theme.colors.groundzero};
+    border-radius: 20px;
+    border: 2px solid ${theme.colors.background};
+  }
+`
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -15,7 +33,5 @@ export const GlobalStyle = createGlobalStyle`
     color: ${colors.text.main};
   }
 
-  *::-webkit-scrollbar {
-    display: ${window.navigator.platform === 'MacIntel' ? '' : 'none'}
-  }
+  ${isWinPlatform() && scrollBarStyles}
 `;
