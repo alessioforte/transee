@@ -9,8 +9,8 @@ const createWelcomeWindow = () => {
     const welcomeConfig: Electron.BrowserWindowConstructorOptions = {
       width: 520,
       height: 430,
-      titleBarStyle: 'hidden',
       backgroundColor: theme.colors.background,
+      titleBarStyle: process.platform == 'win32' ? 'hiddenInset' : 'hidden',
       minimizable: false,
       maximizable: false,
       resizable: false,
@@ -18,12 +18,14 @@ const createWelcomeWindow = () => {
     };
   
     welcomeWin = new BrowserWindow(welcomeConfig);
-  
+    welcomeWin.menuBarVisible = false;
     welcomeWin.loadURL(`${indexPath}?welcome`);
   
     welcomeWin.on('close', () => {
       welcomeWin = null;
-      app.dock.hide();
+      if (process.platform === 'darwin') {
+        app.dock.hide();
+      }
     });
   }
   return welcomeWin

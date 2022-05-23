@@ -10,14 +10,14 @@ const createPreferencesWindow = () => {
       width: 420,
       height: 430,
       backgroundColor: theme.colors.background,
-      titleBarStyle: 'hidden',
+      titleBarStyle: process.platform == 'win32' ? 'hiddenInset' : 'hidden',
       minimizable: false,
       maximizable: false,
       resizable: false,
       webPreferences,
     };
     preferencesWin = new BrowserWindow(preferencesConfig);
-  
+    preferencesWin.menuBarVisible = false;
     preferencesWin.loadURL(`${indexPath}?preferences`);
   
     preferencesWin.on('close', () => {

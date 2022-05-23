@@ -10,14 +10,14 @@ const createAboutWindow = () => {
       width: 520,
       height: 253,
       backgroundColor: theme.colors.background,
-      titleBarStyle: 'hidden',
+      titleBarStyle: process.platform == 'win32' ? 'hiddenInset' : 'hidden',
       minimizable: false,
       maximizable: false,
       resizable: false,
       webPreferences,
     };
     aboutWin = new BrowserWindow(aboutConfg);
-  
+    aboutWin.menuBarVisible = false;
     aboutWin.loadURL(`${indexPath}?about`);
   
     aboutWin.on('close', () => {
