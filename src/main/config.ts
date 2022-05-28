@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { version } from '../../package.json'
 import * as path from 'path';
 
 export const webPreferences: Electron.WebPreferences = {
@@ -10,9 +11,8 @@ export const webPreferences: Electron.WebPreferences = {
     : path.join(__dirname, '../../.erb/dll/preload.js'),
 };
 
-
 export const isDev = process.env.NODE_ENV === 'development';
-export const appVersion = process.env.VERSION;
+export const appVersion = version;
 export const indexPath = isDev
   ? `http://localhost:${process.env.PORT || '1212'}`
   :`file://${path.resolve(__dirname, '../renderer/', 'index.html')}`
