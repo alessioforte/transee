@@ -278,6 +278,8 @@ const Pronunciation = styled.div`
   font-size: 14px;
   border-top: 1px solid ${colors.foreground};
   color: ${colors.idle};
+  // TODO: change font for missing chars (ex. maneuver)
+  font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
 `;
 const Tips = styled.div`
   font-size: 14px;

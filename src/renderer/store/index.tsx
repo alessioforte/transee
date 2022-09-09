@@ -145,20 +145,35 @@ export const useStore = create(store)
 /**
  * Event Listener
  */
+
+const parser = (data: string) => {
+  const sliced = (data).slice(5);
+  let parsedURI = sliced;
+  try {
+    parsedURI = decodeURI(sliced);
+  } catch (err) {
+    parsedURI = sliced;
+  }
+  const parsed = JSON.parse(parsedURI);
+  return JSON.parse(parsed[0][2]);
+}
+
 window.electron.ipcRenderer.on('response', async (response, operation) => {
   switch (operation) {
     case 'hints':
       if (response) {
-        const decode = JSON.parse(decodeURI((response as string).slice(5)));
-        const data = JSON.parse(decode[0][2]);
-        const suggestions = data && data[0];
+        // const decode = JSON.parse(decodeURI((response as string).slice(5)));
+        // const data = JSON.parse(decode[0][2]);
+        const hints = parser(response as string)
+        const suggestions = hints && hints[0];
         useStore.setState({ suggestions })  
       }
       break;
     case 'translation':
-      const decode = JSON.parse(decodeURI((response as string).slice(5)));
-      const data = JSON.parse(decode[0][2]);
-      const google = mapping(data);
+      // const decode = JSON.parse(decodeURI((response as string).slice(5)));
+      // const data = JSON.parse(decode[0][2]);
+      const tr = parser(response as string)
+      const google = mapping(tr);
       if (google) {
         let payload: null | string = null;
         if (google.translation[1] && google.translation[1][0]) {
@@ -174,8 +189,9 @@ window.electron.ipcRenderer.on('response', async (response, operation) => {
       break;
     case 'voice':
       if (response) {
-        const decode = JSON.parse(decodeURI((response as string).slice(5)));
-        const data = JSON.parse(decode[0][2]);
+        // const decode = JSON.parse(decodeURI((response as string).slice(5)));
+        // const data = JSON.parse(decode[0][2]);
+        const data = parser(response as string)
         const voice = decodeURI(data[0]);
         const decoded = Uint8Array.from(window.atob(voice), (e) => e.charCodeAt(0));
         const context = new AudioContext();
