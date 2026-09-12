@@ -53,20 +53,30 @@ build when they are set.
 ### Layout
 
 ```
-index.html        single entry; the window is chosen by query string (?main, ?about, …)
+index.html                 single entry; the window is picked by query string
 src/
-  platform/       the only module that imports @tauri-apps/* — everything the
-                  UI needs from the shell goes through it
-  stores/         zustand: settings (persisted) and translation (ephemeral)
-  services/       google/{client,parse} and audio — no React, no shell
-  shared/         styles/{tokens,global}.css and the colour helper
-  types/          shared type definitions
-  components/     presentational; containers/ and windows/ compose them
-src-tauri/        Rust shell: tray, global shortcut, window positioning,
-                  settings, and the Google Translate request
-baseline/         reference screenshots of the old Electron build
-fixtures/         recorded Google batchexecute responses used by the tests
+  app/                     bootstrap + the ?main|?about|… → component map
+  features/
+    translation/           the bar: LangsBar, Searchbar, Textarea, StickyCards
+    settings/              Preferences window + the shortcut recorder
+    onboarding/            Welcome guide
+    about/
+  shared/
+    ui/                    generic presentational components + window Layout
+    hooks/  styles/        useDropdown; tokens.css + global.css
+    color.ts dom.ts validate.ts
+  platform/                the ONLY module importing @tauri-apps/*
+  services/                google/{client,parse} and audio — no React, no shell
+  stores/                  zustand: settings (persisted), translation (ephemeral)
+  types/                   shared type definitions
+src-tauri/                 Rust shell: tray, global shortcut, window positioning,
+                           settings, and the Google Translate request
+baseline/                  reference screenshots of the old Electron build
+fixtures/                  recorded Google batchexecute responses used by tests
 ```
+
+Imports use the `@/` (src) and `@assets/` aliases rather than relative paths, so
+moving a file does not cascade.
 
 Styling is CSS Modules over the custom properties in
 `src/shared/styles/tokens.css`. There is no runtime styling library; a test

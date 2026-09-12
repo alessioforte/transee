@@ -3,15 +3,16 @@
 /**
  * Replaces the old `createGlobalStyle` block in src/theme/GlobalStyle.ts.
  *
- * FONTS: `assets/fonts/` ships 14 Nunito weights, but the Electron build never
- * declared an `@font-face` for any of them — so the app has always rendered in
- * the system sans-serif unless the user happened to have Nunito installed.
- * That is preserved here deliberately: adding the @font-face now would restyle
- * every screen. Enable it as its own change, not as migration fallout.
+ * FONTS: the Electron build shipped 14 Nunito weights in `assets/fonts/` but
+ * never declared an `@font-face` for any of them, so it only ever rendered in
+ * Nunito on machines that happened to have it installed system-wide, and in the
+ * default sans-serif everywhere else. The unused files are gone and 'Nunito' is
+ * off the stack, which makes the rendering consistent rather than dependent on
+ * what the user has installed. It is unchanged on a machine without Nunito.
  */
 
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: sans-serif;
   font-weight: 300;
   margin: 0;
   padding: 0;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { selectLangs, invertLangs } from '@/containers/LangsBar/actions';
-import { Conversion, Langs } from '@/containers/LangsBar/interfaces';
+import { selectLangs, invertLangs } from '@/features/translation/LangsBar/actions';
+import { Conversion, Langs } from '@/features/translation/LangsBar/interfaces';
 
 // Fresh copy per test: invertLangs shallow-copies `threesome`, so it mutates
 // the caller's arrays — a quirk the tests must not share state through.

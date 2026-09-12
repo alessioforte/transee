@@ -6,21 +6,14 @@ import { fileURLToPath } from 'node:url';
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
 
-  // styled-components v5 reads process.env.NODE_ENV (plus SC_ATTR /
-  // SC_DISABLE_SPEEDY) at module scope. Webpack injected `process` for free;
-  // Vite does not, so without this the very first import throws
-  // "process is not defined" and nothing renders. Phase 2 removes
-  // styled-components entirely, and this define along with it.
-  define: {
-    'process.env': JSON.stringify({ NODE_ENV: mode }),
-  },
 
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@assets': fileURLToPath(new URL('./assets', import.meta.url)),
     },
   },
 
@@ -45,4 +38,4 @@ export default defineConfig(({ mode }) => ({
     minify: process.env.TAURI_ENV_DEBUG ? false : 'esbuild',
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
   },
-}));
+});

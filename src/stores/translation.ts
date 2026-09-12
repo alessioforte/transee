@@ -3,16 +3,16 @@ import {
   getGoogleTranslate,
   getGoogleSuggest,
   getGoogleVoice,
-} from '../services/google/client';
+} from '@/services/google/client';
 import {
   parseSuggestions,
   parseTranslation,
   parseVoice,
   pickPayload,
   Mapped,
-} from '../services/google/parse';
-import { play } from '../services/audio';
-import { validateInput } from '@/utils';
+} from '@/services/google/parse';
+import { play } from '@/services/audio';
+import { validateInput } from '@/shared/validate';
 import { Selected } from '@/types/langs';
 
 export type Speed = { from: boolean; to: boolean };

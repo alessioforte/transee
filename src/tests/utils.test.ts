@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateInput } from '@/utils';
+import { validateInput } from '@/shared/validate';
 import { getColorLuminance } from '@/shared/color';
 
 describe('validateInput (gates suggestion requests)', () => {
