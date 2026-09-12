@@ -1,27 +1,28 @@
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 import { invertLangs } from '../containers/LangsBar/actions';
+import { useSettings } from '@/stores/settings';
+import { useTranslation } from '@/stores/translation';
 import { hideWindow, openDevtools } from '@/platform';
 
-const useWindowKeyDown = ({ store }): void => {
-  const {
-    suggestions,
-    google,
-    search,
-    langs,
-    speed,
-    setLangs,
-    getData,
-    setSuggestions,
-    playAudio,
-    setInput
-  } = store;
+/**
+ * Window-level shortcuts for the translation bar.
+ *
+ * This used to assign `window.onkeydown` during render with no cleanup, wrapped
+ * in a `useCallback` keyed on an object that changed identity on every store
+ * update — so the memo never hit and anything else assigning `window.onkeydown`
+ * would silently win.
+ */
+const useWindowKeyDown = (): void => {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      // Read straight from the stores so the handler never closes over stale
+      // state and does not need re-binding on every keystroke.
+      const { langs, setLangs } = useSettings.getState();
+      const { suggestions, google, search, payload, setSuggestions, setInput, getData, playAudio } =
+        useTranslation.getState();
 
-  window.onkeydown = useCallback(
-    (e: KeyboardEvent) => {
-      // esc
       if (e.key === 'Escape') {
         e.preventDefault();
-
         if (suggestions.length > 0) {
           e.stopPropagation();
           setSuggestions([]);
@@ -30,26 +31,23 @@ const useWindowKeyDown = ({ store }): void => {
         }
       }
 
-      // ctrl i - invert langs
+      // ctrl i — invert languages
       if (e.ctrlKey && e.code === 'KeyI') {
-        const newLangs = invertLangs(store.langs);
+        const newLangs = invertLangs(langs);
         setLangs(newLangs);
-
-        if (store.payload) {
-          setInput(store.payload);
-          getData(store.payload, newLangs.selected);
+        if (payload) {
+          setInput(payload);
+          getData(payload, newLangs.selected);
         }
       }
 
-      // ctrl p - voice
+      // ctrl p — speak the source text
       if (e.ctrlKey && !e.altKey && e.code === 'KeyP') {
         e.preventDefault();
-        if (search) {
-          playAudio(search, langs.selected.from, 'from', speed);
-        }
+        if (search) playAudio(search, langs.selected.from, 'from');
       }
 
-      // ctrl alt p - voice
+      // ctrl alt p — speak the translation
       if (e.ctrlKey && e.altKey && e.code === 'KeyP') {
         e.preventDefault();
         const translation = google ? google.translation : null;
@@ -61,16 +59,18 @@ const useWindowKeyDown = ({ store }): void => {
           if (translation[0][0]) {
             voice = translation[0][0];
           }
-          playAudio(voice, langs.selected.to, 'to', speed);
+          playAudio(voice, langs.selected.to, 'to');
         }
       }
 
       if (e.shiftKey && e.ctrlKey && e.altKey && e.key === 'Backspace') {
         openDevtools();
       }
-    },
-    [store]
-  );
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 };
 
 export default useWindowKeyDown;

@@ -1,0 +1,135 @@
+.header {
+  margin: 0 18px;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px;
+  border-bottom: 1px solid var(--color-flatground);
+  color: var(--color-text-main);
+}
+
+.title {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 26px;
+}
+
+.details {
+  color: var(--color-text-soft);
+  font-size: 16px;
+}
+
+.row {
+  font-size: 14px;
+  margin: 9px 3px;
+}
+
+.short {
+  display: inline;
+  padding: 1px 9px;
+  background: var(--color-info);
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: lighter;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 18px;
+  color: var(--color-text-soft);
+  border-top: 1px solid var(--color-flatground);
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 270px;
+  height: 60px;
+  font-size: 12px;
+}
+
+.arrow {
+  top: 200px;
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  opacity: 0.3;
+  z-index: 3;
+}
+
+.arrow svg {
+  fill: gray;
+}
+
+.arrow:hover svg {
+  fill: white;
+}
+
+.arrowLeft {
+  left: 40px;
+  transform: rotate(180deg);
+}
+
+.arrowRight {
+  right: 40px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  transition: 0.3s ease;
+  padding-left: 53px;
+  color: var(--color-text-main);
+}
+
+/* .card width (350) + its two 32px margins == the carousel step in index.tsx */
+.card {
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 18px;
+  width: 350px;
+  border-radius: 5px;
+  margin: 0 32px;
+  padding: 12px;
+  flex-shrink: 0;
+}
+
+.card h2 {
+  font-size: 24px;
+  margin-bottom: 9px;
+  color: var(--color-text-info);
+}
+
+.note {
+  margin-top: 9px;
+  font-size: 12px;
+  color: var(--color-text-low);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+  margin: 9px 0;
+}
+
+.dot {
+  box-sizing: border-box;
+  background: var(--color-flatground);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 4px;
+  display: inline-block;
+}
+
+.dot[data-active='true'] {
+  background: var(--color-light);
+}

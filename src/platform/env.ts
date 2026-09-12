@@ -30,3 +30,5 @@ export const appVersion = boot.version;
  */
 export const isMac = boot.platform === 'macos';
 export const isWin = boot.platform === 'windows';
+
+export const platform = boot.platform;

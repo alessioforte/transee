@@ -1,0 +1,35 @@
+@keyframes delay {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.target {
+  display: inline-block;
+  width: fit-content;
+}
+
+.tip {
+  position: absolute;
+  /* Parked off-screen until the effect below measures it and assigns a real
+     position, so the first frame never flashes in the wrong place. */
+  left: -800px;
+  z-index: 99;
+  padding: 9px;
+  animation: 1.2s delay ease;
+  font-size: 12px;
+  max-height: 150px;
+  max-width: 300px;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--color-groundzero);
+  color: var(--color-text-main);
+  box-shadow: var(--shadow);
+  border-radius: 3px;
+}

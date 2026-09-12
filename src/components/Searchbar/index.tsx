@@ -1,14 +1,17 @@
-import React, {
+import {
+  Fragment,
   useRef,
   useState,
   useEffect,
   FunctionComponent,
   MutableRefObject,
+  ChangeEvent,
+  KeyboardEvent,
 } from 'react';
-import styled from 'styled-components';
 import { Spinner } from '..';
 import { Props } from './interfaces';
-import theme from '../../theme';
+import field from '@/shared/styles/field.module.css';
+import styles from './Searchbar.module.css';
 import { SEARCHBAR_ID, forceFocusOnInput } from '@/utils';
 
 const Searchbar: FunctionComponent<Props> = ({
@@ -28,15 +31,19 @@ const Searchbar: FunctionComponent<Props> = ({
   message = 'error',
   disabled = false,
 }) => {
-  const timeout: MutableRefObject<number | undefined> = useRef();
+  const timeout: MutableRefObject<number | undefined> = useRef(undefined);
   const input = useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = useState(initialValue);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [hover, setHover] = useState(-1);
 
+  // Refocus the textarea whenever the window itself takes focus. This used to
+  // assign `document.body.onfocus` directly, keyed on a ref (not a valid
+  // dependency) and never cleaned up.
   useEffect(() => {
-    document.body.onfocus = forceFocusOnInput;
-  }, [input.current]);
+    document.body.addEventListener('focus', forceFocusOnInput);
+    return () => document.body.removeEventListener('focus', forceFocusOnInput);
+  }, []);
 
   useEffect(() => {
     setValue(initialValue);
@@ -70,14 +77,14 @@ const Searchbar: FunctionComponent<Props> = ({
     }
   };
 
-  const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const text: string = e.target.value;
     setValue(text);
     setIsTyping(true);
     handleOnChange(text);
   };
 
-  const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onInputKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (suggestions?.length > 0) {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         const { length } = suggestions;
@@ -104,13 +111,19 @@ const Searchbar: FunctionComponent<Props> = ({
   };
 
   return (
-    <React.Fragment>
-      <Container>
+    <Fragment>
+      <div className={field.container}>
         {!isTyping &&
           suggestions?.length > 0 &&
           hover === -1 &&
-          value !== '' && <Autocomplete disabled value={suggestions[0][0]} />}
-        <Input
+          value !== '' && <textarea
+              className={`${styles.input} ${styles.autocomplete}`}
+              disabled
+              value={suggestions[0][0]}
+              readOnly
+            />}
+        <textarea
+          className={styles.input}
           ref={input}
           id={SEARCHBAR_ID}
           placeholder={placeholder}
@@ -131,94 +144,34 @@ const Searchbar: FunctionComponent<Props> = ({
           autoComplete="off"
         />
         {loading && (
-          <Loading>
+          <div className={field.loading}>
             <Spinner />
-          </Loading>
+          </div>
         )}
-        <Icons>{!loading && renderIcons && renderIcons()}</Icons>
-      </Container>
+        <div className={field.icons}>{!loading && renderIcons && renderIcons()}</div>
+      </div>
       {renderFooter && renderFooter()}
-      {isError && <Message>{message}</Message>}
+      {isError && <div className={field.message}>{message}</div>}
       {renderTips && renderTips()}
       {suggestions?.length > 0 && (
         <div>
           {suggestions.map((tip: [string, string], i: number) => (
-            <Hint
+            <div
               key={tip[0]}
-              className="sgt"
+              className={styles.hint}
               onClick={() => onSelect(tip[0])}
-              hover={hover === i}
+              data-hover={hover === i}
               onMouseEnter={() => setHover(i)}
               onMouseLeave={() => setHover(-1)}
             >
               <div>{tip[0]}</div>
               {tip[1] && <div>{tip[1]}</div>}
-            </Hint>
+            </div>
           ))}
         </div>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
 export default Searchbar;
-
-const { colors } = theme;
-/**
- * STYLES
- */
-const Container = styled.div`
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-`;
-const Input = styled.textarea`
-  box-sizing: border-box;
-  padding: 18px;
-  height: 60px;
-  width: 100%;
-  max-height: 300px;
-  font-size: 18px;
-  border: 0;
-  background: none;
-  resize: none;
-  color: ${colors.text.main};
-  &:focus {
-    outline: none;
-  }
-`;
-const Autocomplete = styled(Input)`
-  position: absolute;
-  color: ${colors.text.disabled};
-  z-index: -1;
-`;
-const Loading = styled.div`
-  position: absolute;
-  right: 18px;
-  top: 12px;
-`;
-const Icons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 18px;
-  min-width: 38px;
-  box-sizing: border-box;
-`;
-const Hint = styled.div<{ hover: boolean }>`
-  padding: 3px 18px;
-  border-top: 1px solid ${colors.flatground};
-  color: ${colors.text.soft};
-  font-size: 11px;
-  cursor: default;
-  line-height: 1.2em;
-  background: ${(props) => (props.hover ? colors.active : 'transparent')};
-  & > div:first-child {
-    color: ${colors.text.main};
-  }
-`;
-const Message = styled.div`
-  padding: 18px;
-  color: ${colors.text.error};
-`;

@@ -1,6 +1,9 @@
-import React from 'react';
+import type { ReactElement } from 'react';
 
-const icons = {
+// Some icons are a single path, others a <g> of them.
+type IconDef = { width: string; d?: string; group?: ReactElement };
+
+const icons: Record<string, IconDef> = {
   caret: {
     d:
       'M609.87,512a77.78,77.78,0,0,1-43.45-13.13L34.76,144.43a78.19,78.19,0,0,1,86.89-130L609.87,339.78,1098.09,14.4a78.14,78.14,0,0,1,90.39,127.49q-1.87,1.32-3.82,2.54L653.31,498.87A77.75,77.75,0,0,1,609.87,512Z',

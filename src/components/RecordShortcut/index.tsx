@@ -1,7 +1,6 @@
-import React, { useState, useEffect, FC } from 'react';
-import styled, { css } from 'styled-components';
+import { useState, useEffect, FC, MouseEvent } from 'react';
 import Icon from '../Icon';
-import theme from '../../theme';
+import styles from './RecordShortcut.module.css';
 
 type Data = { value: string | null };
 type Props = {
@@ -9,6 +8,11 @@ type Props = {
   onChange?: (data: Data) => void;
 };
 
+/**
+ * Produces Electron-style accelerator strings (`Shift+Ctrl+Alt+Cmd+X`). The
+ * global-shortcut plugin accepts that grammar verbatim, so nothing translates
+ * them on the way to Rust.
+ */
 const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
   const [state, setState] = useState({
     modifier: '',
@@ -17,149 +21,102 @@ const RecordShortcut: FC<Props> = ({ initialValue, onChange = () => null }) => {
     shortcut: initialValue || 'Click to record new shortcut',
   });
   const [showDelete, setShowDelete] = useState(!!initialValue);
+  const [recording, setRecording] = useState(false);
 
   useEffect(() => {
     if (state.status === 'success') {
       onChange({ value: state.shortcut });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status]);
 
-  const clickOnRecord = () => {
-    if (!showDelete) {
-      setState((prev) => ({
-        ...prev,
-        status: 'register',
-        shortcut: 'Type shortcut',
-      }));
-      setShowDelete(false);
+  // Listeners live in an effect so they are always torn down — previously they
+  // were added inside a click handler and only removed on the keyup/delete
+  // paths, leaking if the window closed mid-recording.
+  useEffect(() => {
+    if (!recording) return;
 
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keyup', handleKeyUp);
-    }
-  };
+    const onKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    e.preventDefault();
+      const shift = e.shiftKey ? 'Shift+' : '';
+      const ctrl = e.ctrlKey ? 'Ctrl+' : '';
+      const alt = e.altKey ? 'Alt+' : '';
+      const cmd = e.metaKey ? 'Cmd+' : '';
+      const modifier = shift + ctrl + alt + cmd;
 
-    const shift = e.shiftKey ? 'Shift+' : '';
-    const ctrl = e.ctrlKey ? 'Ctrl+' : '';
-    const alt = e.altKey ? 'Alt+' : '';
-    const cmd = e.metaKey ? 'Cmd+' : '';
-    const modifier = shift + ctrl + alt + cmd;
-    const keyCode = e.keyCode;
-    let char = '';
+      // `e.code` replaces the deprecated `e.keyCode`. Both are physical-key
+      // based, so this yields the same A-Z / 0-9 characters as before.
+      let char = '';
+      if (/^Key[A-Z]$/.test(e.code)) char = e.code.slice(3);
+      else if (/^Digit[0-9]$/.test(e.code)) char = e.code.slice(5);
 
-    if ((keyCode > 47 && keyCode < 58) || (keyCode > 64 && keyCode < 91)) {
-      char = String.fromCharCode(keyCode);
-    }
+      setState({ modifier, status: 'initial', char, shortcut: `${modifier}${char}` });
+    };
 
-    const shortcut = `${modifier}${char}`;
-    setState({
-      modifier,
-      status: 'initial',
-      char,
-      shortcut,
-    });
-  };
-
-  const handleKeyUp = () => {
-    setState((prev) => {
-      const isCmdOrCtrl = /cmd|ctrl/i.test(prev.modifier);
-      if (!isCmdOrCtrl || prev.char === '') {
-        return {
+    const onKeyUp = () => {
+      const isCmdOrCtrl = /cmd|ctrl/i.test(state.modifier);
+      if (!isCmdOrCtrl || state.char === '') {
+        setState((prev) => ({
           ...prev,
           shortcut: 'Please type valid shortcut',
           status: 'error',
-        };
+        }));
       } else {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
+        setState((prev) => ({ ...prev, status: 'success' }));
         setShowDelete(true);
-
-        return {
-          ...prev,
-          status: 'success',
-        };
+        setRecording(false);
       }
-    });
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
+    };
+  }, [recording, state.modifier, state.char]);
+
+  const clickOnRecord = () => {
+    if (showDelete) return;
+    setState((prev) => ({ ...prev, status: 'register', shortcut: 'Type shortcut' }));
+    setRecording(true);
   };
 
-  const clickOnDelete = (e) => {
+  const clickOnDelete = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setShowDelete(false);
+    setRecording(false);
     setState((prev) => ({
       ...prev,
       shortcut: 'Click to record new shortcut',
       status: 'register',
     }));
     onChange({ value: null });
-    document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('keyup', handleKeyUp);
   };
 
   return (
-    <Record onClick={clickOnRecord}>
+    <div className={styles.record} onClick={clickOnRecord}>
       {state.status === 'success' ? (
         <>
           {state.shortcut.split('+').map((key) => (
-            <Short status={state.status}>{key}</Short>
+            <div key={key} className={styles.short} data-status={state.status}>
+              {key}
+            </div>
           ))}
         </>
       ) : (
-        <Short status={state.status}>{state.shortcut}</Short>
+        <div className={styles.short} data-status={state.status}>
+          {state.shortcut}
+        </div>
       )}
       {showDelete && (
-        <Delete onClick={clickOnDelete}>
+        <div className={styles.delete} onClick={clickOnDelete}>
           <Icon name="delete" size={14} hover />
-        </Delete>
+        </div>
       )}
-    </Record>
+    </div>
   );
 };
 
 export default RecordShortcut;
-
-const { colors } = theme;
-
-const STATUS = {
-  initial: css``,
-  register: css`
-    color: ${colors.text.soft};
-  `,
-  success: css`
-    background: ${colors.info};
-    color: ${colors.text.main};
-    font-weight: bold;
-  `,
-  error: css`
-    color: ${colors.text.error};
-  `,
-};
-
-const Record = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  background: ${colors.flatground};
-  width: 230px;
-  height: 50px;
-  border-radius: 5px;
-  color: ${colors.text.main};
-  font-size: 14px;
-`;
-const Delete = styled.div`
-  display: flex;
-  align-content: center; 
-  align-items: center;
-  position: absolute;
-  top: 16px;
-  right: 9px;
-`;
-const Short = styled.div<{ status: string }>`
-  padding: 9px;
-  border-radius: 5px;
-  margin: 0 3px;
-  ${(props) => STATUS[props.status]};
-`;

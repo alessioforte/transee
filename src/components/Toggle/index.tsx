@@ -1,6 +1,5 @@
-import React, { FC, useState } from 'react';
-import styled from 'styled-components';
-import theme from '../../theme';
+import { FC, MouseEvent } from 'react';
+import styles from './Toggle.module.css';
 
 export type Data = {
   checked: boolean;
@@ -12,89 +11,35 @@ export type Data = {
 export type Props = {
   label?: string;
   name?: string;
-  initialValue?: boolean;
-  onChange?: (
-    data: Data,
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void;
+  value?: boolean;
+  onChange?: (data: Data, e: MouseEvent<HTMLDivElement>) => void;
 };
 
-export type KnobProps = {
-  active: boolean;
-  name?: string;
-  value: boolean;
-};
-
-const Toggle: FC<Props> = ({
-  label,
-  initialValue,
-  name,
-  onChange = () => null,
-}) => {
-  const [value, setValue] = useState<boolean>(initialValue || false);
-
-  const handleOnClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ): void => {
+/**
+ * Controlled. The prop used to be `initialValue`, seeded into a `useState` that
+ * never synced — so "Restore default settings" reset the store while the switch
+ * stayed where the user had left it.
+ */
+const Toggle: FC<Props> = ({ label, value = false, name, onChange = () => null }) => {
+  const handleOnClick = (e: MouseEvent<HTMLDivElement>): void => {
     const checked = !value;
-    setValue(checked);
-    const data: Data = { name, value: checked, checked, label };
-    onChange(data, e);
+    onChange({ name, value: checked, checked, label }, e);
   };
 
   return (
-    <Block>
-      <Knob
+    <div className={styles.block}>
+      <div
+        className={styles.knob}
+        data-checked={value}
         role="checkbox"
-        name={name}
-        value={value}
         aria-label={label}
         aria-checked={value}
         onClick={handleOnClick}
-        active={value}
         tabIndex={0}
-      ></Knob>
-      {label && <Label>{label}</Label>}
-    </Block>
+      />
+      {label && <div className={styles.label}>{label}</div>}
+    </div>
   );
 };
 
 export default Toggle;
-
-const { colors } = theme;
-
-export const Block = styled.div`
-  display: inline-block;
-`;
-export const Knob = styled.div<KnobProps>`
-  flex-shrink: 0;
-  position: relative;
-  height: 20px;
-  width: 40px;
-  border-radius: 20px;
-  position: relative;
-  background: ${colors.groundzero};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  &:hover {
-    opacity: 0.8;
-  }
-  &:focus {
-    outline: none;
-  }
-  &:after {
-    content: '';
-    height: 16px;
-    width: 16px;
-    background: ${(props) => (props.active ? colors.primary : colors.foreground)};
-    left: ${(props) => (props.active ? '20px' : '0')};
-    border-radius: 50%;
-    position: absolute;
-    margin: 2px;
-    transition: all 0.3s ease;
-  }
-`;
-export const Label = styled.div`
-  display: inline-block;
-  margin-left: 5px;
-`;

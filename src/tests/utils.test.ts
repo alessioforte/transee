@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { validateInput } from '@/utils';
-import { getColorLuminance } from '@/theme';
+import { getColorLuminance } from '@/shared/color';
 
 describe('validateInput (gates suggestion requests)', () => {
   it('accepts plain lowercase text', () => {
@@ -37,5 +37,8 @@ describe('getColorLuminance (hover/active tints derived at module eval)', () => 
   });
   it('returns invalid input unchanged', () => {
     expect(getColorLuminance('not-a-color', 0.2)).toBe('not-a-color');
+  });
+  it('handles 3-digit hex (previously produced #NaNNaNNaN)', () => {
+    expect(getColorLuminance('#abc', 0)).toBe('#aabbcc');
   });
 });

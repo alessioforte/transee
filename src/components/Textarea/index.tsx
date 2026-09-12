@@ -1,7 +1,7 @@
-import React, { FC, ReactElement } from 'react';
-import styled from 'styled-components';
+import { FC, ReactElement } from 'react';
 import { Spinner } from '..';
-import theme from '../../theme';
+import field from '@/shared/styles/field.module.css';
+import styles from './Textarea.module.css';
 
 export type Props = {
   loading?: boolean;
@@ -24,65 +24,21 @@ const Textarea: FC<Props> = ({
 }) => {
   return (
     <>
-      <Container>
-        <Text>
+      <div className={field.container}>
+        <div className={styles.text}>
           <span>{value}</span>
-          {description && <Description>{description}</Description>}
-        </Text>
+          {description && <span className={styles.description}>{description}</span>}
+        </div>
         {loading && (
-          <Loading>
+          <div className={field.loading}>
             <Spinner />
-          </Loading>
+          </div>
         )}
-        {renderIcons && <Icons>{renderIcons()}</Icons>}
-      </Container>
-      {isError && <Message>{message}</Message>}
+        {renderIcons && <div className={field.icons}>{renderIcons()}</div>}
+      </div>
+      {isError && <div className={field.message}>{message}</div>}
     </>
   );
 };
 
 export default Textarea;
-
-const { colors } = theme;
-/**
- * STYLES
- */
-const Container = styled.div`
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-`;
-const Text = styled.div`
-  box-sizing: border-box;
-  padding: 18px;
-  min-height: 60px;
-  width: 100%;
-  font-size: 18px;
-  border: 0;
-  background: none;
-  resize: none;
-  color: ${colors.text.main};
-`;
-const Description = styled.span`
-  color: ${colors.text.soft};
-  font-size: 12px;
-  margin: 0 8px;
-`;
-const Icons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 18px;
-  min-width: 38px;
-  box-sizing: border-box;
-`;
-const Loading = styled.div`
-  position: absolute;
-  right: 18px;
-  top: 12px;
-`;
-const Message = styled.div`
-  padding: 18px;
-  color: ${colors.text.error};
-`;

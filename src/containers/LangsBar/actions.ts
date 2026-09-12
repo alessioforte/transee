@@ -3,7 +3,7 @@ import {
   Option,
   Conversion,
   Target,
-  Values,
+  Langs,
   Selected,
 } from './interfaces';
 
@@ -12,10 +12,10 @@ const getOpposite = (conversion: Target): Target => {
 };
 
 export const selectLangs = (
-  prev: Values,
+  prev: Langs,
   target: Target,
   opt: Option
-): Values => {
+): Langs => {
   const { threesome, selected } = prev;
   const { value } = opt;
   const newSelected: Selected = { ...selected };
@@ -60,7 +60,7 @@ export const selectLangs = (
   return { threesome: newThreesome, selected: newSelected };
 };
 
-export const invertLangs = (prev: Values): Values => {
+export const invertLangs = (prev: Langs): Langs => {
   const { threesome, selected } = prev;
 
   const isInToThreesome = threesome.to.some(

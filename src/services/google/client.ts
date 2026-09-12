@@ -1,5 +1,5 @@
 import { batchexecute } from '@/platform';
-import { Langs } from './interfaces';
+import { Selected } from '@/types/langs';
 
 /**
  *
@@ -16,7 +16,7 @@ function rpc(id: string, args: unknown): Promise<string> {
 
 export async function getGoogleTranslate(
   text: string,
-  opts: Langs
+  opts: Selected
 ): Promise<string> {
   const { from, to } = opts;
   return rpc('MkEWBc', [[text, from, to, true], [null]]);
@@ -24,7 +24,7 @@ export async function getGoogleTranslate(
 
 export async function getGoogleSuggest(
   text: string,
-  opts: Langs
+  opts: Selected
 ): Promise<string> {
   const { from, to } = opts;
   return rpc('AVdN8', [text, from, to]);

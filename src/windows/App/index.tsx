@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import { FC, useState, useEffect, useMemo } from 'react';
 import { SearchbarData } from '../../components/Searchbar/interfaces';
-import { Conversion } from '../../containers/LangsBar/interfaces';
+import { Conversion, Langs } from '../../containers/LangsBar/interfaces';
 import { Icon, Searchbar, Textarea } from '../../components';
 import LangsBar from '../../containers/LangsBar';
 import { selectLangs, invertLangs } from '../../containers/LangsBar/actions';
@@ -9,57 +8,40 @@ import { langsFrom } from '../../services/langs';
 import { setMainWindowSize } from '../../utils';
 import StickyCards from '../../containers/StickyCards';
 import { useWindowKeyDown } from '../../hooks';
-import theme, { getColorLuminance } from '../../theme';
 import options from './utils';
-import { Store } from '../../interfaces'
+import { useSettings } from '@/stores/settings';
+import { useTranslation } from '@/stores/translation';
+import { toRows } from '../../services/google/parse';
+import styles from './App.module.css';
 
-interface Props {
-  store: Store
-}
-
-const App: React.FC<Props> = ({ store }) => {
-  useWindowKeyDown({ store });
+const App: FC = () => {
+  useWindowKeyDown();
   const [isDropped, setIsDropped] = useState<boolean>(false);
 
-  const {
-    suggestions,
-    google,
-    input,
-    search,
-    reverso,
-    engine,
-    langs,
-    speed,
-    loading,
-    getData,
-    setSuggestions,
-    setLangs,
-    setInput,
-    playAudio,
-    clearData,
-  } = store;
+  const langs = useSettings((s) => s.langs);
+  const setLangs = useSettings((s) => s.setLangs);
+
+  const suggestions = useTranslation((s) => s.suggestions);
+  const google = useTranslation((s) => s.google);
+  const input = useTranslation((s) => s.input);
+  const search = useTranslation((s) => s.search);
+  const payload = useTranslation((s) => s.payload);
+  const loading = useTranslation((s) => s.loading);
+  const getData = useTranslation((s) => s.getData);
+  const setSuggestions = useTranslation((s) => s.setSuggestions);
+  const setInput = useTranslation((s) => s.setInput);
+  const playAudio = useTranslation((s) => s.playAudio);
+  const clearData = useTranslation((s) => s.clearData);
 
   const { selected } = langs;
+  const translation = useMemo(() => toRows(google), [google]);
 
-  // TODO move this code in mapping
-  // handle masculine and feminine case
-  let translation: any = [];
-  if (engine === 'google' && store.google) {
-    if (store.google?.translation[0][0] || store.google?.translation[0][1]) {
-      translation = store.google.translation;
-    }
-    if (Array.isArray(store.google.translation[0][5])) {
-      let sentence = '';
-      store.google.translation[0][5].forEach((t) => {
-        sentence = sentence.concat(t[0], ' ');
-      });
-      translation = [[sentence]];
-    }
-  }
-
+  // Depends on what actually changes the rendered height. It used to depend on
+  // the whole store object, which zustand replaces on every update, so this
+  // fired an IPC resize on essentially every state change.
   useEffect(() => {
     setMainWindowSize();
-  }, [isDropped, store]);
+  }, [isDropped, google, suggestions, loading, input]);
 
   const onInputDebounce = ({ value }: SearchbarData) => {
     getData(value, selected);
@@ -71,12 +53,12 @@ const App: React.FC<Props> = ({ store }) => {
     }
   };
 
-  const handleOnLangsChange = (data) => {
+  const handleOnLangsChange = (data: Langs) => {
     setLangs(data);
-    if (store.payload) {
+    if (payload) {
       clearData();
-      setInput(store.payload);
-      getData(store.payload, data.selected);
+      setInput(payload);
+      getData(payload, data.selected);
     }
   };
 
@@ -100,7 +82,7 @@ const App: React.FC<Props> = ({ store }) => {
     setIsDropped(isVisible);
   };
 
-  const handleActionsInCards = (data) => {
+  const handleActionsInCards = (data: { value: string; invert?: boolean }) => {
     const { value, invert } = data;
     setSuggestions([]);
     setInput(value);
@@ -117,10 +99,9 @@ const App: React.FC<Props> = ({ store }) => {
   const handlePlayAudio = (
     value: string | string[],
     lang: string,
-    conversion: string
+    conversion: 'from' | 'to'
   ) => {
-    const text = value.toString();
-    playAudio(text, lang, conversion, speed);
+    playAudio(value.toString(), lang, conversion);
   };
 
   const renderTips = () => {
@@ -132,7 +113,7 @@ const App: React.FC<Props> = ({ store }) => {
     const iso = google?.correction[1] && google?.correction[1][0] ? google?.correction[1][0] : null;
 
     return (
-      <Tips>
+      <div className={styles.tips}>
         {correction && (
           <p>
             Did you mean{' '}
@@ -148,49 +129,12 @@ const App: React.FC<Props> = ({ store }) => {
             <span onClick={() => handleClickOnISO(iso)}>{langsFrom[iso]}</span>
           </p>
         )}
-      </Tips>
+      </div>
     );
   };
 
-  // const renderIcons = () =>
-  //   google && (
-  //     <Flex>
-  //       <div className="left"></div>
-  //       <div className="right">
-  //         {google && (
-  //           <span onClick={() => setEngine('google')}>
-  //             <Tooltip content="Google Translate">
-  //               <Icon
-  //                 name="google"
-  //                 size={15}
-  //                 color={
-  //                   engine === 'google' ? colors.text.active : colors.text.idle
-  //                 }
-  //                 hover
-  //               />
-  //             </Tooltip>
-  //           </span>
-  //         )}
-  //         {reverso && (
-  //           <span onClick={() => setEngine('reverso')}>
-  //             <Tooltip content="Reverso Context">
-  //               <Icon
-  //                 name="reverso"
-  //                 size={15}
-  //                 color={
-  //                   engine === 'reverso' ? colors.text.active : colors.text.idle
-  //                 }
-  //                 hover
-  //               />
-  //             </Tooltip>
-  //           </span>
-  //         )}
-  //       </div>
-  //     </Flex>
-  //   );
-
   return (
-    <Wrapper>
+    <div className={styles.wrapper}>
       <LangsBar
         options={options}
         onChange={handleOnLangsChange}
@@ -221,14 +165,14 @@ const App: React.FC<Props> = ({ store }) => {
               )
             }
           />
-          {(google || reverso) && (
+          {google && (
             <>
-              <Block>
-                {google && google.pronunciation && (
-                  <Pronunciation>{google.pronunciation}</Pronunciation>
+              <div>
+                {google.pronunciation && (
+                  <div className={styles.pronunciation}>{google.pronunciation}</div>
                 )}
-                <Box>
-                  {google && engine === 'google' && translation.map((t) => (
+                <div className={styles.box}>
+                  {translation.map((t: any) => (
                     <Textarea
                       key={t[0]}
                       value={t[0]}
@@ -244,68 +188,15 @@ const App: React.FC<Props> = ({ store }) => {
                       )}
                     />
                   ))}
-                </Box>
-              </Block>
-              {!(!google && !reverso) && (
-                <StickyCards
-                  google={google}
-                  reverso={reverso}
-                  onClick={handleActionsInCards}
-                />
-              )}
+                </div>
+              </div>
+              <StickyCards google={google} onClick={handleActionsInCards} />
             </>
           )}
         </div>
       )}
-    </Wrapper>
+    </div>
   );
 };
 
 export default App;
-
-const { colors } = theme;
-
-// Electron gave frameless macOS windows rounded corners for free (it applies
-// the system window radius, 10pt since Big Sur); a Tauri `decorations: false`
-// window is square. The window is transparent -- and must NOT declare a
-// `backgroundColor` in tauri.conf.json, which would paint it opaque -- so this
-// radius clips to the desktop.
-const Wrapper = styled.div`
-  overflow: hidden;
-  border-radius: 10px;
-  background: ${colors.background};
-`;
-const Block = styled.div``;
-const Box = styled.div`
-  border-top: 1px solid ${colors.idle};
-  height: 100%;
-`;
-const Pronunciation = styled.div`
-  padding: 3px 18px;
-  font-size: 14px;
-  border-top: 1px solid ${colors.foreground};
-  color: ${colors.idle};
-  // TODO: change font for missing chars (ex. maneuver)
-  font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-`;
-const Tips = styled.div`
-  font-size: 14px;
-  color: ${colors.idle};
-  margin: 6px 18px;
-  cursor: default;
-  p {
-    margin: 0;
-  }
-  span {
-    color: ${colors.text.info};
-    transition: all 0.1s ease-out;
-    font-weight: bold;
-  }
-  span:hover {
-    color: ${getColorLuminance(colors.text.info, 0.5)};
-    cursor: pointer;
-  }
-  span:active {
-    color: ${getColorLuminance(colors.text.info, 0.9)};
-  }
-`;

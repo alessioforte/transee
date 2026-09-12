@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { selectLangs, invertLangs } from '@/containers/LangsBar/actions';
-import { Conversion, Values } from '@/containers/LangsBar/interfaces';
+import { Conversion, Langs } from '@/containers/LangsBar/interfaces';
 
 // Fresh copy per test: invertLangs shallow-copies `threesome`, so it mutates
 // the caller's arrays — a quirk the tests must not share state through.
-const defaults = (): Values => ({
+const defaults = (): Langs => ({
   threesome: {
     from: [
       { value: 'en', label: 'English' },
@@ -58,7 +58,7 @@ describe('invertLangs', () => {
   });
 
   it('carries options across when a side is missing the counterpart', () => {
-    const prev: Values = {
+    const prev: Langs = {
       threesome: {
         from: [
           { value: 'en', label: 'English' },

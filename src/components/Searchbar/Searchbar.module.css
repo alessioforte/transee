@@ -1,0 +1,41 @@
+.input {
+  box-sizing: border-box;
+  padding: 18px;
+  height: 60px;
+  width: 100%;
+  max-height: 300px;
+  font-size: 18px;
+  border: 0;
+  background: none;
+  resize: none;
+  color: var(--color-text-main);
+}
+
+.input:focus {
+  outline: none;
+}
+
+/* The greyed-out completion drawn behind the real input. */
+.autocomplete {
+  position: absolute;
+  color: var(--color-text-disabled);
+  z-index: -1;
+}
+
+.hint {
+  padding: 3px 18px;
+  border-top: 1px solid var(--color-flatground);
+  color: var(--color-text-soft);
+  font-size: 11px;
+  cursor: default;
+  line-height: 1.2em;
+  background: transparent;
+}
+
+.hint[data-hover='true'] {
+  background: var(--color-active);
+}
+
+.hint > div:first-child {
+  color: var(--color-text-main);
+}

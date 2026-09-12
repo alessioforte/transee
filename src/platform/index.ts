@@ -5,7 +5,7 @@
  * the React code portable and kept the Electron → Tauri swap to a handful of
  * call-site changes.
  */
-export { bootSettings, appVersion, isMac, isWin } from './env';
+export { bootSettings, appVersion, isMac, isWin, platform } from './env';
 export { setSetting } from './settings';
 export { resizeWindow, hideWindow, openDevtools } from './window';
 export { setGlobalShortcut, restoreSettings, setAutostart } from './shortcut';

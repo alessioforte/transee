@@ -1,21 +1,22 @@
+import { FC } from 'react';
 import { createRoot } from 'react-dom/client';
-import { GlobalStyle } from './theme/GlobalStyle';
 import { Tooltip } from './components';
 import { App, About, Welcome, Preferences } from './windows';
-import { useStore } from './store';
-import { bootSettings } from './platform';
+import { platform } from './platform';
+import './shared/styles/global.css';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
-Tooltip.setRoot(container, 'root-tooltip');
+const name = window.location.search.substr(1);
 
-// Injected by Rust before this script runs, so the hydration is still
-// synchronous — see src-tauri/src/windows.rs `bootstrap_script`.
-useStore.setState(state => ({
-  ...state,
-  ...bootSettings
-}))
+// global.css keys the transparent bar background and the Windows-only scrollbar
+// styling off these, replacing the JS conditionals that used to live inside a
+// styled-components `createGlobalStyle`.
+document.documentElement.dataset.window = name;
+document.documentElement.dataset.platform = platform;
+
+Tooltip.setRoot(container, 'root-tooltip');
 
 const Dev = () => (
   <div>
@@ -23,27 +24,13 @@ const Dev = () => (
   </div>
 );
 
-const VIEWS: any = {
+const VIEWS: Record<string, FC> = {
   main: App,
   about: About,
   welcome: Welcome,
   preferences: Preferences,
 };
 
-const ViewManager = () => {
-  const name = window.location.search.substr(1);
-  if (!name) throw new Error('page not found');
+const Component = VIEWS[name] || Dev;
 
-  const Component = VIEWS[name] || Dev;
-
-  const store = useStore()
-
-  return (
-    <>
-      <GlobalStyle $bar={name === 'main'} />
-      <Component store={store} />
-    </>
-  );
-};
-
-root.render(<ViewManager />);
+root.render(<Component />);

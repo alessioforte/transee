@@ -1,8 +1,7 @@
-import React from 'react';
-import theme from '../../theme';
-
-const { colors } = theme;
-const spinnerColor = colors.text.soft;
+// Matches --color-text-soft in shared/styles/tokens.css. Inlined rather than
+// read from CSS because these are SVG gradient stops and a `fill` attribute,
+// not style properties.
+const spinnerColor = '#AAAAAA';
 
 export default () => (
   <svg

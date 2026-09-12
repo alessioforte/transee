@@ -1,0 +1,52 @@
+/**
+ * Electron gave frameless macOS windows rounded corners for free (it applies
+ * the system window radius, 10pt since Big Sur); a Tauri `decorations: false`
+ * window is square. The bar window is transparent -- and must NOT declare a
+ * `backgroundColor` in tauri.conf.json, which would paint it opaque -- so this
+ * radius clips to the desktop.
+ */
+.wrapper {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-background);
+}
+
+.box {
+  border-top: 1px solid var(--color-idle);
+  height: 100%;
+}
+
+.pronunciation {
+  padding: 3px 18px;
+  font-size: 14px;
+  border-top: 1px solid var(--color-foreground);
+  color: var(--color-idle);
+  /* TODO: change font for missing chars (ex. maneuver) */
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+}
+
+.tips {
+  font-size: 14px;
+  color: var(--color-idle);
+  margin: 6px 18px;
+  cursor: default;
+}
+
+.tips p {
+  margin: 0;
+}
+
+.tips span {
+  color: var(--color-text-info);
+  transition: all 0.1s ease-out;
+  font-weight: bold;
+}
+
+.tips span:hover {
+  color: var(--color-text-info-hover);
+  cursor: pointer;
+}
+
+.tips span:active {
+  color: var(--color-text-info-active);
+}

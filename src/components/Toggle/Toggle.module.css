@@ -1,0 +1,44 @@
+.block {
+  display: inline-block;
+}
+
+.knob {
+  flex-shrink: 0;
+  position: relative;
+  height: 20px;
+  width: 40px;
+  border-radius: 20px;
+  background: var(--color-groundzero);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.knob:hover {
+  opacity: 0.8;
+}
+
+.knob:focus {
+  outline: none;
+}
+
+.knob::after {
+  content: '';
+  height: 16px;
+  width: 16px;
+  background: var(--color-foreground);
+  left: 0;
+  border-radius: 50%;
+  position: absolute;
+  margin: 2px;
+  transition: all 0.3s ease;
+}
+
+.knob[data-checked='true']::after {
+  background: var(--color-primary);
+  left: 20px;
+}
+
+.label {
+  display: inline-block;
+  margin-left: 5px;
+}

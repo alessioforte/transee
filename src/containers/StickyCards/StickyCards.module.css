@@ -1,0 +1,109 @@
+.sticky {
+  position: relative;
+  overflow: scroll;
+  max-height: 328px;
+  font-size: 16px;
+}
+
+.body {
+  padding: 10px 0;
+  color: #aaa;
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.rating {
+  width: 40px;
+  height: 6px;
+  margin: 10px 6px 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1px;
+}
+
+.rating > div {
+  height: 100%;
+  width: 100%;
+  background: none;
+}
+
+.rating > div[data-on='true'] {
+  background: var(--color-primary);
+}
+
+.word {
+  min-width: 180px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.word .word__text {
+  margin: 3px;
+  color: var(--color-text-main);
+  cursor: pointer;
+}
+
+.word .word__article {
+  margin: 3px;
+  min-width: 10px;
+}
+
+.values {
+  margin: 3px;
+  color: var(--color-text-soft);
+}
+
+.values .meaning {
+  margin: 0 3px;
+  cursor: pointer;
+}
+
+.section {
+  margin-left: 70px;
+  margin-top: 9px;
+}
+
+.definition {
+  color: #fff;
+}
+
+.examples {
+  padding-top: 20px;
+}
+
+.examples > li {
+  color: var(--color-text-low);
+  margin: 9px 18px 9px 9px;
+}
+
+.examples > li > b {
+  color: var(--color-text-main);
+  font-weight: 700;
+}
+
+.badge {
+  padding: 3px 5px;
+  margin: 2px 3px 2px 0;
+  border-radius: 5px;
+  background: var(--color-groundzero);
+  color: var(--color-text-main);
+  cursor: pointer;
+}
+
+.badge:hover {
+  background: var(--color-primary);
+}
+
+.trRow {
+  font-size: 14px;
+}
+
+.synonyms {
+  display: flex;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}

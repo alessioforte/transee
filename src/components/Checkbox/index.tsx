@@ -1,88 +1,54 @@
-import React, { useState, FunctionComponent } from 'react';
-import styled from 'styled-components';
+import { FunctionComponent, MouseEvent } from 'react';
 import Icon from '../Icon';
-import theme from '../../theme';
+import styles from './Checkbox.module.css';
+
+export type Data = {
+  value: boolean;
+  label?: string;
+  name?: string;
+};
 
 type Props = {
   label?: string;
   name?: string;
   value?: boolean;
-  onChange?: (data) => void;
+  onChange?: (data: Data) => void;
 };
 
+/**
+ * Controlled. It used to seed a `useState` from the `value` prop and never sync
+ * again, so "Restore default settings" reset the store while the box kept
+ * showing the old state.
+ */
 const Checkbox: FunctionComponent<Props> = ({
   label,
   name,
-  value,
+  value = false,
   onChange = () => null,
 }) => {
-  const [state, setState] = useState(value || false);
-
-  const handleOnClick = (e) => {
+  const handleOnClick = (e: MouseEvent<HTMLLabelElement>) => {
+    // The wrapper is a <label> around a real checkbox; without this the native
+    // toggle fires too and fights the controlled value.
     e.preventDefault();
-    const newValue = !state;
-    setState(newValue);
-
-    const data = { value: newValue, label, name };
-    onChange(data);
+    onChange({ value: !value, label, name });
   };
 
   return (
-    <Wrapper onClick={handleOnClick}>
-      <input type="checkbox" name={name} value={String(state)} readOnly checked={state} />
-      <Check
+    <label className={styles.wrapper} onClick={handleOnClick}>
+      <input type="checkbox" name={name} checked={value} readOnly />
+      <span
+        className={styles.check}
+        data-checked={value}
         role="checkbox"
-        data-name={name}
-        value={state}
         aria-label={label}
-        aria-checked={state}
+        aria-checked={value}
         tabIndex={0}
       >
         <Icon name="checkmark" size={9} color="#fff" />
-      </Check>
-      {label && <Label>{label}</Label>}
-    </Wrapper>
+      </span>
+      {label && <span className={styles.label}>{label}</span>}
+    </label>
   );
 };
 
 export default Checkbox;
-
-const { colors } = theme;
-
-const Wrapper = styled.label`
-  display: inline-flex;
-  width: fit-content;
-  cursor: pointer;
-  font-size: 1rem;
-  & > input {
-    position: absolute;
-    opacity: 0;
-    z-index: -1;
-  }
-`;
-const Check = styled.span<{ value: boolean }>`
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  background: ${(props) => (props.value ? colors.primary : colors.groundzero)};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    opacity: 0.8;
-  }
-  &:focus {
-    outline: none;
-  }
-  & svg {
-    position: absolute;
-    opacity: ${(props) => (props.value ? 1 : 0)};
-  }
-`;
-const Label = styled.span`
-  display: inline-block;
-  margin-left: 5px;
-`;

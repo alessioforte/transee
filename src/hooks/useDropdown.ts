@@ -1,7 +1,6 @@
-import { useState, useEffect, RefObject } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Props = {
-  dropdown: RefObject<HTMLElement>;
   onClose?: () => void;
 };
 
@@ -11,37 +10,46 @@ type Returns = {
   isOpen: boolean;
 };
 
-const useDropdown = ({
-  // dropdown,
-  onClose = () => null,
-}: Props): Returns => {
+/**
+ * Open/closed state for a dropdown, dismissed by any click or by the window
+ * losing focus.
+ *
+ * The listeners are owned by an effect now. They used to be added in `show()`
+ * and removed in an effect, but the handler was re-created on every render — so
+ * `removeEventListener` was always passed a different function identity than
+ * the one that had been registered, and the listeners accumulated.
+ *
+ * NOTE: dismissal is global, not outside-click. The hook used to accept a
+ * `dropdown` ref implying otherwise while ignoring it, which is why callers
+ * still need `stopPropagation()` on the control that opens the dropdown.
+ */
+const useDropdown = ({ onClose = () => null }: Props = {}): Returns => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Kept in a ref so a caller passing an inline arrow does not re-subscribe.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
-    if (!isOpen) {
-      window.removeEventListener('click', close);
-      window.removeEventListener('blur', close);
-    }
-  }, [isOpen])
+    if (!isOpen) return;
 
-  const show = () => {
-    if (!isOpen) {
-      setIsOpen(true);
-      window.addEventListener('click', close);
-      window.addEventListener('blur', close);
-    }
-  };
+    const dismiss = () => {
+      setIsOpen(false);
+      onCloseRef.current();
+    };
 
-  // const hide = (e: Event) => {
-  //   const node: Node | null = e.target as Node;
-  //   if (dropdown.current && !dropdown.current.contains(node)) {
-  //     close()
-  //   }
-  // }
+    window.addEventListener('click', dismiss);
+    window.addEventListener('blur', dismiss);
+    return () => {
+      window.removeEventListener('click', dismiss);
+      window.removeEventListener('blur', dismiss);
+    };
+  }, [isOpen]);
 
+  const show = () => setIsOpen(true);
   const close = () => {
     setIsOpen(false);
-    onClose();
+    onCloseRef.current();
   };
 
   return { show, close, isOpen };

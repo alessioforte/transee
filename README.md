@@ -54,14 +54,23 @@ build when they are set.
 
 ```
 index.html        single entry; the window is chosen by query string (?main, ?about, …)
-src/              React frontend
+src/
   platform/       the only module that imports @tauri-apps/* — everything the
                   UI needs from the shell goes through it
+  stores/         zustand: settings (persisted) and translation (ephemeral)
+  services/       google/{client,parse} and audio — no React, no shell
+  shared/         styles/{tokens,global}.css and the colour helper
+  types/          shared type definitions
+  components/     presentational; containers/ and windows/ compose them
 src-tauri/        Rust shell: tray, global shortcut, window positioning,
                   settings, and the Google Translate request
 baseline/         reference screenshots of the old Electron build
 fixtures/         recorded Google batchexecute responses used by the tests
 ```
+
+Styling is CSS Modules over the custom properties in
+`src/shared/styles/tokens.css`. There is no runtime styling library; a test
+re-derives the handful of tinted tokens so they cannot drift from the palette.
 
 ### Settings
 

@@ -8,6 +8,7 @@ src-tauri/gen
 # Migration scratch — screenshots taken while comparing against the Electron
 # build. `baseline/` is committed on purpose; these are throwaway.
 tauri-shots
+phase2-shots
 
 .env
 

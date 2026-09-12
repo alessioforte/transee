@@ -1,0 +1,20 @@
+.box {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  padding: 3px 18px;
+  color: var(--color-text-main);
+  margin: 0;
+  background: var(--color-frame);
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 9px 18px 1px rgba(26, 26, 26, 0.4);
+}
+
+.body {
+  padding: 3px 18px;
+}
