@@ -1,0 +1,114 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Transee",
+  "version": "2.1.0",
+  "identifier": "com.alessioforte.transee",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Transee",
+        "url": "index.html?main",
+        "width": 680,
+        "height": 85,
+        "decorations": false,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "fullscreen": false,
+        "visible": false,
+        "skipTaskbar": true,
+        "create": false,
+        "transparent": true
+      },
+      {
+        "label": "about",
+        "title": "Transee",
+        "url": "index.html?about",
+        "create": false,
+        "width": 520,
+        "height": 253,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "fullscreen": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "backgroundColor": "#2A2A2A"
+      },
+      {
+        "label": "preferences",
+        "title": "Transee",
+        "url": "index.html?preferences",
+        "create": false,
+        "width": 420,
+        "height": 430,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "fullscreen": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "backgroundColor": "#2A2A2A"
+      },
+      {
+        "label": "welcome",
+        "title": "Transee",
+        "url": "index.html?welcome",
+        "create": false,
+        "width": 520,
+        "height": 430,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "fullscreen": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "backgroundColor": "#2A2A2A"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost",
+      "dangerousDisableAssetCspModification": [
+        "style-src"
+      ],
+      "devCsp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg",
+      "nsis"
+    ],
+    "category": "Productivity",
+    "shortDescription": "Simple and useful tool for quick translation",
+    "copyright": "Copyright \u00a9 2026 Alessio Forte",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "hardenedRuntime": true,
+      "infoPlist": "Info.plist"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
+  }
+}
