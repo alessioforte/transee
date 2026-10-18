@@ -60,6 +60,7 @@ pub fn run() {
             restore_settings,
             open_devtools,
             translate::google_batchexecute,
+            translate::google_dictionary,
         ])
         .setup(|app| {
             let handle = app.handle().clone();

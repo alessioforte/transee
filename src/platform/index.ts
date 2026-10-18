@@ -10,4 +10,4 @@ export { setSetting } from './settings';
 export { resizeWindow, hideWindow, openDevtools } from './window';
 export { setGlobalShortcut, restoreSettings, setAutostart } from './shortcut';
 export { openExternal } from './opener';
-export { batchexecute } from './translate';
+export { batchexecute, googleDictionary } from './translate';

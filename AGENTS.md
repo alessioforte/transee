@@ -129,15 +129,23 @@ services/google/client.ts -> platform/translate.ts
   -> google_batchexecute -> src-tauri/src/translate.rs -> reqwest
 ```
 
+Source dictionary cards use the separate `google_dictionary` command and
+Google's structured `translate_a/single` endpoint. `dictionary.ts` normalizes
+translations, definitions, synonym groups, and examples into typed objects.
+Dictionary loading/errors are independent of the primary translation; keep
+generation checks when merging the result. Queries over 200 characters,
+multiline input, and website URLs skip this optional request.
+
 The TypeScript client currently builds the encoded `f.req` body; Rust passes it
 through with `.body()` rather than re-encoding it with `.form()`. Preserve the
 wire format unless deliberately migrating the transport. Reuse the shared HTTP
 client, timeout, and redirect handling.
 
 `docs/google-translate-rpc.md` describes a proposed browser-backed migration for
-rich dictionary cards. Its hidden webview, BGR header generation, and new card
-parser are not implemented. Revalidate its dated observations against current
-Google behavior when undertaking that migration.
+rich dictionary cards. Its hidden webview and BGR header generation are not
+implemented. See `docs/google-dictionary-rea-audit.md` for the newer REA evidence
+and implemented structured-endpoint approach. A BGR header alone did not
+produce cards in the observed browser sessions.
 
 For protocol or parser changes, update sanitized fixtures and tests together.
 Check absent dictionary fields, corrections, suggestions, audio, and translation

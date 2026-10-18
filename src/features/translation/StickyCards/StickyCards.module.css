@@ -5,6 +5,18 @@
   font-size: 16px;
 }
 
+.sticky button {
+  border: 0;
+  font: inherit;
+}
+
+.word__text,
+.meaning {
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+
 .body {
   padding: 10px 0;
   color: #aaa;

@@ -50,3 +50,9 @@
 .tips span:active {
   color: var(--color-text-info-active);
 }
+
+.dictionaryStatus {
+  padding: 8px 10px;
+  color: var(--color-text-soft);
+  font-size: 13px;
+}

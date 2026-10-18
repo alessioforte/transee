@@ -14,3 +14,12 @@ import { invoke } from '@tauri-apps/api/core';
 export function batchexecute(body: string): Promise<string> {
   return invoke<string>('google_batchexecute', { body });
 }
+
+/** Fetches structured dictionary data through the shared native HTTP client. */
+export function googleDictionary(
+  text: string,
+  from: string,
+  to: string
+): Promise<string> {
+  return invoke<string>('google_dictionary', { text, from, to });
+}

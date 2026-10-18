@@ -15,6 +15,17 @@ const fixture = (name: string) =>
   readFileSync(join(__dirname, '../../fixtures', name), 'utf8');
 
 describe('batchexecute parser (fixtures captured from the live endpoint)', () => {
+  it('selects the expected RPC from multiple length-prefixed chunks', () => {
+    // Serialize the inner value independently, as Google's double envelope does.
+    const chunks = `)]}'\n\n20\n${JSON.stringify([['di', 1]])}\n40\n${JSON.stringify([['wrb.fr', 'other', '[42]']])}\n50\n${JSON.stringify([['wrb.fr', 'AVdN8', JSON.stringify([[['run', 'correre']]])]])}\n`;
+    expect(parseSuggestions(chunks)).toEqual([['run', 'correre']]);
+    expect(() => parse(chunks, 'missing')).toThrow('Missing Google RPC payload for missing');
+  });
+
+  it('preserves percent escapes inside JSON strings', () => {
+    const body = `)]}'\n${JSON.stringify([['wrb.fr', 'test', JSON.stringify(['a%20b', '100%'])]])}`;
+    expect(parse(body)).toEqual(['a%20b', '100%']);
+  });
   it('parses a translation response', () => {
     const arr = parse(fixture('translation.txt'));
     expect(arr[0][6]).toEqual(['hello world', 'en', 'it', true]);

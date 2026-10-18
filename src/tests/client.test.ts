@@ -2,11 +2,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/platform', () => ({ batchexecute: vi.fn() }));
+vi.mock('@/platform', () => ({ batchexecute: vi.fn(), googleDictionary: vi.fn() }));
 
-import { batchexecute } from '@/platform';
+import { batchexecute, googleDictionary } from '@/platform';
 import {
   getTranslation,
+  getGoogleDictionary,
   getWebsiteTranslationUrl,
 } from '@/services/google/client';
 import { toRows } from '@/services/google/parse';
@@ -55,6 +56,25 @@ describe('getTranslation', () => {
     await expect(
       getTranslation('hello world', { from: 'en', to: 'it' })
     ).rejects.toThrow('offline');
+    expect(send).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('optional dictionary client', () => {
+  afterEach(() => vi.mocked(googleDictionary).mockReset());
+
+  it('uses the structured endpoint and parses cards', async () => {
+    vi.mocked(googleDictionary).mockResolvedValueOnce(fixture('dictionary-run.json'));
+    const dictionary = await getGoogleDictionary(' run ', { from: 'en', to: 'it' });
+    expect(googleDictionary).toHaveBeenCalledWith('run', 'en', 'it');
+    expect(dictionary?.examples).toContain('I run every morning');
+  });
+
+  it('skips websites, empty inputs, long inputs and multiline text', async () => {
+    for (const text of ['', '  ', 'https://example.com/', 'word\nword', '字'.repeat(201)]) {
+      expect(await getGoogleDictionary(text, { from: 'en', to: 'it' })).toBeNull();
+    }
+    expect(googleDictionary).not.toHaveBeenCalled();
   });
 });
 

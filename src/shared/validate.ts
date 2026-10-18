@@ -31,3 +31,10 @@ export const isWebUrl = (text: string): boolean => {
     !url.password
   );
 };
+
+/** Dictionary enrichment is useful for short, single-line text queries. */
+export const isDictionaryQuery = (text: string): boolean => {
+  const value = text.trim();
+  return Boolean(value) && [...value].length <= 200 &&
+    !/[\r\n]/.test(text) && !isWebUrl(value);
+};

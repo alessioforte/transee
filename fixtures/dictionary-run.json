@@ -1,0 +1,47 @@
+{
+  "src": "en",
+  "dict": [
+    {
+      "pos": "verb",
+      "base_form": "run",
+      "entry": [
+        { "word": "funzionare", "reverse_translation": ["work", "operate", "run", "function", "act", "behave"], "score": 0.07131668 },
+        { "word": "correre", "reverse_translation": ["run", "race", "rush", "take part in", "go round", "scud"], "score": 0.05554149 }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "pos": "verb",
+      "base_form": "run",
+      "entry": [
+        {
+          "gloss": "move at a speed faster than a walk, never having both or all the feet on the ground at the same time.",
+          "definition_id": "m_en_gbus0888500.013",
+          "example": "the dog ran across the road"
+        },
+        {
+          "gloss": "pass or cause to pass quickly or smoothly in a particular direction.",
+          "definition_id": "m_en_gbus0888500.029",
+          "example": "the rumor ran through the pack of photographers"
+        }
+      ]
+    }
+  ],
+  "synsets": [
+    {
+      "pos": "verb",
+      "base_form": "run",
+      "entry": [
+        { "synonym": ["tear", "pelt"], "definition_id": "m_en_gbus0888500.013", "label_info": { "register": ["informal"] } },
+        { "synonym": ["sprint", "race"], "definition_id": "m_en_gbus0888500.013" }
+      ]
+    }
+  ],
+  "examples": {
+    "example": [
+      { "text": "I <b>run</b> every morning", "definition_id": "m_en_gbus0888500.019" },
+      { "text": "the tape has <b>run</b> out", "definition_id": "m_en_gbus0888500.057" }
+    ]
+  }
+}

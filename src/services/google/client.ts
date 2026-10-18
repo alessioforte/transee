@@ -1,5 +1,7 @@
-import { batchexecute } from '@/platform';
+import { batchexecute, googleDictionary } from '@/platform';
 import { Selected } from '@/types/langs';
+import { isDictionaryQuery } from '@/shared/validate';
+import { GoogleDictionary, parseDictionary } from './dictionary';
 import {
   Mapped,
   parseSimpleTranslation,
@@ -13,8 +15,7 @@ import {
  *
  */
 
-// Each call resolves with the raw `batchexecute` body, `)]}'`-prefix and all —
-// the parser in the store is unchanged from the Electron build.
+// Keep the raw RPC body for parse.ts, including anti-JSON prefixes and chunks.
 function rpc(id: string, args: unknown): Promise<string> {
   const data = [[[id, JSON.stringify(args), null, 'generic']]];
   return batchexecute(`f.req=${encodeURI(JSON.stringify(data))}`);
@@ -40,20 +41,31 @@ export async function getGoogleSimpleTranslate(
  * `MkEWBc`, falling back to `MKPkhb` when its response no longer parses into
  * rows. Google reshuffles the positional `MkEWBc` layout from time to time; the
  * one-field `MKPkhb` answer keeps plain translation working until the parser
- * catches up. A transport failure fails both, so the caller still sees it.
+ * catches up. Transport failures propagate without a duplicate request.
  */
 export async function getTranslation(
   text: string,
   opts: Selected
 ): Promise<Mapped> {
+  const response = await getGoogleTranslate(text, opts);
   try {
-    const google = parseTranslation(await getGoogleTranslate(text, opts));
+    const google = parseTranslation(response);
     if (toRows(google).length > 0) return google;
     throw new Error('GetTranslation returned no rows');
   } catch (err) {
     console.warn('[transee] falling back to GetSimpleTextTranslation', err);
     return parseSimpleTranslation(await getGoogleSimpleTranslate(text, opts));
   }
+}
+
+/** Optional source-side cards; an unavailable dictionary never blocks translation. */
+export async function getGoogleDictionary(
+  text: string,
+  opts: Selected
+): Promise<GoogleDictionary | null> {
+  const query = text.trim();
+  if (!isDictionaryQuery(text)) return null;
+  return parseDictionary(await googleDictionary(query, opts.from, opts.to), query);
 }
 
 export async function getGoogleSuggest(

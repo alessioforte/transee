@@ -1,3 +1,5 @@
+import { GoogleDictionary } from './dictionary';
+
 /**
  * Decoding of Google's `batchexecute` responses.
  *
@@ -7,18 +9,25 @@
  * recorded responses in `fixtures/`.
  */
 
-/** Strips the `)]}'` anti-JSON prefix and unwraps the doubly-encoded payload. */
-export function parse(data: string): any {
-  const sliced = data.slice(5);
-  let parsedURI = sliced;
+/** Supports both plain responses and the browser's length-prefixed chunks. */
+export function parse(data: string, rpcId?: string): any {
+  const body = data.replace(/^\)\]\}'\r?\n?/, '').trim();
+  let chunks: unknown[];
   try {
-    parsedURI = decodeURI(sliced);
+    chunks = [JSON.parse(body)];
   } catch {
-    // Some responses contain stray `%` sequences that are not valid escapes.
-    parsedURI = sliced;
+    chunks = body.split(/\r?\n/).filter((line) => line.trim().startsWith('['))
+      .map((line) => JSON.parse(line));
   }
-  const parsed = JSON.parse(parsedURI);
-  return JSON.parse(parsed[0][2]);
+  for (const chunk of chunks) {
+    if (!Array.isArray(chunk)) continue;
+    const frame = chunk.find((entry: unknown) =>
+      Array.isArray(entry) && entry[0] === 'wrb.fr' &&
+      (!rpcId || entry[1] === rpcId) && typeof entry[2] === 'string'
+    );
+    if (frame) return JSON.parse(frame[2]);
+  }
+  throw new Error(`Missing Google RPC payload${rpcId ? ` for ${rpcId}` : ''}`);
 }
 
 export type Mapped = {
@@ -33,6 +42,7 @@ export type Mapped = {
   seeAlso: any;
   synonyms: any;
   translations: any;
+  dictionary?: GoogleDictionary;
 };
 
 // TODO improve mapping — the indices are Google's, not ours.
@@ -68,12 +78,12 @@ export function pickPayload(google: Mapped): string | null {
 }
 
 export function parseSuggestions(response: string): [string, string][] {
-  const hints = parse(response);
+  const hints = parse(response, 'AVdN8');
   return (hints && hints[0]) || [];
 }
 
 export function parseTranslation(response: string): Mapped {
-  return map(parse(response));
+  return map(parse(response, 'MkEWBc'));
 }
 
 /**
@@ -82,7 +92,7 @@ export function parseTranslation(response: string): Mapped {
  * it is shaped into a `Mapped` with a single row and no dictionary data.
  */
 export function parseSimpleTranslation(response: string): Mapped {
-  const data = parse(response);
+  const data = parse(response, 'MKPkhb');
   if (!Array.isArray(data) || typeof data[0] !== 'string') {
     throw new Error('Unexpected GetSimpleTextTranslation response');
   }
@@ -102,7 +112,7 @@ export function parseSimpleTranslation(response: string): Mapped {
 
 /** Google returns the audio as base64 inside the usual positional wrapper. */
 export function parseVoice(response: string): Uint8Array {
-  const data = parse(response);
+  const data = parse(response, 'jQ1olc');
   const voice = decodeURI(data[0]);
   return Uint8Array.from(window.atob(voice), (c) => c.charCodeAt(0));
 }

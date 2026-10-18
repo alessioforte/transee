@@ -13,7 +13,7 @@ import {
   canSpeak,
 } from '@/features/translation/LangsBar/actions';
 import { AUTO, langsFrom } from '@/features/translation/langs';
-import { setMainWindowSize } from '@/shared/dom';
+import { forceFocusOnInput, setMainWindowSize } from '@/shared/dom';
 import { isWebUrl } from '@/shared/validate';
 import StickyCards from '@/features/translation/StickyCards';
 import useWindowKeyDown from '../useWindowKeyDown';
@@ -38,6 +38,9 @@ const App: FC = () => {
   const search = useTranslation((s) => s.search);
   const payload = useTranslation((s) => s.payload);
   const loading = useTranslation((s) => s.loading);
+  const error = useTranslation((s) => s.error);
+  const dictionaryLoading = useTranslation((s) => s.dictionaryLoading);
+  const dictionaryError = useTranslation((s) => s.dictionaryError);
   const getData = useTranslation((s) => s.getData);
   const setSuggestions = useTranslation((s) => s.setSuggestions);
   const setInput = useTranslation((s) => s.setInput);
@@ -55,7 +58,7 @@ const App: FC = () => {
   // fired an IPC resize on essentially every state change.
   useEffect(() => {
     setMainWindowSize();
-  }, [isDropped, google, suggestions, loading, input]);
+  }, [isDropped, google, suggestions, loading, input, dictionaryLoading, dictionaryError, error]);
 
   const onInputDebounce = ({ value }: SearchbarData) => {
     getData(value, selected);
@@ -108,6 +111,7 @@ const App: FC = () => {
     }
 
     getData(value, opts);
+    forceFocusOnInput();
   };
 
   const handlePlayAudio = (
@@ -184,7 +188,7 @@ const App: FC = () => {
             placeholder="Translate"
             initialValue={input}
             delay={900}
-            isError={false}
+            isError={error}
             message="Service Unavailable"
             renderTips={renderTips}
             loading={loading}
@@ -226,6 +230,8 @@ const App: FC = () => {
                 </div>
               </div>
               <StickyCards google={google} onClick={handleActionsInCards} />
+              {dictionaryLoading && <p role="status" className={styles.dictionaryStatus}>Loading dictionary…</p>}
+              {dictionaryError && <p role="status" className={styles.dictionaryStatus}>Dictionary temporarily unavailable</p>}
             </>
           )}
         </div>

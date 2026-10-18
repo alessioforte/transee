@@ -13,6 +13,10 @@ A macOS/Windows menubar app. Hit the global shortcut (`Ctrl+Alt+T` by default),
 type, get a translation. Built with [Tauri 2](https://v2.tauri.app), React and
 TypeScript.
 
+Short text queries also load Google dictionary cards with alternative
+translations, definitions, synonyms, and usage examples when available.
+Dictionary loading is independent of the main translation.
+
 ### Requirements
 
 - Node 20+

@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import { Card } from '@/shared/ui';
 import { Mapped } from '@/services/google/parse';
+import DictionaryCards from './DictionaryCards';
 import styles from './StickyCards.module.css';
 
 type Data = {
@@ -24,6 +25,7 @@ const Frequency = ({ value }: { value: number }) => (
 
 const StickyCards: FunctionComponent<Props> = ({ google, onClick = () => null }) => {
   if (!google) return null;
+  if (google.dictionary) return <DictionaryCards dictionary={google.dictionary} onClick={onClick} />;
 
   return (
     <div className={styles.sticky}>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import {
   getTranslation,
+  getGoogleDictionary,
   getGoogleSuggest,
   getGoogleVoice,
 } from '@/services/google/client';
@@ -11,7 +12,7 @@ import {
   Mapped,
 } from '@/services/google/parse';
 import { play } from '@/services/audio';
-import { validateInput } from '@/shared/validate';
+import { isDictionaryQuery, validateInput } from '@/shared/validate';
 import { Selected } from '@/types/langs';
 
 export type Speed = { from: boolean; to: boolean };
@@ -24,6 +25,8 @@ export type TranslationState = {
   google: Mapped | null;
   loading: boolean;
   error: boolean;
+  dictionaryLoading: boolean;
+  dictionaryError: boolean;
   speed: Speed;
 
   getData: (text: string, langs: Selected) => void;
@@ -41,6 +44,8 @@ const empty = {
   google: null,
   loading: false,
   error: false,
+  dictionaryLoading: false,
+  dictionaryError: false,
   speed: { from: true, to: true },
 };
 
@@ -60,32 +65,81 @@ export const useTranslation = create<TranslationState>((set, get) => ({
     const fresh = () => current === generation;
 
     if (!text) {
-      set({ google: null, suggestions: [], payload: null, loading: false, error: false, search: text });
+      set({
+        google: null,
+        suggestions: [],
+        payload: null,
+        loading: false,
+        error: false,
+        dictionaryLoading: false,
+        dictionaryError: false,
+        search: text,
+      });
       return;
     }
 
-    set({ loading: true, search: text });
+    set({
+      google: null,
+      payload: null,
+      suggestions: [],
+      loading: true,
+      error: false,
+      dictionaryLoading: false,
+      dictionaryError: false,
+      search: text,
+    });
 
     if (validateInput(text)) {
       getGoogleSuggest(text, langs)
         .then((res) => fresh() && set({ suggestions: parseSuggestions(res) }))
-        .catch((err) => fresh() && fail(set, err, 'hints'));
-    } else {
-      set({ suggestions: [] });
+        .catch((err) => {
+          if (!fresh()) return;
+          console.error('[transee] suggestions failed', err);
+          set({ suggestions: [] });
+        });
     }
 
     getTranslation(text, langs)
       .then((google) => {
         if (!fresh()) return;
-        // `loading` is cleared here and nowhere else. It used to be cleared by
-        // whichever response arrived first, so a fast suggestions reply stopped
-        // the spinner while the translation was still in flight.
-        set({ google, payload: pickPayload(google), loading: false, error: false });
+        // Only the primary request controls the main loading/error state;
+        // suggestions and dictionary cards can finish independently.
+        const dictionaryLoading = isDictionaryQuery(text);
+        set({
+          google,
+          payload: pickPayload(google),
+          loading: false,
+          error: false,
+          dictionaryLoading,
+        });
+
+        if (!dictionaryLoading) return;
+
+        getGoogleDictionary(text, {
+          from: google.source ?? langs.from,
+          to: langs.to,
+        })
+          .then((dictionary) => {
+            if (!fresh()) return;
+            set({
+              google: dictionary ? { ...google, dictionary } : google,
+              dictionaryLoading: false,
+              dictionaryError: false,
+            });
+          })
+          .catch((err) => {
+            if (!fresh()) return;
+            console.error('[transee] dictionary failed', err);
+            set({ dictionaryLoading: false, dictionaryError: true });
+          });
       })
       .catch((err) => fresh() && fail(set, err, 'translation'));
   },
 
-  clearData: () => set({ ...empty }),
+  clearData: () => {
+    ++generation;
+    set({ ...empty });
+  },
 
   setInput: (input) => set({ input }),
 
