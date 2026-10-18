@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- Menubar app: no Dock icon, no menu bar presence at launch.
+         Set here as well as via set_activation_policy(Accessory) in lib.rs so
+         there is no Dock-icon flash between process start and setup(). -->
+    <key>LSUIElement</key>
+    <true/>
+  </dict>
+</plist>

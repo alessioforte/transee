@@ -1,0 +1,46 @@
+@import './tokens.css';
+
+/**
+ * Replaces the old `createGlobalStyle` block in src/theme/GlobalStyle.ts.
+ *
+ * FONTS: the Electron build shipped 14 Nunito weights in `assets/fonts/` but
+ * never declared an `@font-face` for any of them, so it only ever rendered in
+ * Nunito on machines that happened to have it installed system-wide, and in the
+ * default sans-serif everywhere else. The unused files are gone and 'Nunito' is
+ * off the stack, which makes the rendering consistent rather than dependent on
+ * what the user has installed. It is unchanged on a machine without Nunito.
+ */
+
+* {
+  font-family: sans-serif;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow: hidden;
+  color: var(--color-text-main);
+  background: var(--color-background);
+}
+
+/* The bar window is transparent so the App wrapper's rounded corners can clip
+   to the desktop; it paints its own background. */
+html[data-window='main'] body {
+  background: transparent;
+}
+
+/* Windows only — macOS overlay scrollbars need no styling. Previously gated by
+   an `isWinPlatform()` check in JS. */
+html[data-platform='windows'] *::-webkit-scrollbar {
+  width: 12px;
+  height: 0;
+}
+html[data-platform='windows'] *::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+html[data-platform='windows'] *::-webkit-scrollbar-thumb {
+  background-color: var(--color-groundzero);
+  border-radius: 20px;
+  border: 2px solid var(--color-background);
+}

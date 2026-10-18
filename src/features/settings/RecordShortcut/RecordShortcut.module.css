@@ -1,0 +1,43 @@
+.record {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: var(--color-flatground);
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  color: var(--color-text-main);
+  font-size: 14px;
+}
+
+.delete {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  position: absolute;
+  top: 16px;
+  right: 9px;
+}
+
+.short {
+  padding: 9px;
+  border-radius: 5px;
+  margin: 0 3px;
+}
+
+/* Was a `css` helper map keyed by the status string. */
+.short[data-status='register'] {
+  color: var(--color-text-soft);
+}
+
+.short[data-status='success'] {
+  background: var(--color-info);
+  color: var(--color-text-main);
+  font-weight: bold;
+}
+
+.short[data-status='error'] {
+  color: var(--color-text-error);
+}

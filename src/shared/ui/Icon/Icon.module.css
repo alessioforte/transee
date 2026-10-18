@@ -1,0 +1,12 @@
+.icon {
+  fill: var(--icon-fill);
+  height: var(--icon-size);
+}
+
+.hoverable:hover path {
+  fill: var(--icon-fill-hover);
+}
+
+.hoverable:active path {
+  fill: var(--color-text-main);
+}

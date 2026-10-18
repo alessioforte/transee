@@ -1,0 +1,31 @@
+/**
+ * The chrome shared by Searchbar and Textarea. Both declared their own
+ * byte-identical copies of these four rules.
+ */
+
+.container {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+.loading {
+  position: absolute;
+  right: 18px;
+  top: 12px;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 18px;
+  min-width: 38px;
+  box-sizing: border-box;
+}
+
+.message {
+  padding: 18px;
+  color: var(--color-text-error);
+}

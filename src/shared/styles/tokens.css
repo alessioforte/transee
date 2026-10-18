@@ -1,0 +1,68 @@
+/**
+ * Design tokens.
+ *
+ * A direct transcription of the old `src/theme/index.ts` object, which every
+ * component imported and destructured (`const { colors } = theme`). Values are
+ * unchanged.
+ *
+ * The `*-hover` / `*-active` tints at the bottom were produced by the
+ * `getColorLuminance()` helper at module-eval time. Its inputs were constant at
+ * every one of those call sites, so the results are baked in here rather than
+ * recomputed in the browser. `src/tests/tokens.test.ts` re-derives them from the
+ * helper and fails if the two ever drift apart.
+ */
+
+:root {
+  /* surfaces */
+  --color-frame: #1a1a1a;
+  --color-active: #1a1a1a;
+  --color-hover: #1a1a1a;
+  --color-dark: #1a1a1a;
+  --color-groundzero: #1a1a1a;
+  --color-background: #2a2a2a;
+  --color-higherground: #303030;
+  --color-flatground: #373737;
+  --color-foreground: #555555;
+  --color-upperground: #707070;
+
+  /* accents */
+  --color-primary: #0077b5;
+  --color-secondary: #86c5e0;
+  --color-action: #f7ac91;
+  --color-selected: #008080;
+  --color-success: #00fa9a;
+  --color-warning: #ffa500;
+  --color-danger: #b22222;
+  --color-error: #dc143c;
+  --color-info: #2182bd;
+  --color-light: #ffffff;
+  --color-idle: #999999;
+  --color-disabled: #555555;
+  --color-focus: #61dafb;
+
+  /* text */
+  --color-text-main: #ffffff;
+  --color-text-primary: #0077b5;
+  --color-text-secondary: #86c5e0;
+  --color-text-soft: #aaaaaa;
+  --color-text-low: #999999;
+  --color-text-disabled: #555555;
+  --color-text-idle: #444444;
+  --color-text-active: #ffffff;
+  --color-text-selected: #0077b5;
+  --color-text-hover: #ffffff;
+  --color-text-success: #00fa9a;
+  --color-text-warning: #ffa500;
+  --color-text-danger: #b22222;
+  --color-text-error: #dc143c;
+  --color-text-info: #0077b5;
+
+  --shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
+
+  /* derived — see the note above */
+  --color-text-low-hover: #e6e6e6; /* text-low     @ +0.5 */
+  --color-primary-hover: #0083c7; /* primary      @ +0.1 */
+  --color-primary-active: #009beb; /* primary      @ +0.3 */
+  --color-text-info-hover: #00b3ff; /* text-info    @ +0.5 */
+  --color-text-info-active: #00e2ff; /* text-info    @ +0.9 */
+}

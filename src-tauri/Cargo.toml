@@ -1,0 +1,46 @@
+[package]
+name = "transee"
+version = "3.0.0"
+description = "Simple and useful tool for quick translation"
+authors = ["Alessio Forte <fortealessio@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/alessioforte/transee"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+# The _lib suffix avoids a name collision with the binary on Windows.
+name = "transee_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# tray-icon is NOT a default feature; image-png/image-ico are needed by include_image!.
+tauri = { version = "2.11", features = ["macos-private-api", "tray-icon", "image-png", "image-ico"] }
+tauri-plugin-store = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# rustls-tls keeps TLS behaviour identical between macOS and Windows CI.
+reqwest = { version = "0.12", default-features = false, features = [
+    "rustls-tls",
+    "charset",
+    "gzip",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSResponder", "NSWindow"] }
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

@@ -1,0 +1,17 @@
+.text {
+  box-sizing: border-box;
+  padding: 18px;
+  min-height: 60px;
+  width: 100%;
+  font-size: 18px;
+  border: 0;
+  background: none;
+  resize: none;
+  color: var(--color-text-main);
+}
+
+.description {
+  color: var(--color-text-soft);
+  font-size: 12px;
+  margin: 0 8px;
+}

@@ -1,43 +1,28 @@
 node_modules
 dist
-packages
-.env
 
-# Don't check auto-generated stuff into git
-coverage
-stats.json
-.vscode
+# Rust / Tauri
+src-tauri/target
+src-tauri/gen
+
+# Migration scratch — screenshots taken while comparing against the Electron
+# build. `baseline/` is committed on purpose; these are throwaway.
+tauri-shots
+phase2-shots
+
+.env
 
 # Cruft
 .DS_Store
 npm-debug.log
-.idea
-.env
-
-__snapshots__
-*.snap
-
-publish.sh
-
-# Logs
-logs
 *.log
+.idea
+.vscode
+.eslintcache
 
 # Runtime data
 pids
 *.pid
 *.seed
 
-.eslintcache
-
-
-release/app/dist
-release/build
-.erb/dll
-
-.idea
-
-
-*.css.d.ts
-*.sass.d.ts
-*.scss.d.ts
+NOTE.md
