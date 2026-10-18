@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate version and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Check tag and manifest versions
+        id: version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node .github/scripts/check-release-version.mjs "$RELEASE_TAG"
+
+      - run: node --test .github/scripts/check-release-version.test.mjs
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  build:
+    name: Build ${{ matrix.name }}
+    needs: validate
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS universal
+            os: macos-15
+            target: universal-apple-darwin
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+            bundles: dmg
+            artifact: macos-universal
+            path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          - name: Windows x64
+            os: windows-2022
+            target: x86_64-pc-windows-msvc
+            rust-targets: x86_64-pc-windows-msvc
+            bundles: nsis
+            artifact: windows-x64
+            path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - run: npm ci
+
+      - name: Build installer
+        run: npm run package -- --ci --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} -- --locked
+
+      - name: Verify universal macOS executable
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          archs="$(lipo -archs src-tauri/target/universal-apple-darwin/release/bundle/macos/Transee.app/Contents/MacOS/transee)"
+          echo "Packaged macOS architectures: $archs"
+          [[ " $archs " == *" arm64 "* && " $archs " == *" x86_64 "* ]]
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ matrix.artifact }}
+          path: ${{ matrix.path }}
+          if-no-files-found: error
+          overwrite: true
+          compression-level: 0
+          retention-days: 7
+
+  publish:
+    name: Publish GitHub release
+    needs: [validate, build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download installers
+        uses: actions/download-artifact@v8
+        with:
+          pattern: release-*
+          merge-multiple: true
+          path: release-assets
+
+      - name: Publish complete release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          IS_PRERELEASE: ${{ needs.validate.outputs.prerelease }}
+        run: |
+          # Do not publish a release unless both expected installers are present.
+          shopt -s nullglob
+          macos_assets=(release-assets/*.dmg)
+          windows_assets=(release-assets/*.exe)
+          test "${#macos_assets[@]}" -eq 1
+          test "${#windows_assets[@]}" -eq 1
+
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --verify-tag \
+              --draft \
+              --title "Transee $RELEASE_TAG" \
+              --generate-notes \
+              --prerelease="$IS_PRERELEASE"
+          fi
+
+          # A failed upload leaves a new release as a draft. Reruns replace assets.
+          gh release upload "$RELEASE_TAG" "${macos_assets[@]}" "${windows_assets[@]}" --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --prerelease="$IS_PRERELEASE"

@@ -62,6 +62,44 @@ notarization are driven by the usual environment variables
 `APPLE_ID`/`APPLE_PASSWORD`/`APPLE_TEAM_ID`); Tauri notarizes as part of the
 build when they are set.
 
+### GitHub releases
+
+The [release workflow](.github/workflows/release.yml) runs when a `v*` tag is
+pushed. It checks the tag against the version in `package.json`,
+`package-lock.json` (both root entries), `src-tauri/Cargo.toml`, the `transee`
+entry in `src-tauri/Cargo.lock`, and `src-tauri/tauri.conf.json`, then runs
+typechecking and the offline frontend tests.
+
+After both builds succeed, it publishes one GitHub release with generated
+release notes and these installers:
+
+- macOS: universal `.dmg` for Apple Silicon and Intel; both Rust targets are
+  installed automatically, and the executable's architectures are checked.
+- Windows: x64 NSIS `.exe` installer.
+
+To release the current `3.0.0`, commit and push the workflow and matching
+version files first, then create and push the tag on that commit:
+
+```bash
+node .github/scripts/check-release-version.mjs v3.0.0
+git tag -a v3.0.0 -m "Release v3.0.0"
+git push origin v3.0.0
+```
+
+For later releases, update all the version files and use the matching tag.
+Prerelease versions such as `3.1.0-beta.1` / `v3.1.0-beta.1` are marked as
+prereleases automatically. A failed build does not publish a release. Retry
+transient build or upload failures with **Re-run failed jobs** in Actions;
+source fixes need a new commit and version tag. An upload failure
+leaves a newly created release as a draft, and reruns replace matching assets.
+
+The workflow uses the automatic `GITHUB_TOKEN` with `contents: write` only in
+the publishing job; no personal access token or extra secrets are needed.
+Installers are **unsigned and macOS builds are not notarized**: the workflow
+does not import signing certificates or pass signing credentials. Gatekeeper
+and Windows SmartScreen may warn users. Configure certificate import and
+signing/notarization secrets before using it for signed distribution.
+
 ### Layout
 
 ```
