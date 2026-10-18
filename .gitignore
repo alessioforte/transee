@@ -24,3 +24,5 @@ npm-debug.log
 pids
 *.pid
 *.seed
+
+NOTE.md

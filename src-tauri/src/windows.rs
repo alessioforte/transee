@@ -72,25 +72,52 @@ pub fn create<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<WebviewWind
         .map_err(|err| err.to_string())
 }
 
-/// Reposition, show, focus — in that order.
+/// Move to the active Space, reposition, show, and focus on the main thread.
 ///
 /// `set_focus()` is a no-op on a window that is not yet visible (tao guards on
-/// `isVisible`), so `show()` must come first. Both calls are queued onto the
-/// event loop in order, which is what lets this run from the global-shortcut
-/// thread.
+/// `isVisible`), so `show()` must come first. AppKit's Space behavior must be
+/// configured before either call activates the window.
 pub fn show_bar<R: Runtime>(app: &AppHandle<R>) {
     let Some(window) = app.get_webview_window(MAIN) else {
         return;
     };
 
-    if let Err(err) = reposition(app, &window) {
-        eprintln!("[transee] failed to reposition bar: {err}");
+    let app = app.clone();
+    let bar = window.clone();
+    if let Err(err) = window.run_on_main_thread(move || {
+        #[cfg(target_os = "macos")]
+        if let Err(err) = move_to_active_space(&bar) {
+            eprintln!("[transee] failed to configure bar Space behavior: {err}");
+        }
+
+        if let Err(err) = reposition(&app, &bar) {
+            eprintln!("[transee] failed to reposition bar: {err}");
+        }
+
+        LAST_SHOWN_MS.store(now_ms(), Ordering::Relaxed);
+
+        let _ = bar.show();
+        let _ = bar.set_focus();
+    }) {
+        eprintln!("[transee] failed to show bar on the main thread: {err}");
     }
+}
 
-    LAST_SHOWN_MS.store(now_ms(), Ordering::Relaxed);
+/// Bring the resident bar to the active Space when it is activated, instead
+/// of returning the user to the Space where the window was first shown.
+#[cfg(target_os = "macos")]
+fn move_to_active_space<R: Runtime>(window: &WebviewWindow<R>) -> tauri::Result<()> {
+    use objc2_app_kit::{NSWindow, NSWindowCollectionBehavior};
 
-    let _ = window.show();
-    let _ = window.set_focus();
+    let ns_window = window.ns_window()?.cast::<NSWindow>();
+    // SAFETY: show_bar runs this on the main thread, and the live Tauri window
+    // owns the NSWindow for the duration of this call.
+    let ns_window = unsafe { &*ns_window };
+    let mut behavior = ns_window.collectionBehavior();
+    behavior.remove(NSWindowCollectionBehavior::CanJoinAllSpaces);
+    behavior.insert(NSWindowCollectionBehavior::MoveToActiveSpace);
+    ns_window.setCollectionBehavior(behavior);
+    Ok(())
 }
 
 /// Port of `getWindowPosition` in src/main/windows/bar.ts:13-26.

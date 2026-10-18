@@ -5,15 +5,24 @@ import { Icon } from '@/shared/ui';
 import Searchbar from '../Searchbar';
 import Textarea from '../Textarea';
 import LangsBar from '@/features/translation/LangsBar';
-import { selectLangs, invertLangs } from '@/features/translation/LangsBar/actions';
-import { langsFrom } from '@/features/translation/langs';
+import {
+  selectLangs,
+  invertLangs,
+  detectedOption,
+  resolveSource,
+  canSpeak,
+} from '@/features/translation/LangsBar/actions';
+import { AUTO, langsFrom } from '@/features/translation/langs';
 import { setMainWindowSize } from '@/shared/dom';
+import { isWebUrl } from '@/shared/validate';
 import StickyCards from '@/features/translation/StickyCards';
 import useWindowKeyDown from '../useWindowKeyDown';
 import options from './utils';
 import { useSettings } from '@/stores/settings';
 import { useTranslation } from '@/stores/translation';
 import { toRows } from '@/services/google/parse';
+import { getWebsiteTranslationUrl } from '@/services/google/client';
+import { openExternal } from '@/platform';
 import styles from './App.module.css';
 
 const App: FC = () => {
@@ -37,6 +46,9 @@ const App: FC = () => {
 
   const { selected } = langs;
   const translation = useMemo(() => toRows(google), [google]);
+  const detected = detectedOption(selected, google?.source);
+  // `auto` has no voice; speak the source in the language Google detected.
+  const sourceLang = resolveSource(selected, google?.source);
 
   // Depends on what actually changes the rendered height. It used to depend on
   // the whole store object, which zustand replaces on every update, so this
@@ -90,7 +102,7 @@ const App: FC = () => {
     setInput(value);
     let opts = selected;
     if (invert) {
-      const data = invertLangs(langs);
+      const data = invertLangs(langs, detected);
       setLangs(data);
       opts = data.selected;
     }
@@ -107,12 +119,17 @@ const App: FC = () => {
   };
 
   const renderTips = () => {
-    if (!Array.isArray(google?.correction)) return null;
-    const parser = new DOMParser();
-    const tag: string | undefined = google?.correction[0] && google?.correction[0][0][1];
+    const website = isWebUrl(search) ? search.trim() : null;
+    if (!Array.isArray(google?.correction) && !website) return null;
 
-    const correction = tag && parser.parseFromString(tag, 'text/html').documentElement.textContent;
-    const iso = google?.correction[1] && google?.correction[1][0] ? google?.correction[1][0] : null;
+    let correction: string | null | undefined = null;
+    let iso: string | null = null;
+    if (Array.isArray(google?.correction)) {
+      const parser = new DOMParser();
+      const tag: string | undefined = google?.correction[0] && google?.correction[0][0][1];
+      correction = tag && parser.parseFromString(tag, 'text/html').documentElement.textContent;
+      iso = google?.correction[1] && google?.correction[1][0] ? google?.correction[1][0] : null;
+    }
 
     return (
       <div className={styles.tips}>
@@ -125,10 +142,22 @@ const App: FC = () => {
             />
           </p>
         )}
-        {iso && iso !== selected.from && (
+        {iso && iso !== selected.from && selected.from !== AUTO && langsFrom[iso] && (
           <p>
             Translate from{' '}
             <span onClick={() => handleClickOnISO(iso)}>{langsFrom[iso]}</span>
+          </p>
+        )}
+        {website && (
+          <p>
+            Translate website{' '}
+            <span
+              onClick={() =>
+                openExternal(getWebsiteTranslationUrl(website, selected))
+              }
+            >
+              {new URL(website).hostname}
+            </span>
           </p>
         )}
       </div>
@@ -141,7 +170,9 @@ const App: FC = () => {
         options={options}
         onChange={handleOnLangsChange}
         onToggleDropdown={handleToggleDropdown}
+        onResize={setMainWindowSize}
         values={langs}
+        detected={detected}
       />
       {!isDropped && (
         <div>
@@ -158,13 +189,13 @@ const App: FC = () => {
             renderTips={renderTips}
             loading={loading}
             renderIcons={() =>
-              google && (
+              google && canSpeak(sourceLang) ? (
                 <span
-                  onClick={() => handlePlayAudio(search, selected.from, 'from')}
+                  onClick={() => handlePlayAudio(search, sourceLang, 'from')}
                 >
                   <Icon name="speaker" size={15} hover />
                 </span>
-              )
+              ) : null
             }
           />
           {google && (
@@ -179,15 +210,17 @@ const App: FC = () => {
                       key={t[0]}
                       value={t[0]}
                       description={t[2]}
-                      renderIcons={() => (
-                        <span
-                          onClick={() =>
-                            handlePlayAudio(t[0], selected.to, 'to')
-                          }
-                        >
-                          <Icon name="speaker" size={15} hover />
-                        </span>
-                      )}
+                      renderIcons={() =>
+                        canSpeak(selected.to) ? (
+                          <span
+                            onClick={() =>
+                              handlePlayAudio(t[0], selected.to, 'to')
+                            }
+                          >
+                            <Icon name="speaker" size={15} hover />
+                          </span>
+                        ) : null
+                      }
                     />
                   ))}
                 </div>

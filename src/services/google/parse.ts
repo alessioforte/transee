@@ -26,6 +26,8 @@ export type Mapped = {
   correction: any;
   translation: any;
   input: any;
+  /** The language Google translated from: the detected one when `sl` is `auto`. */
+  source: string | null;
   definitions: any;
   examples: any;
   seeAlso: any;
@@ -36,10 +38,13 @@ export type Mapped = {
 // TODO improve mapping — the indices are Google's, not ours.
 export function map(arr: any[]): Mapped {
   return {
-    pronunciation: arr[0][0],
-    correction: arr[0][1] && arr[0][1],
+    // `arr[0]` is null when the input is a web address: Google then answers
+    // with the address itself plus its website-translation link.
+    pronunciation: arr[0]?.[0],
+    correction: arr[0]?.[1],
     translation: arr[1][0],
     input: arr[1][4],
+    source: arr[2] ?? arr[1][3] ?? null,
     definitions: arr[3] && arr[3][1] && arr[3][1][0], // verb, noun, adjective
     examples: arr[3] && arr[3][2] && arr[3][2][0].map((item: any) => item[1]),
     seeAlso: arr[3] && arr[3][3] && arr[3][3][0],
@@ -56,6 +61,9 @@ export function pickPayload(google: Mapped): string | null {
   if (google.translation[0][5] && google.translation[0][5][0][0]) {
     return google.translation[0][5][0][0];
   }
+  if (typeof google.translation[0][0] === 'string' && google.translation[0][0]) {
+    return google.translation[0][0];
+  }
   return null;
 }
 
@@ -66,6 +74,30 @@ export function parseSuggestions(response: string): [string, string][] {
 
 export function parseTranslation(response: string): Mapped {
   return map(parse(response));
+}
+
+/**
+ * `GetSimpleTextTranslation` (`MKPkhb`) answers `[translation]` and nothing
+ * else. It is only the fallback for when the `MkEWBc` layout stops parsing, so
+ * it is shaped into a `Mapped` with a single row and no dictionary data.
+ */
+export function parseSimpleTranslation(response: string): Mapped {
+  const data = parse(response);
+  if (!Array.isArray(data) || typeof data[0] !== 'string') {
+    throw new Error('Unexpected GetSimpleTextTranslation response');
+  }
+  return {
+    pronunciation: null,
+    correction: null,
+    translation: [[data[0]]],
+    input: null,
+    source: null,
+    definitions: null,
+    examples: null,
+    seeAlso: null,
+    synonyms: null,
+    translations: null,
+  };
 }
 
 /** Google returns the audio as base64 inside the usual positional wrapper. */

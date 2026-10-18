@@ -1,6 +1,6 @@
 [package]
 name = "transee"
-version = "2.1.0"
+version = "3.0.0"
 description = "Simple and useful tool for quick translation"
 authors = ["Alessio Forte <fortealessio@gmail.com>"]
 license = "MIT"
@@ -29,6 +29,9 @@ reqwest = { version = "0.12", default-features = false, features = [
     "charset",
     "gzip",
 ] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSResponder", "NSWindow"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-global-shortcut = "2"

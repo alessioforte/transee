@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateInput } from '@/shared/validate';
+import { validateInput, isWebUrl } from '@/shared/validate';
 import { getColorLuminance } from '@/shared/color';
 
 describe('validateInput (gates suggestion requests)', () => {
@@ -21,6 +21,23 @@ describe('validateInput (gates suggestion requests)', () => {
   it('rejects newlines', () => {
     expect(validateInput('hello\nworld')).toBe(false);
   });
+});
+
+describe('isWebUrl (offers website translation)', () => {
+  it.each(['https://example.com', 'http://example.com/a?b=1#c', '  https://sub.example.org/path  '])(
+    'accepts %s',
+    (text) => expect(isWebUrl(text)).toBe(true)
+  );
+  it.each([
+    '',
+    'example.com',
+    'hello world',
+    'https://example.com and more',
+    'ftp://example.com',
+    'https://localhost:1420',
+    'https://user:pass@example.com',
+    'mailto:someone@example.com',
+  ])('rejects %j', (text) => expect(isWebUrl(text)).toBe(false));
 });
 
 describe('getColorLuminance (hover/active tints derived at module eval)', () => {

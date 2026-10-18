@@ -4,10 +4,12 @@ import {
   FunctionComponent,
   useRef,
   MutableRefObject,
+  KeyboardEvent,
 } from 'react';
 import { Icon } from '@/shared/ui';
 import { Props, Option, Conversion, Target, Langs } from './interfaces';
 import { selectLangs, invertLangs } from './actions';
+import { AUTO } from '../langs';
 import useDropdown from '@/shared/hooks/useDropdown';
 import { forceFocusOnInput } from '@/shared/dom';
 import styles from './LangsBar.module.css';
@@ -33,18 +35,37 @@ const defaultValues: Langs = {
 const LangsBar: FunctionComponent<Props> = ({
   options = { from: [], to: [] },
   values = defaultValues,
+  detected,
   onChange = () => null,
   onToggleDropdown = () => null,
+  onResize = () => null,
 }: Props) => {
   const dropdown: MutableRefObject<HTMLDivElement | null> = useRef(null);
   const { selected, threesome } = values;
   const [side, setSide] = useState(Conversion.from);
+  const [filter, setFilter] = useState('');
   const { isOpen, show, close } = useDropdown();
 
   useEffect(() => {
     onToggleDropdown(isOpen);
+    if (!isOpen) setFilter('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  // Filtering changes the dropdown's height, and with it the window's.
+  useEffect(() => {
+    if (isOpen) onResize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, side, isOpen]);
+
+  const query = filter.trim().toLocaleLowerCase();
+  const matches = query
+    ? options[side].filter(
+        (item: Option) =>
+          item.label.toLocaleLowerCase().includes(query) ||
+          item.value.toLocaleLowerCase() === query
+      )
+    : options[side];
 
   const select = (target: Target, opt: Option) => {
     const data = selectLangs(values, target, opt);
@@ -54,10 +75,27 @@ const LangsBar: FunctionComponent<Props> = ({
   };
 
   const invert = () => {
-    const data = invertLangs(values);
+    const data = invertLangs(values, detected);
     onChange(data);
     forceFocusOnInput();
   };
+
+  const onFilterKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && matches.length > 0) {
+      e.preventDefault();
+      select(side, matches[0]);
+    }
+    if (e.key === 'Escape') {
+      // Keeps the window-level handler from hiding the whole bar.
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+      forceFocusOnInput();
+    }
+  };
+
+  const labelOf = (opt: Option) =>
+    opt.value === AUTO && detected ? `${detected.label} - Detected` : opt.label;
 
   const showDropdown = (
     e: { stopPropagation: () => void },
@@ -82,7 +120,7 @@ const LangsBar: FunctionComponent<Props> = ({
       disabled={opt.value === selected[target]}
       onClick={() => select(target, opt)}
     >
-      {opt.label}
+      {labelOf(opt)}
     </button>
   );
 
@@ -126,21 +164,46 @@ const LangsBar: FunctionComponent<Props> = ({
         </div>
       </div>
       {isOpen && (
-        <div className={styles.dropdown} ref={dropdown}>
-          <div className={styles.list}>
-            {options[side].map((item: Option) => (
-              <div
-                key={item.value}
-                className={styles.item}
-                data-in-bar={threesome[side].some(
-                  (l: Option) => l.value === item.value
-                )}
-                data-active={item.value === selected[side]}
-                onClick={() => select(side, item)}
-              >
-                {item.label}
-              </div>
-            ))}
+        // Clicks inside stay inside: `useDropdown` dismisses on any window
+        // click, which would otherwise close it when the filter is clicked.
+        <div
+          className={styles.dropdown}
+          ref={dropdown}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <input
+            className={styles.filter}
+            value={filter}
+            placeholder="Search languages"
+            aria-label="Search languages"
+            onChange={(e) => setFilter(e.target.value)}
+            onKeyDown={onFilterKeyDown}
+            autoFocus
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
+          />
+          <div className={styles.scroll}>
+            {matches.length === 0 && (
+              <div className={styles.empty}>No languages found</div>
+            )}
+            <div className={styles.list}>
+              {matches.map((item: Option) => (
+                <div
+                  key={item.value}
+                  className={styles.item}
+                  title={item.label}
+                  data-in-bar={threesome[side].some(
+                    (l: Option) => l.value === item.value
+                  )}
+                  data-active={item.value === selected[side]}
+                  onClick={() => select(side, item)}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

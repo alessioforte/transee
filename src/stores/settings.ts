@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Langs } from '@/types/langs';
+import { normalizeLangs } from '@/features/translation/LangsBar/actions';
 import {
   bootSettings,
   appVersion,
@@ -53,12 +54,17 @@ export const defaults = {
   checkUpdates: true,
 };
 
+const boot = bootSettings as Partial<SettingsState>;
+
 export const useSettings = create<SettingsState>((set) => ({
   ...defaults,
   version: appVersion,
   // Injected by Rust before this module runs, so the first render already has
   // the user's real settings — no loading state, no flash of defaults.
-  ...(bootSettings as Partial<SettingsState>),
+  ...boot,
+  // Saved before the language catalogue was refreshed; written back to disk
+  // with the next `setLangs`.
+  langs: normalizeLangs(boot.langs ?? defaults.langs),
 
   setLangs: (langs) => {
     set({ langs });

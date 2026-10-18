@@ -7,6 +7,7 @@ import {
   pickPayload,
   parseSuggestions,
   parseTranslation,
+  parseSimpleTranslation,
   toRows,
 } from '@/services/google/parse';
 
@@ -44,6 +45,45 @@ describe('mapping + payload heuristic end to end', () => {
   it('extracts the translated text from a single-word response', () => {
     const google = parseTranslation(fixture('translation-rich.txt'));
     expect(pickPayload(google)).toBe('Ciao');
+  });
+
+  it('reports the source language of an explicit pair', () => {
+    expect(parseTranslation(fixture('translation.txt')).source).toBe('en');
+  });
+
+  it('reports the detected language when the source is auto', () => {
+    const google = parseTranslation(fixture('translation-auto.txt'));
+    expect(google.source).toBe('de');
+    expect(pickPayload(google)).toBe('Buongiorno');
+    expect(toRows(google)[0][0]).toBe('Buongiorno ');
+  });
+});
+
+describe('a web address as input', () => {
+  // Google answers with the address and its website-translation link instead
+  // of a translation, and leaves arr[0] null.
+  it('maps to a single row holding the address', () => {
+    const google = parseTranslation(fixture('translation-website.txt'));
+    expect(google.pronunciation).toBeUndefined();
+    expect(google.correction).toBeUndefined();
+    expect(google.source).toBe('en');
+    expect(toRows(google)[0][0]).toBe('https://example.com/');
+    expect(toRows(google)[0][4]).toContain('https://translate.google.com/translate?');
+    expect(pickPayload(google)).toBe('https://example.com/');
+  });
+});
+
+describe('parseSimpleTranslation (MKPkhb fallback)', () => {
+  it('shapes the one-field answer into a single row', () => {
+    const google = parseSimpleTranslation(fixture('simple.txt'));
+    expect(toRows(google)).toEqual([['Ciao mondo']]);
+    expect(pickPayload(google)).toBe('Ciao mondo');
+    expect(google.source).toBeNull();
+    expect(google.definitions).toBeNull();
+  });
+
+  it('rejects a response of another shape', () => {
+    expect(() => parseSimpleTranslation(fixture('translation.txt'))).toThrow();
   });
 });
 
@@ -83,6 +123,7 @@ describe('map on a dictionary-bearing response shape', () => {
     expect(data.correction).toBe('correction?');
     expect(data.translation).toEqual(arr[1][0]);
     expect(data.input).toBe('hello');
+    expect(data.source).toBe('en');
     expect(data.definitions).toEqual(['DEFS']);
     expect(data.examples).toEqual(['example sentence']);
     expect(data.seeAlso).toEqual(['SEE-ALSO']);

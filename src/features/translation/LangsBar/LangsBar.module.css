@@ -76,6 +76,37 @@
   transition: all 0.9s ease-out;
 }
 
+.filter {
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% - 18px);
+  margin: 9px 9px 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--color-text-main);
+  background: var(--color-higherground);
+  border: 0;
+  border-radius: 3px;
+  outline: none;
+}
+
+.filter::placeholder {
+  color: var(--color-text-low);
+}
+
+/* The catalogue is ~250 languages: 50 rows at five columns. The list scrolls
+   rather than growing the window past the old dropdown's height. */
+.scroll {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.empty {
+  padding: 12px 21px 0;
+  font-size: 12px;
+  color: var(--color-text-low);
+}
+
 .list {
   padding: 9px;
   columns: 5;
@@ -84,11 +115,14 @@
 
 .item {
   box-sizing: border-box;
-  padding: 3px 0 3px 12px;
+  padding: 3px 6px 3px 12px;
   font-size: 12px;
   height: 20px;
   color: var(--color-text-low);
   cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .item[data-in-bar='true'] {

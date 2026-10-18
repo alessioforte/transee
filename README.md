@@ -39,12 +39,20 @@ npm run typecheck  # tsc --noEmit
 
 ### Packaging
 
+Before building a universal macOS app, install both Rust targets:
+
+```bash
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+```
+
 ```bash
 npm run package                                    # host architecture
 npm run package -- --target universal-apple-darwin # universal macOS build
 ```
 
-Output lands in `src-tauri/target/release/bundle/`. macOS signing and
+Output lands in `src-tauri/target/release/bundle/`, or
+`src-tauri/target/universal-apple-darwin/release/bundle/` for universal macOS
+builds. macOS signing and
 notarization are driven by the usual environment variables
 (`APPLE_SIGNING_IDENTITY`, plus either `APPLE_API_*` or
 `APPLE_ID`/`APPLE_PASSWORD`/`APPLE_TEAM_ID`); Tauri notarizes as part of the

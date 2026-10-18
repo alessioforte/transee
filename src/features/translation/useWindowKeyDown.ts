@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { invertLangs } from '@/features/translation/LangsBar/actions';
+import {
+  invertLangs,
+  detectedOption,
+  resolveSource,
+  canSpeak,
+} from '@/features/translation/LangsBar/actions';
 import { useSettings } from '@/stores/settings';
 import { useTranslation } from '@/stores/translation';
 import { hideWindow, openDevtools } from '@/platform';
@@ -33,7 +38,7 @@ const useWindowKeyDown = (): void => {
 
       // ctrl i — invert languages
       if (e.ctrlKey && e.code === 'KeyI') {
-        const newLangs = invertLangs(langs);
+        const newLangs = invertLangs(langs, detectedOption(langs.selected, google?.source));
         setLangs(newLangs);
         if (payload) {
           setInput(payload);
@@ -44,14 +49,15 @@ const useWindowKeyDown = (): void => {
       // ctrl p — speak the source text
       if (e.ctrlKey && !e.altKey && e.code === 'KeyP') {
         e.preventDefault();
-        if (search) playAudio(search, langs.selected.from, 'from');
+        const lang = resolveSource(langs.selected, google?.source);
+        if (search && canSpeak(lang)) playAudio(search, lang, 'from');
       }
 
       // ctrl alt p — speak the translation
       if (e.ctrlKey && e.altKey && e.code === 'KeyP') {
         e.preventDefault();
         const translation = google ? google.translation : null;
-        if (translation) {
+        if (translation && canSpeak(langs.selected.to)) {
           let voice = '';
           if (translation[0][5] && translation[0][5][0] && translation[0][5][0][0]) {
             voice = translation[0][5][0][0];

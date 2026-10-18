@@ -2,7 +2,7 @@
 // Replicates src/renderer/services/api.ts request construction byte-for-byte
 // (JSON.stringify + encodeURI) so the saved bodies are valid parser() inputs.
 //
-// Usage: node fixtures/dump.mjs
+// Usage: node fixtures/dump.mjs [operation...]   (no arguments dumps all of them)
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,9 +14,18 @@ const OPERATIONS = {
   translation: [['MkEWBc', JSON.stringify([['hello world', 'en', 'it', true], [null]]), null, 'generic']],
   hints: [['AVdN8', JSON.stringify(['hel', 'en', 'it']), null, 'generic']],
   voice: [['jQ1olc', JSON.stringify(['hello', 'en', false, null]), null, 'generic']],
+  'translation-auto': [['MkEWBc', JSON.stringify([['guten Morgen', 'auto', 'it', true], [null]]), null, 'generic']],
+  'translation-website': [['MkEWBc', JSON.stringify([['https://example.com/', 'en', 'it', true], [null]]), null, 'generic']],
+  simple: [['MKPkhb', JSON.stringify([['hello world', 'en', 'it']]), null, 'generic']],
 };
 
+const selected = process.argv.slice(2);
+for (const name of selected) {
+  if (!(name in OPERATIONS)) throw new Error(`unknown operation: ${name}`);
+}
+
 for (const [operation, rpc] of Object.entries(OPERATIONS)) {
+  if (selected.length > 0 && !selected.includes(operation)) continue;
   const body = `f.req=${encodeURI(JSON.stringify([rpc]))}`;
   const res = await fetch(URL, {
     method: 'POST',

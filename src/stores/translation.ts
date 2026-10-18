@@ -1,12 +1,11 @@
 import { create } from 'zustand';
 import {
-  getGoogleTranslate,
+  getTranslation,
   getGoogleSuggest,
   getGoogleVoice,
 } from '@/services/google/client';
 import {
   parseSuggestions,
-  parseTranslation,
   parseVoice,
   pickPayload,
   Mapped,
@@ -75,10 +74,9 @@ export const useTranslation = create<TranslationState>((set, get) => ({
       set({ suggestions: [] });
     }
 
-    getGoogleTranslate(text, langs)
-      .then((res) => {
+    getTranslation(text, langs)
+      .then((google) => {
         if (!fresh()) return;
-        const google = parseTranslation(res);
         // `loading` is cleared here and nowhere else. It used to be cleared by
         // whichever response arrived first, so a fast suggestions reply stopped
         // the spinner while the translation was still in flight.
