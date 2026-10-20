@@ -20,6 +20,11 @@
   outline: none;
 }
 
+.input::placeholder {
+  color: var(--color-text-soft);
+  opacity: 1;
+}
+
 /* The greyed-out completion drawn behind the real input. */
 .autocomplete {
   position: absolute;

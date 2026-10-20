@@ -56,7 +56,7 @@ fn bootstrap_script<R: Runtime>(app: &AppHandle<R>) -> String {
 /// bootstrap script. Every window is declared with `"create": false` so that
 /// all four go through here and none of them miss the injection.
 pub fn create<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<WebviewWindow<R>, String> {
-    let config = app
+    let mut config = app
         .config()
         .app
         .windows
@@ -64,6 +64,20 @@ pub fn create<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<WebviewWind
         .find(|w| w.label == label)
         .cloned()
         .ok_or_else(|| format!("no window config for \"{label}\""))?;
+
+    let light = settings::get_string(app, "theme", "dark") == "light";
+    config.theme = Some(if light {
+        tauri::Theme::Light
+    } else {
+        tauri::Theme::Dark
+    });
+    if label != MAIN {
+        config.background_color = Some(if light {
+            tauri::window::Color(247, 248, 250, 255)
+        } else {
+            tauri::window::Color(42, 42, 42, 255)
+        });
+    }
 
     WebviewWindowBuilder::from_config(app, &config)
         .map_err(|err| err.to_string())?

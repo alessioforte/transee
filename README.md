@@ -43,6 +43,8 @@ Google Translate into a focused, keyboard-friendly window.
   translation in supported languages.
 - **Your languages, within reach.** Keep favorite language choices handy and
   swap the translation direction from the keyboard.
+- **Light or dark.** Switch Dark mode in Preferences to update every window
+  instantly. Your choice is remembered across launches.
 - **At home on your desktop.** The bar opens on the display under your pointer
   and follows the active macOS Space. Hide it when you're done; it stays ready
   in the tray.

@@ -34,7 +34,7 @@
 
 .short[data-status='success'] {
   background: var(--color-info);
-  color: var(--color-text-main);
+  color: var(--color-text-on-accent);
   font-weight: bold;
 }
 

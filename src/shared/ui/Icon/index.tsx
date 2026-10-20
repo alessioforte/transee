@@ -3,7 +3,7 @@ import icons from './icons';
 import { getColorLuminance } from '@/shared/color';
 import styles from './Icon.module.css';
 
-const DEFAULT_COLOR = '#444444'; // --color-text-idle
+const DEFAULT_COLOR = 'var(--color-text-idle)';
 
 type Props = {
   name?: string;
@@ -11,6 +11,7 @@ type Props = {
   size?: number;
   className?: string;
   hover?: boolean;
+  hoverColor?: string;
 };
 
 const Icon: FunctionComponent<Props> = ({
@@ -19,16 +20,24 @@ const Icon: FunctionComponent<Props> = ({
   size = 30,
   className,
   hover = false,
+  hoverColor,
 }) => {
   const { d, width, group } = icons[name] || icons.default;
 
-  // The hover tint is derived from whatever colour the caller passed, so unlike
-  // the other getColorLuminance sites it cannot be baked into tokens.css. It
-  // rides in as a custom property instead.
+  // CSS tokens update live with the theme; explicit hex colors still support
+  // the original derived hover tint.
   const vars = {
     '--icon-fill': color,
     '--icon-size': `${size}px`,
-    ...(hover ? { '--icon-fill-hover': getColorLuminance(color, 0.3) } : {}),
+    ...(hover
+      ? {
+          '--icon-fill-hover':
+            hoverColor ??
+            (color.startsWith('#')
+              ? getColorLuminance(color, 0.3)
+              : 'var(--color-icon-hover)'),
+        }
+      : {}),
   } as CSSProperties;
 
   return (

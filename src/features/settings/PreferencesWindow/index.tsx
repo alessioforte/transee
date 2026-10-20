@@ -11,9 +11,11 @@ const Preferences: FC = () => {
   const shortcut = useSettings((s) => s.shortcut);
   const startAtLogin = useSettings((s) => s.startAtLogin);
   const checkUpdates = useSettings((s) => s.checkUpdates);
+  const theme = useSettings((s) => s.theme);
   const setShortcut = useSettings((s) => s.setShortcut);
   const setStartAtLogin = useSettings((s) => s.setStartAtLogin);
   const setCheckUpdates = useSettings((s) => s.setCheckUpdates);
+  const setTheme = useSettings((s) => s.setTheme);
   const restoreSettings = useSettings((s) => s.restoreSettings);
 
   return (
@@ -22,9 +24,21 @@ const Preferences: FC = () => {
         <span className={styles.title}>Generals</span>
         <div className={styles.option}>
           <div className={styles.label}>
+            <span id="dark-mode-label">Dark mode</span>
+            <Toggle
+              name="theme"
+              aria-labelledby="dark-mode-label"
+              value={theme === 'dark'}
+              onChange={(data) => setTheme(data.value ? 'dark' : 'light')}
+            />
+          </div>
+        </div>
+        <div className={styles.option}>
+          <div className={styles.label}>
             Auto start at login
             <Toggle
               name="login"
+              aria-label="Auto start at login"
               value={startAtLogin}
               onChange={(data) => setStartAtLogin(data.value)}
             />
@@ -36,6 +50,7 @@ const Preferences: FC = () => {
             Check automatically for updates
             <Toggle
               name="update"
+              aria-label="Check automatically for updates"
               value={checkUpdates}
               onChange={(data) => setCheckUpdates(data.value)}
             />

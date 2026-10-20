@@ -3,6 +3,9 @@
 }
 
 .knob {
+  display: inline-block;
+  vertical-align: middle;
+  border: 0;
   flex-shrink: 0;
   position: relative;
   height: 20px;
@@ -10,7 +13,7 @@
   border-radius: 20px;
   background: var(--color-groundzero);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .knob:hover {
@@ -21,16 +24,22 @@
   outline: none;
 }
 
+.knob:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 .knob::after {
   content: '';
   height: 16px;
   width: 16px;
   background: var(--color-foreground);
   left: 0;
+  top: 0;
   border-radius: 50%;
   position: absolute;
   margin: 2px;
-  transition: all 0.3s ease;
+  transition: left 0.3s ease;
 }
 
 .knob[data-checked='true']::after {

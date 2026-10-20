@@ -27,6 +27,7 @@
   display: inline;
   padding: 1px 9px;
   background: var(--color-info);
+  color: var(--color-text-on-accent);
   border-radius: 3px;
   font-size: 14px;
   font-weight: lighter;
@@ -63,11 +64,11 @@
 }
 
 .arrow svg {
-  fill: gray;
+  fill: var(--color-navigation);
 }
 
 .arrow:hover svg {
-  fill: white;
+  fill: var(--color-text-main);
 }
 
 .arrowLeft {
@@ -83,7 +84,7 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  transition: 0.3s ease;
+  transition: margin-left 0.3s ease;
   padding-left: 53px;
   color: var(--color-text-main);
 }
@@ -131,5 +132,5 @@
 }
 
 .dot[data-active='true'] {
-  background: var(--color-light);
+  background: var(--color-text-main);
 }

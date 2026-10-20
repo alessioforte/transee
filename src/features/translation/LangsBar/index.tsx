@@ -14,7 +14,8 @@ import useDropdown from '@/shared/hooks/useDropdown';
 import { forceFocusOnInput } from '@/shared/dom';
 import styles from './LangsBar.module.css';
 
-const IDLE = '#999999'; // --color-idle; Icon takes a colour, not a class
+const IDLE = 'var(--color-idle)';
+const IDLE_HOVER = 'var(--color-idle-hover)';
 
 const defaultValues: Langs = {
   threesome: {
@@ -136,7 +137,7 @@ const LangsBar: FunctionComponent<Props> = ({
       data-position={position}
       onClick={(e) => showDropdown(e, conversion)}
     >
-      <Icon name="caret" size={5} color={IDLE} hover />
+      <Icon name="caret" size={5} color={IDLE} hoverColor={IDLE_HOVER} hover />
     </div>
   );
 
@@ -155,7 +156,13 @@ const LangsBar: FunctionComponent<Props> = ({
           data-tauri-drag-region="false"
           onClick={invert}
         >
-          <Icon name="translate" size={14} color={IDLE} hover />
+          <Icon
+            name="translate"
+            size={14}
+            color={IDLE}
+            hoverColor={IDLE_HOVER}
+            hover
+          />
         </div>
 
         <div className={`${styles.threesome} ${styles.to}`}>

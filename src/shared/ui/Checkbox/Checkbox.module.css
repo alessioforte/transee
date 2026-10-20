@@ -18,7 +18,7 @@
   border-radius: 3px;
   background: var(--color-groundzero);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;

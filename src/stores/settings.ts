@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Langs } from '@/types/langs';
+import { normalizeTheme, type Theme } from '@/types/theme';
 import { normalizeLangs } from '@/features/translation/LangsBar/actions';
 import {
   bootSettings,
@@ -20,6 +21,7 @@ export type SettingsState = {
   showWelcome: boolean;
   startAtLogin: boolean;
   checkUpdates: boolean;
+  theme: Theme;
   version: string;
 
   setLangs: (langs: Langs) => void;
@@ -27,6 +29,7 @@ export type SettingsState = {
   setShowWelcome: (value: boolean) => void;
   setStartAtLogin: (value: boolean) => void;
   setCheckUpdates: (value: boolean) => void;
+  setTheme: (value: Theme) => void;
   restoreSettings: () => void;
 };
 
@@ -52,6 +55,7 @@ export const defaults = {
   showWelcome: true,
   startAtLogin: false,
   checkUpdates: true,
+  theme: 'dark' as Theme,
 };
 
 const boot = bootSettings as Partial<SettingsState>;
@@ -65,6 +69,7 @@ export const useSettings = create<SettingsState>((set) => ({
   // Saved before the language catalogue was refreshed; written back to disk
   // with the next `setLangs`.
   langs: normalizeLangs(boot.langs ?? defaults.langs),
+  theme: normalizeTheme(boot.theme),
 
   setLangs: (langs) => {
     set({ langs });
@@ -95,6 +100,11 @@ export const useSettings = create<SettingsState>((set) => ({
   setCheckUpdates: (checkUpdates) => {
     set({ checkUpdates });
     setSetting('checkUpdates', checkUpdates);
+  },
+
+  setTheme: (theme) => {
+    set({ theme });
+    void setSetting('theme', theme);
   },
 
   restoreSettings: () => {

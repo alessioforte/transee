@@ -40,7 +40,7 @@
 .button {
   border: 0;
   background: var(--color-primary);
-  color: var(--color-text-main);
+  color: var(--color-text-on-accent);
   padding: 3px 16px;
   border-radius: 3px;
 }

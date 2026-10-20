@@ -6,8 +6,8 @@
  * call-site changes.
  */
 export { bootSettings, appVersion, isMac, isWin, platform } from './env';
-export { setSetting } from './settings';
-export { resizeWindow, hideWindow, openDevtools } from './window';
+export { setSetting, watchSetting } from './settings';
+export { resizeWindow, hideWindow, openDevtools, setWindowTheme } from './window';
 export { setGlobalShortcut, restoreSettings, setAutostart } from './shortcut';
 export { openExternal } from './opener';
 export { batchexecute, googleDictionary } from './translate';

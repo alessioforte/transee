@@ -18,7 +18,7 @@
 
 .body {
   padding: 10px 0;
-  color: #aaa;
+  color: var(--color-text-soft);
 }
 
 .title {
@@ -79,7 +79,7 @@
 }
 
 .definition {
-  color: #fff;
+  color: var(--color-text-main);
 }
 
 .examples {
@@ -107,6 +107,7 @@
 
 .badge:hover {
   background: var(--color-primary);
+  color: var(--color-text-on-accent);
 }
 
 .trRow {

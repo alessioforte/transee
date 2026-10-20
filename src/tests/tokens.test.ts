@@ -47,3 +47,34 @@ describe('derived tints are still what getColorLuminance produces', () => {
     );
   });
 });
+
+describe('light palette readability', () => {
+  const light = tokens.split(":root[data-theme='light']")[1];
+  const readLight = (name: string) =>
+    light.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim() ?? read(name);
+
+  function luminance(hex: string) {
+    const channels = hex.match(/[a-f\d]{2}/gi)!.map((channel) => {
+      const value = parseInt(channel, 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+  }
+
+  it.each([
+    ['text-main', 'background'],
+    ['text-soft', 'background'],
+    ['text-low', 'frame'],
+    ['text-primary', 'background'],
+    ['text-info', 'background'],
+    ['text-error', 'background'],
+    ['text-on-accent', 'primary'],
+    ['text-on-accent', 'info'],
+  ])('keeps %s readable on %s', (text, surface) => {
+    const a = luminance(readLight(`--color-${text}`));
+    const b = luminance(readLight(`--color-${surface}`));
+    expect(
+      (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+});

@@ -1,9 +1,8 @@
 /**
  * Design tokens.
  *
- * A direct transcription of the old `src/theme/index.ts` object, which every
- * component imported and destructured (`const { colors } = theme`). Values are
- * unchanged.
+ * The default dark palette preserves the original app. The explicit light
+ * palette below is selected by the saved preference, not the OS appearance.
  *
  * The `*-hover` / `*-active` tints at the bottom were produced by the
  * `getColorLuminance()` helper at module-eval time. Its inputs were constant at
@@ -13,6 +12,7 @@
  */
 
 :root {
+  color-scheme: dark;
   /* surfaces */
   --color-frame: #1a1a1a;
   --color-active: #1a1a1a;
@@ -56,8 +56,13 @@
   --color-text-danger: #b22222;
   --color-text-error: #dc143c;
   --color-text-info: #0077b5;
+  --color-text-on-accent: #ffffff;
+  --color-icon-hover: #585858;
+  --color-idle-hover: #c7c7c7;
+  --color-navigation: #808080;
 
   --shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 9px 18px 1px rgba(26, 26, 26, 0.4);
 
   /* derived — see the note above */
   --color-text-low-hover: #e6e6e6; /* text-low     @ +0.5 */
@@ -65,4 +70,60 @@
   --color-primary-active: #009beb; /* primary      @ +0.3 */
   --color-text-info-hover: #00b3ff; /* text-info    @ +0.5 */
   --color-text-info-active: #00e2ff; /* text-info    @ +0.9 */
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-frame: #e9edf2;
+  --color-active: #e2e8ef;
+  --color-hover: #e2e8ef;
+  --color-dark: #e9edf2;
+  --color-groundzero: #e3e8ee;
+  --color-background: #f7f8fa;
+  --color-higherground: #ffffff;
+  --color-flatground: #dce2e9;
+  --color-foreground: #a3aeba;
+  --color-upperground: #7c8997;
+
+  --color-primary: #0077b5;
+  --color-secondary: #176b8d;
+  --color-action: #a74422;
+  --color-selected: #006c6c;
+  --color-success: #087f5b;
+  --color-warning: #946200;
+  --color-danger: #b22222;
+  --color-error: #bf1236;
+  --color-info: #0077b5;
+  --color-idle: #5d6977;
+  --color-disabled: #a3aeba;
+  --color-focus: #0077b5;
+
+  --color-text-main: #202833;
+  --color-text-primary: #006da6;
+  --color-text-secondary: #176b8d;
+  --color-text-soft: #566271;
+  --color-text-low: #5d6977;
+  --color-text-disabled: #8994a1;
+  --color-text-idle: #667382;
+  --color-text-active: #202833;
+  --color-text-selected: #006da6;
+  --color-text-hover: #202833;
+  --color-text-success: #087f5b;
+  --color-text-warning: #946200;
+  --color-text-danger: #b22222;
+  --color-text-error: #bf1236;
+  --color-text-info: #006da6;
+  --color-icon-hover: #344352;
+  --color-idle-hover: #344352;
+  --color-navigation: #5d6977;
+
+  --shadow: 0px 1px 5px 1px rgba(32, 40, 51, 0.12);
+  --shadow-card: 0 5px 12px 1px rgba(32, 40, 51, 0.08);
+
+  --color-text-low-hover: #202833;
+  --color-primary-hover: #00669c;
+  --color-primary-active: #005582;
+  --color-text-info-hover: #005582;
+  --color-text-info-active: #004367;
 }

@@ -1,7 +1,4 @@
-// Matches --color-text-soft in shared/styles/tokens.css. Inlined rather than
-// read from CSS because these are SVG gradient stops and a `fill` attribute,
-// not style properties.
-const spinnerColor = '#AAAAAA';
+const spinnerColor = 'var(--color-text-soft)';
 
 export default () => (
   <svg

@@ -6,6 +6,7 @@ import AboutWindow from '@/features/about/AboutWindow';
 import WelcomeWindow from '@/features/onboarding/WelcomeWindow';
 import PreferencesWindow from '@/features/settings/PreferencesWindow';
 import { platform } from '@/platform';
+import { initializeTheme } from './theme';
 import '@/shared/styles/global.css';
 
 const container = document.getElementById('root')!;
@@ -17,6 +18,9 @@ const name = window.location.search.substr(1);
 // exposed for platform-specific UI. Scrollbars share one theme on every OS.
 document.documentElement.dataset.window = name;
 document.documentElement.dataset.platform = platform;
+
+const disposeTheme = initializeTheme();
+if (import.meta.hot) import.meta.hot.dispose(disposeTheme);
 
 Tooltip.setRoot(container, 'root-tooltip');
 

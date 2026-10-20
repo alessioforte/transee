@@ -12,7 +12,9 @@ export type Props = {
   label?: string;
   name?: string;
   value?: boolean;
-  onChange?: (data: Data, e: MouseEvent<HTMLDivElement>) => void;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  onChange?: (data: Data, e: MouseEvent<HTMLButtonElement>) => void;
 };
 
 /**
@@ -20,22 +22,31 @@ export type Props = {
  * never synced — so "Restore default settings" reset the store while the switch
  * stayed where the user had left it.
  */
-const Toggle: FC<Props> = ({ label, value = false, name, onChange = () => null }) => {
-  const handleOnClick = (e: MouseEvent<HTMLDivElement>): void => {
+const Toggle: FC<Props> = ({
+  label,
+  value = false,
+  name,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  onChange = () => null,
+}) => {
+  const handleOnClick = (e: MouseEvent<HTMLButtonElement>): void => {
     const checked = !value;
     onChange({ name, value: checked, checked, label }, e);
   };
 
   return (
     <div className={styles.block}>
-      <div
+      <button
+        type="button"
+        name={name}
         className={styles.knob}
         data-checked={value}
-        role="checkbox"
-        aria-label={label}
+        role="switch"
+        aria-label={ariaLabel ?? label}
+        aria-labelledby={ariaLabelledBy}
         aria-checked={value}
         onClick={handleOnClick}
-        tabIndex={0}
       />
       {label && <div className={styles.label}>{label}</div>}
     </div>

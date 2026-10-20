@@ -1,4 +1,5 @@
 import { load, type Store } from '@tauri-apps/plugin-store';
+import { isTauri } from '@tauri-apps/api/core';
 
 const STORE_FILE = 'settings.json';
 
@@ -18,5 +19,28 @@ export async function setSetting(key: string, value: unknown): Promise<void> {
     await s.set(key, value);
   } catch (err) {
     console.error(`[transee] failed to persist "${key}"`, err);
+  }
+}
+
+/** Subscribe before reading, so a newly opened window cannot miss an update. */
+export async function watchSetting(
+  key: string,
+  callback: (value: unknown, initial: boolean) => void
+): Promise<() => void> {
+  if (!isTauri()) return () => {};
+  const s = await store();
+  let changed = false;
+  const unlisten = await s.onKeyChange(key, (value) => {
+    changed = true;
+    callback(value, false);
+  });
+
+  try {
+    const value = await s.get(key);
+    if (!changed) callback(value, true);
+    return unlisten;
+  } catch (err) {
+    unlisten();
+    throw err;
   }
 }
