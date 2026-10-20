@@ -1,6 +1,5 @@
 .sticky {
   position: relative;
-  overflow: scroll;
   max-height: 328px;
   font-size: 16px;
 }

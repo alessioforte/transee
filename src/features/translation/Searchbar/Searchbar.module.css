@@ -1,4 +1,9 @@
+.scrollArea {
+  flex: 1;
+}
+
 .input {
+  display: block;
   box-sizing: border-box;
   padding: 18px;
   height: 60px;

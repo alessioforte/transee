@@ -6,7 +6,7 @@ import {
   MutableRefObject,
   KeyboardEvent,
 } from 'react';
-import { Icon } from '@/shared/ui';
+import { Icon, ScrollArea } from '@/shared/ui';
 import { Props, Option, Conversion, Target, Langs } from './interfaces';
 import { selectLangs, invertLangs } from './actions';
 import { AUTO } from '../langs';
@@ -184,7 +184,7 @@ const LangsBar: FunctionComponent<Props> = ({
             autoCapitalize="off"
             autoComplete="off"
           />
-          <div className={styles.scroll}>
+          <ScrollArea className={styles.scroll} label="Languages">
             {matches.length === 0 && (
               <div className={styles.empty}>No languages found</div>
             )}
@@ -204,7 +204,7 @@ const LangsBar: FunctionComponent<Props> = ({
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       )}
     </>

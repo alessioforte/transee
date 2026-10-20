@@ -1,4 +1,4 @@
-import { Card } from '@/shared/ui';
+import { Card, ScrollArea } from '@/shared/ui';
 import { GoogleDictionary } from '@/services/google/dictionary';
 import styles from './StickyCards.module.css';
 
@@ -15,7 +15,7 @@ export default function DictionaryCards({ dictionary, onClick }: Props) {
   ));
 
   return (
-    <div className={styles.sticky} aria-label={`Dictionary: ${dictionary.headword}`}>
+    <ScrollArea className={styles.sticky} label={`Dictionary: ${dictionary.headword}`} scrollbars="xy">
       {dictionary.translations.length > 0 && (
         <Card title="TRANSLATIONS">
           <div className={styles.body}>
@@ -88,6 +88,6 @@ export default function DictionaryCards({ dictionary, onClick }: Props) {
           </ul>
         </Card>
       )}
-    </div>
+    </ScrollArea>
   );
 }

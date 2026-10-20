@@ -5,3 +5,4 @@ export { default as Spinner } from './Spinner';
 export { default as Toggle } from './Toggle';
 export { default as Tooltip } from './Tooltip';
 export { default as Layout } from './Layout';
+export { default as ScrollArea } from './ScrollArea';

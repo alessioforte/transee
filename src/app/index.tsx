@@ -13,9 +13,8 @@ const root = createRoot(container);
 
 const name = window.location.search.substr(1);
 
-// global.css keys the transparent bar background and the Windows-only scrollbar
-// styling off these, replacing the JS conditionals that used to live inside a
-// styled-components `createGlobalStyle`.
+// The window attribute selects the transparent bar background; platform is also
+// exposed for platform-specific UI. Scrollbars share one theme on every OS.
 document.documentElement.dataset.window = name;
 document.documentElement.dataset.platform = platform;
 

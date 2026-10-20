@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react';
-import { Card } from '@/shared/ui';
+import { Card, ScrollArea } from '@/shared/ui';
 import { Mapped } from '@/services/google/parse';
 import DictionaryCards from './DictionaryCards';
 import styles from './StickyCards.module.css';
@@ -28,7 +28,7 @@ const StickyCards: FunctionComponent<Props> = ({ google, onClick = () => null })
   if (google.dictionary) return <DictionaryCards dictionary={google.dictionary} onClick={onClick} />;
 
   return (
-    <div className={styles.sticky}>
+    <ScrollArea className={styles.sticky} label="Translation details" scrollbars="xy">
       {google.translations && (
         <Card title="TRANSLATIONS">
           <div className={styles.body}>
@@ -171,7 +171,7 @@ const StickyCards: FunctionComponent<Props> = ({ google, onClick = () => null })
           </div>
         </Card>
       )}
-    </div>
+    </ScrollArea>
   );
 };
 

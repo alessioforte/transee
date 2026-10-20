@@ -98,7 +98,6 @@
    rather than growing the window past the old dropdown's height. */
 .scroll {
   max-height: 420px;
-  overflow-y: auto;
 }
 
 .empty {

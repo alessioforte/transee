@@ -3,12 +3,13 @@ import {
   useRef,
   useState,
   useEffect,
+  useLayoutEffect,
   FunctionComponent,
   MutableRefObject,
   ChangeEvent,
   KeyboardEvent,
 } from 'react';
-import { Spinner } from '@/shared/ui';
+import { ScrollArea, Spinner } from '@/shared/ui';
 import { Props } from './interfaces';
 import field from '@/shared/styles/field.module.css';
 import styles from './Searchbar.module.css';
@@ -47,24 +48,23 @@ const Searchbar: FunctionComponent<Props> = ({
 
   useEffect(() => {
     setValue(initialValue);
-    resizeTextarea();
   }, [initialValue]);
+
+  useLayoutEffect(() => {
+    const textarea = input.current;
+    if (!textarea) return;
+    const scrollTop = textarea.scrollTop;
+    textarea.style.height = '60px';
+    textarea.style.height = `${Math.max(60, textarea.scrollHeight)}px`;
+    textarea.scrollTop = scrollTop;
+    onResize();
+  }, [value, onResize]);
 
   useEffect(() => {
     if (suggestions.length === 0) {
       setHover(-1);
     }
   }, [suggestions]);
-
-  const resizeTextarea = () => {
-    if (input.current) {
-      let height = 60;
-      input.current.style.height = `${height}px`;
-      height = input.current.scrollHeight;
-      input.current.style.height = `${height}px`;
-      onResize();
-    }
-  };
 
   const handleOnChange = (text: string) => {
     onChange({ name, value: text });
@@ -113,36 +113,43 @@ const Searchbar: FunctionComponent<Props> = ({
   return (
     <Fragment>
       <div className={field.container}>
-        {!isTyping &&
-          suggestions?.length > 0 &&
-          hover === -1 &&
-          value !== '' && <textarea
-              className={`${styles.input} ${styles.autocomplete}`}
-              disabled
-              value={suggestions[0][0]}
-              readOnly
-            />}
-        <textarea
-          className={styles.input}
-          ref={input}
-          id={SEARCHBAR_ID}
-          placeholder={placeholder}
-          maxLength={5000}
-          value={value}
-          onChange={onInputChange}
-          onKeyDown={onInputKeyDown}
-          onKeyUp={resizeTextarea}
-          onScrollCapture={resizeTextarea}
-          disabled={disabled}
-          autoFocus
-          // WKWebView shows macOS's native autocorrect/replacement popup over
-          // the input, which Chromium did not. The app has its own suggestion
-          // list, so the system one is noise covering it.
-          spellCheck={false}
-          autoCorrect="off"
-          autoCapitalize="off"
-          autoComplete="off"
-        />
+        <ScrollArea
+          className={styles.scrollArea}
+          label="Source text"
+          viewportRef={input}
+        >
+          {!isTyping &&
+            suggestions?.length > 0 &&
+            hover === -1 &&
+            value !== '' && (
+              <textarea
+                className={`${styles.input} ${styles.autocomplete}`}
+                disabled
+                value={suggestions[0][0]}
+                readOnly
+              />
+            )}
+          <textarea
+            className={styles.input}
+            ref={input}
+            id={SEARCHBAR_ID}
+            placeholder={placeholder}
+            maxLength={5000}
+            value={value}
+            onChange={onInputChange}
+            onKeyDown={onInputKeyDown}
+            disabled={disabled}
+            autoFocus
+            // WKWebView shows macOS's native autocorrect/replacement popup over
+            // the input, which Chromium did not. The app has its own suggestion
+            // list, so the system one is noise covering it.
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
+            aria-label="Source text"
+          />
+        </ScrollArea>
         {loading && (
           <div className={field.loading}>
             <Spinner />
